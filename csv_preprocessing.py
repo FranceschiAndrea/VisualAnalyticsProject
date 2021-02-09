@@ -871,17 +871,17 @@ for i in range(0,16):
 
 
 #------------ Air Pollulant Gas Emissions ---------------
-#count = 0
+count = 0
 #------------ CO  ---------------
 #xsl is a panda Dataframe
 xls_co = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_CO_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_co_resized = xls_co.take([1, 3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_co_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF CO HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF CO HAVE NULL VALUES !!!")
 print(xsl_co_resized.shape)
 count = 0
 #print(xsl_co_resized.dtypes)
@@ -893,12 +893,12 @@ count = 0
 #xsl is a panda Dataframe
 xls_ch4 = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_CH4_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_ch4_resized = xls_ch4.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_ch4_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF CH4 HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF CH4 HAVE NULL VALUES !!!")
 print(xsl_ch4_resized.shape)
 count = 0
 
@@ -908,12 +908,12 @@ count = 0
 #xsl is a panda Dataframe
 xls_nh3 = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_NH3_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_nh3_resized = xls_nh3.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_nh3_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF NH3 HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF NH3 HAVE NULL VALUES !!!")
 print(xsl_nh3_resized.shape)
 count = 0
 
@@ -923,12 +923,12 @@ count = 0
 #xsl is a panda Dataframe
 xls_nmvoc = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_NMVOC_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_nmvoc_resized = xls_nmvoc.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_nmvoc_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF NMVOC HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF NMVOC HAVE NULL VALUES !!!")
 print(xsl_nmvoc_resized.shape)
 count = 0
 
@@ -938,12 +938,12 @@ count = 0
 #xsl is a panda Dataframe
 xls_nox = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_NOx_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_nox_resized = xls_nox.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_nox_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF NOx HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF NOx HAVE NULL VALUES !!!")
 print(xsl_nox_resized.shape)
 count = 0
 
@@ -953,12 +953,12 @@ count = 0
 #xsl is a panda Dataframe
 xls_so2 = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_SO2_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_so2_resized = xls_so2.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_so2_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF SO2 HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF SO2 HAVE NULL VALUES !!!")
 print(xsl_so2_resized.shape)
 count = 0
 
@@ -970,12 +970,12 @@ count = 0
 #------------ PM10  ---------------
 xls_pm10 = pd.read_excel("dataset/fine_particulate_matter_emissions/v50_PM10_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_pm10_resized = xls_pm10.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_pm10_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF PM10 HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF PM10 HAVE NULL VALUES !!!")
 print(xsl_pm10_resized.shape)
 count = 0
 
@@ -984,12 +984,12 @@ count = 0
 #------------ PM25  ---------------
 xls_pm25 = pd.read_excel("dataset/fine_particulate_matter_emissions/v50_PM2.5_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
 xsl_pm25_resized = xls_pm25.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
-'''
+
 for index, row in xsl_pm25_resized.iterrows():
-    if(math.isnan(row[3])):
+    if(math.isnan(row.iat[3])):
         count += 1
 
-print(count, "COUNTRIES OF PM2.5 HAVE NULL VALUES !!!")'''
+print(count, "COUNTRIES OF PM2.5 HAVE NULL VALUES !!!")
 print(xsl_pm25_resized.shape,"\n------------------------------------------")
 count = 0
 
@@ -1023,10 +1023,10 @@ for i in range(0, 16):
 
 #Take all the countries from the file with the minumin number of them (CO)
 for index, row in xsl_co_resized.iterrows():
-    countryes.append(row[0])
+    countryes.append(row.iat[0])
     world_regions.append
     for i in range(0, 16):
-        co_years_separate[i].append(row[i+1])
+        co_years_separate[i].append(row.iat[i+1])
 
 #Initialize all the lists witj listst of None with sixe of the number of countries
 for j in range(0, 16):
@@ -1042,42 +1042,42 @@ for j in range(0, 16):
 
 #Fill all the lists, each list will have one list per year
 for index, row in xsl_pm10_resized.iterrows():
-    if(row[0] in countryes):
+    if(row.iat[0] in countryes):
         for i in range(0, 16):
-            pm_10_years_separate[i][countryes.index(row[0])] = row[i+1]
-            #print(countryes.index(row[0]), "-", i, row[i+1])
+            pm_10_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+            #print(countryes.index(row.iat[0]), "-", i, row.iat[i+1])
     '''else:
-        print(index, row[0])'''
+        print(index, row.iat[0])'''
 
 for index, row in xsl_pm25_resized.iterrows():
-    if(row[0] in countryes):
+    if(row.iat[0] in countryes):
         for i in range(0, 16):
-            pm_25_years_separate[i][countryes.index(row[0])] = row[i+1]
+            pm_25_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
             
 for index, row in xsl_ch4_resized.iterrows():
-    if(row[0] in countryes):
+    if(row.iat[0] in countryes):
         for i in range(0, 16):
-            ch4_years_separate[i][countryes.index(row[0])] = row[i+1]
+            ch4_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
             
 for index, row in xsl_nh3_resized.iterrows():
-    if(row[0] in countryes):
+    if(row.iat[0] in countryes):
         for i in range(0, 16):
-            nh3_years_separate[i][countryes.index(row[0])] = row[i+1]
+            nh3_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
             
 for index, row in xsl_nmvoc_resized.iterrows():
-    if(row[0] in countryes):
+    if(row.iat[0] in countryes):
         for i in range(0, 16):
-            nmvoc_years_separate[i][countryes.index(row[0])] = row[i+1]
+            nmvoc_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
             
 for index, row in xsl_nox_resized.iterrows():
-    if(row[0] in countryes):
+    if(row.iat[0] in countryes):
         for i in range(0, 16):
-            nox_years_separate[i][countryes.index(row[0])] = row[i+1]
+            nox_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
             
 for index, row in xsl_so2_resized.iterrows():
-    if(row[0] in countryes):
+    if(row.iat[0] in countryes):
         for i in range(0, 16):
-            so2_years_separate[i][countryes.index(row[0])] = row[i+1]
+            so2_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
 
 '''
 print(size(co_years_separate))
@@ -1125,6 +1125,6 @@ for i in range(0, 16):
     #print(xsl_resized)
 
     for index, row in xsl_resized.iterrows():
-        if(math.isnan(row[3])):
-            print("country " + row[1].upper() + " has no value for " + row[2].upper())
+        if(math.isnan(row.iat[3])):
+            print("country " + row.iat[1].upper() + " has no value for " + row.iat[2].upper())
 '''
