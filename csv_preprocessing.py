@@ -4,6 +4,8 @@ import math
 import csv
 import numpy as np
 
+countryes = []
+
 #------------ Deaths by causes and total ---------------
 #------------ Air Cancer  ---------------
 df_TrachealCancer = pd.read_csv('dataset/deaths_by_cancer/deaths_by_cancer_air/IHME-GBD_2019_DATA-95cedfd8-1.csv', usecols = ['location_name','year','val']) 
@@ -95,6 +97,14 @@ df_AC_2014 = df_AC_2014.sort_values(by=['location_name'], ascending=True)
 df_AC_2015=pd.DataFrame(df.loc[df['2015']== 'True'],columns=['location_name','val'])
 df_AC_2015['val'] = df_AC_2015['val'].astype(int)
 df_AC_2015 = df_AC_2015.sort_values(by=['location_name'], ascending=True)
+
+
+
+countryes=np.array(df_AC_2000['location_name']).tolist()
+print(len(countryes))
+
+
+
 
 df_AC_in_list = []
 for i in range(0,16):
@@ -998,7 +1008,7 @@ count = 0
 #----------------------------------------------------- Merge Tables and Write CSV -----------------------------------------------------
 
 #list with all countries
-countryes = []
+
 world_regions = []
 
 #list with 16 lists with all values for each year
