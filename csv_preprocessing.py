@@ -1,4 +1,6 @@
 from numpy.core.fromnumeric import size
+from numpy.core.function_base import _logspace_dispatcher
+from numpy.lib.function_base import append
 import pandas as pd
 import math 
 import csv
@@ -718,7 +720,6 @@ df2_TD=df2_TD.rename(columns={'Entity': 'Country Name',
                               'Deaths - Non-communicable diseases - Sex: Both - Age: All Ages (Number)': 'Deaths_NonCom'})
 sum_row = df2_TD.sum(axis=1)
 df2_TD['Total Deaths'] = df2_TD['Deaths_Inj']+df2_TD['Deaths_Com']+df2_TD['Deaths_NonCom']
-print(df2_TD.head())
 
 
 
@@ -885,7 +886,7 @@ count = 0
 #------------ CO  ---------------
 #xsl is a panda Dataframe
 xls_co = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_CO_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
-xsl_co_resized = xls_co.take([1, 3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
+xsl_co_resized = xls_co.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
 
 for index, row in xsl_co_resized.iterrows():
     if(math.isnan(row.iat[3])):
@@ -1007,10 +1008,6 @@ count = 0
 
 #----------------------------------------------------- Merge Tables and Write CSV -----------------------------------------------------
 
-#list with all countries
-
-world_regions = []
-
 #list with 16 lists with all values for each year
 co_years_separate = []
 pm_10_years_separate = []
@@ -1031,16 +1028,12 @@ for i in range(0, 16):
     nox_years_separate.append([])
     so2_years_separate.append([])
 
-#Take all the countries from the file with the minumin number of them (CO)
-for index, row in xsl_co_resized.iterrows():
-    countryes.append(row.iat[0])
-    world_regions.append
-    for i in range(0, 16):
-        co_years_separate[i].append(row.iat[i+1])
 
 #Initialize all the lists witj listst of None with sixe of the number of countries
+
 for j in range(0, 16):
     for i in range (0, size(countryes)):
+        co_years_separate[j].append(math.nan)
         pm_10_years_separate[j].append(math.nan)
         pm_25_years_separate[j].append(math.nan)
         ch4_years_separate[j].append(math.nan)
@@ -1049,56 +1042,183 @@ for j in range(0, 16):
         nox_years_separate[j].append(math.nan)
         so2_years_separate[j].append(math.nan)
 
+'''for j in range(0, 16):
+    for i in range (0, size(countryes)):
+        co_years_separate[j].append(999999999999)
+        pm_10_years_separate[j].append(999999999999)
+        pm_25_years_separate[j].append(999999999999)
+        ch4_years_separate[j].append(999999999999)
+        nh3_years_separate[j].append(999999999999)
+        nmvoc_years_separate[j].append(999999999999)
+        nox_years_separate[j].append(999999999999)
+        so2_years_separate[j].append(999999999999)'''
+
+
+
+
+list_buffer = []
+list_buffer_1 = []
+#list1 has the naming used in countries, list2 has the naming used in x 
+co_merge_association = [["Andorra", "Bolivia (Plurinational State of)", "Cabo Verde", "Czechia", "Côte d'Ivoire", "Democratic People's Republic of Korea", "Democratic Republic of the Congo", "Eswatini", "Iran (Islamic Republic of)", "Libya", "Marshall Islands", "Micronesia (Federated States of)", "Monaco", "Montenegro", "Nauru", "North Macedonia", "Northern Mariana Islands", "Palestine", "Republic of Korea", "Republic of Moldova", "San Marino", "Serbia", "South Sudan", "Taiwan (Province of China)", "Tuvalu", "United Republic of Tanzania", "United States Virgin Islands", "United States of America", "Venezuela (Bolivarian Republic of)"],
+                        ["", "Bolivia", "Cape Verde", "Czech Republic", "Cote d'Ivoire", "Korea, Democratic People's Republic of", "Congo_the Democratic Republic of the", "Swaziland", "Iran, Islamic Republic of", "Libyan Arab Jamahiriya", "", "Micronesia, Federated States of", "", "", "", "Macedonia, the former Yugoslav Republic of", "", "", "Korea, Republic of", "Moldova, Republic of", "", "Serbia and Montenegro", "", "Taiwan_Province of China", "", "Tanzania_United Republic of", "Virgin Islands_USA", "United States", "Venezuela"]]
+                        
+#Take all the countries from the file with the minumin number of them (CO)
+for index, row in xsl_co_resized.iterrows():
+    if(row.iat[0] in countryes):
+        for i in range(0, 16):
+            co_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+        #list_buffer.append(row.iat[0])
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            co_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
+'''    else:
+        #print(index, row.iat[0])
+        list_buffer_1.append(row.iat[0])
+
+    print("IN COUNTRIES BUT NOT IN X:\n")
+    counters = 0
+    for i in countryes:
+        if i not in list_buffer:
+            counters += 1
+            print(counters, i)
+
+    print('--------------------------------------------')
+    print("IN X BUT NOT IN COUNTRIES:\n")
+
+    counters = 0
+    for i in sorted(list_buffer_1):
+        counters += 1
+        print(counters, i)
+
+
+    print('--------------------------------------------')
+    print("IN COUNTRIES BUT NOT IN MAP:\n")
+    for j in range(0, len(co_merge_association[0])):
+        if co_merge_association[1][j] == "":
+            print(co_merge_association[0][j])
+
+    print('--------------------------------------------')
+    print("IN X BUT NOT IN MAP:\n")
+    for j in list_buffer_1:
+        print(j)
+    list_buffer = []
+    list_buffer_1 = []'''
 
 #Fill all the lists, each list will have one list per year
 for index, row in xsl_pm10_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             pm_10_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
-            #print(countryes.index(row.iat[0]), "-", i, row.iat[i+1])
-    '''else:
-        print(index, row.iat[0])'''
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            pm_10_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
 
 for index, row in xsl_pm25_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             pm_25_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            pm_25_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_ch4_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             ch4_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            ch4_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_nh3_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             nh3_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            nh3_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_nmvoc_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             nmvoc_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            nmvoc_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_nox_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             nox_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            nox_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_so2_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             so2_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            so2_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
 
-'''
-print(size(co_years_separate))
-print(size(pm_10_years_separate))
-print(size(pm_25_years_separate))
-print(size(ch4_years_separate))
-print(size(nh3_years_separate))
-print(size(nmvoc_years_separate))
-print(size(nox_years_separate))
-print(size(so2_years_separate))
-'''
+print('CO')
+list_buffer_print = []
+for listElem in co_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(co_years_separate))))).tolist())
+print('PM10')
+list_buffer_print = []
+for listElem in pm_10_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(pm_10_years_separate))))).tolist())
+print('PM25')
+list_buffer_print = []
+for listElem in pm_25_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(pm_25_years_separate))))).tolist())
+print('CH4')
+list_buffer_print = []
+for listElem in ch4_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(ch4_years_separate))))).tolist())
+print('NH3')
+list_buffer_print = []
+for listElem in nh3_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(nh3_years_separate))))).tolist())
+print('NMVOC')
+list_buffer_print = []
+for listElem in nmvoc_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(nmvoc_years_separate))))).tolist())
+print('NOX')
+list_buffer_print = []
+for listElem in nox_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(nox_years_separate))))).tolist())
+print('SO2')
+list_buffer_print = []
+for listElem in so2_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(so2_years_separate))))).tolist())
+print('--------------------------------------------')
+
 
 
 #Make the full tables of DataFrames
@@ -1126,15 +1246,6 @@ for i in range(0, 16):
     else:
         exec("table20" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "]})")
 
-#print(table2000)
 
-'''
-    xls = pd.read_excel("dataset/v50_CO_1970_2015.xls", sheet_name='v5.0_EM_CO_IPCC2006', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, 'IPCC': str, 'IPCC_description': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
-    xsl_resized = xls.take([1, 3, 5, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51], axis=1)
-    #print(xls.dtypes)
-    #print(xsl_resized)
+#table2015.to_csv('table2015.csv')
 
-    for index, row in xsl_resized.iterrows():
-        if(math.isnan(row.iat[3])):
-            print("country " + row.iat[1].upper() + " has no value for " + row.iat[2].upper())
-'''
