@@ -817,54 +817,70 @@ for i in range(0,16):
 df_Population = pd.read_csv ('dataset/population/API_SP.POP.TOTL_DS2_en_csv_v2_1976634.csv',skiprows=4,usecols = ['Country Name','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015']) # Surface Area
 df2_Population = df_Population[['Country Name','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015']] 
 
+df_Population=df_Population.rename(columns={'Country Name': 'Country_Name'})
 
-df_2000_Population = df_Population[['Country Name','2000']].dropna()
+
+df_2000_Population = df_Population[['Country_Name','2000']].dropna()
 df_2000_Population['2000'] = df_2000_Population['2000'].astype(int)
 
-df_2001_Population = df_Population[['Country Name','2001']].dropna()
+df_2001_Population = df_Population[['Country_Name','2001']].dropna()
 df_2001_Population['2001'] = df_2001_Population['2001'].astype(int)
 
-df_2002_Population = df_Population[['Country Name','2002']].dropna()
+df_2002_Population = df_Population[['Country_Name','2002']].dropna()
 df_2002_Population['2002'] = df_2002_Population['2002'].astype(int)
 
-df_2003_Population = df_Population[['Country Name','2003']].dropna()
+df_2003_Population = df_Population[['Country_Name','2003']].dropna()
 df_2003_Population['2003'] = df_2003_Population['2003'].astype(int)
 
-df_2004_Population = df_Population[['Country Name','2004']].dropna()
+df_2004_Population = df_Population[['Country_Name','2004']].dropna()
 df_2004_Population['2004'] = df_2004_Population['2004'].astype(int)
 
-df_2005_Population = df_Population[['Country Name','2005']].dropna()
+df_2005_Population = df_Population[['Country_Name','2005']].dropna()
 df_2005_Population['2005'] = df_2005_Population['2005'].astype(int)
 
-df_2006_Population = df_Population[['Country Name','2006']].dropna()
+df_2006_Population = df_Population[['Country_Name','2006']].dropna()
 df_2006_Population['2006'] = df_2006_Population['2006'].astype(int)
 
-df_2007_Population = df_Population[['Country Name','2007']].dropna()
+df_2007_Population = df_Population[['Country_Name','2007']].dropna()
 df_2007_Population['2007'] = df_2007_Population['2007'].astype(int)
 
-df_2008_Population = df_Population[['Country Name','2008']].dropna()
+df_2008_Population = df_Population[['Country_Name','2008']].dropna()
 df_2008_Population['2008'] = df_2008_Population['2008'].astype(int)
 
-df_2009_Population = df_Population[['Country Name','2009']].dropna()
+df_2009_Population = df_Population[['Country_Name','2009']].dropna()
 df_2009_Population['2009'] = df_2009_Population['2009'].astype(int)
 
-df_2010_Population = df_Population[['Country Name','2010']].dropna()
+df_2010_Population = df_Population[['Country_Name','2010']].dropna()
 df_2010_Population['2010'] = df_2010_Population['2010'].astype(int)
 
-df_2011_Population = df_Population[['Country Name','2011']].dropna()
+df_2011_Population = df_Population[['Country_Name','2011']].dropna()
 df_2011_Population['2011'] = df_2011_Population['2011'].astype(int)
 
-df_2012_Population = df_Population[['Country Name','2012']].dropna()
+df_2012_Population = df_Population[['Country_Name','2012']].dropna()
 df_2012_Population['2012'] = df_2012_Population['2012'].astype(int)
 
-df_2013_Population = df_Population[['Country Name','2013']].dropna()
+df_2013_Population = df_Population[['Country_Name','2013']].dropna()
 df_2013_Population['2013'] = df_2013_Population['2013'].astype(int)
 
-df_2014_Population = df_Population[['Country Name','2014']].dropna()
+df_2014_Population = df_Population[['Country_Name','2014']].dropna()
 df_2014_Population['2014'] = df_2014_Population['2014'].astype(int)
 
-df_2015_Population = df_Population[['Country Name','2015']].dropna()
+df_2015_Population = df_Population[['Country_Name','2015']].dropna()
 df_2015_Population['2015'] = df_2015_Population['2015'].astype(int)
+
+
+
+#We want to know the additional countries (even those with different names for the same country)
+countryes=np.array(df_TC_2000['location_name'])
+countryes_More=np.array(df_2000_Population['Country_Name'])
+
+
+
+
+
+
+
+
 
 df_population_in_list = []
 for i in range(0,16):
@@ -1119,22 +1135,12 @@ table2013 = None
 table2014 = None
 table2015 = None
 
-
+'''
 for i in range(0, 16):
     if i < 10:
         exec("table200" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "]})")
     else:
         exec("table20" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "]})")
-
+'''
 #print(table2000)
 
-'''
-    xls = pd.read_excel("dataset/v50_CO_1970_2015.xls", sheet_name='v5.0_EM_CO_IPCC2006', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, 'IPCC': str, 'IPCC_description': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
-    xsl_resized = xls.take([1, 3, 5, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51], axis=1)
-    #print(xls.dtypes)
-    #print(xsl_resized)
-
-    for index, row in xsl_resized.iterrows():
-        if(math.isnan(row.iat[3])):
-            print("country " + row.iat[1].upper() + " has no value for " + row.iat[2].upper())
-'''
