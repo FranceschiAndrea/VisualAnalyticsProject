@@ -100,11 +100,6 @@ df_AC_2015 = df_AC_2015.sort_values(by=['location_name'], ascending=True)
 
 
 
-countryes=np.array(df_AC_2000['location_name']).tolist()
-print(len(countryes))
-
-
-
 
 df_AC_in_list = []
 for i in range(0,16):
@@ -112,6 +107,8 @@ for i in range(0,16):
         exec( "df_AC_in_list.append(np.array(df_AC_200" + str(i) + "['val']).tolist())")
     else:
         exec( "df_AC_in_list.append(np.array(df_AC_20" + str(i) + "['val']).tolist())")
+
+print(size(df_AC_in_list))
 
 #------------ Total Cancer  ---------------
 df_TotalCancer = pd.read_csv ('dataset/deaths_by_cancer/deaths_by_cancer_total/IHME-GBD_2019_DATA-e1c2eb10-1.csv',usecols = ['location_name','year','val']) 
@@ -211,6 +208,7 @@ for i in range(0,16):
         exec( "df_TC_in_list.append(np.array(df_TC_200" + str(i) + "['val']).tolist())")
     else:
         exec( "df_TC_in_list.append(np.array(df_TC_20" + str(i) + "['val']).tolist())")
+print(size(df_TC_in_list))
 
 #------------ Chronical Pulmonary ---------------
 df_ChRespDis= pd.read_csv ('dataset/deaths_by_chronical_respiratory_desease/deaths_by_chronical_respiratory_desease_pulmonary/IHME-GBD_2019_DATA-744e9c90-1.csv',usecols = ['location_name','year','val']) 
@@ -311,6 +309,8 @@ for i in range(0,16):
     else:
         exec( "df_CRD_in_list.append(np.array(df_CRD_20" + str(i) + "['val']).tolist())")
 
+print(size(df_CRD_in_list))
+
 #------------ Chronical Pneumoconiosis ---------------
 df_Pne= pd.read_csv ('dataset/deaths_by_chronical_respiratory_desease/deaths_by_chronical_respiratory_desease_pneumoconiosis/IHME-GBD_2019_DATA-df10a0ae-1.csv',usecols = ['location_name','year','val']) 
 df2_Pne= df_Pne[['location_name','year','val']]    # selects two of the columns in your file
@@ -410,6 +410,8 @@ for i in range(0,16):
     else:
         exec( "df_PNE_in_list.append(np.array(df_PNE_20" + str(i) + "['val']).tolist())")
 
+print(size(df_PNE_in_list))
+
 #------------ Chronical Asthma ---------------
 df_As= pd.read_csv ('dataset/deaths_by_chronical_respiratory_desease/deaths_by_chronical_respiratory_desease_asthma/IHME-GBD_2019_DATA-4c1f99bd-1.csv',usecols = ['location_name','year','val']) 
 df2_As= df_As[['location_name','year','val']]    # selects two of the columns in your file
@@ -508,6 +510,7 @@ for i in range(0,16):
         exec( "df_AS_in_list.append(np.array(df_AS_200" + str(i) + "['val']).tolist())")
     else:
         exec( "df_AS_in_list.append(np.array(df_AS_20" + str(i) + "['val']).tolist())")
+print(size(df_AS_in_list))
 
 #------------ Chronical Sarcoidosis ---------------
 df_PS= pd.read_csv ('dataset/deaths_by_chronical_respiratory_desease/deaths_by_chronical_respiratory_desease_sarcoidosis/IHME-GBD_2019_DATA-39453181-1.csv',usecols = ['location_name','year','val']) 
@@ -607,6 +610,7 @@ for i in range(0,16):
         exec( "df_PS_in_list.append(np.array(df_PS_200" + str(i) + "['val']).tolist())")
     else:
         exec( "df_PS_in_list.append(np.array(df_PS_20" + str(i) + "['val']).tolist())")
+print(size(df_PS_in_list))
 
 #------------ Chronical Others ---------------
 df_OCRD= pd.read_csv ('dataset/deaths_by_chronical_respiratory_desease/deaths_by_chronical_respiratory_desease_others/IHME-GBD_2019_DATA-d2c87871-1.csv',usecols = ['location_name','year','val']) 
@@ -706,6 +710,7 @@ for i in range(0,16):
         exec( "df_OCRD_in_list.append(np.array(df_OCRD_200" + str(i) + "['val']).tolist())")
     else:
         exec( "df_OCRD_in_list.append(np.array(df_OCRD_20" + str(i) + "['val']).tolist())")
+print(size(df_OCRD_in_list))
 
 #------------ Total Deaths ---------------
 df_TD= pd.read_csv ('dataset/deaths_total/deaths-by-cause-category-stacked.csv',usecols = ['Entity','Year','Deaths - Injuries - Sex: Both - Age: All Ages (Number)','Deaths - Communicable, maternal, neonatal, and nutritional diseases - Sex: Both - Age: All Ages (Number)','Deaths - Non-communicable diseases - Sex: Both - Age: All Ages (Number)']) 
@@ -812,6 +817,7 @@ for i in range(0,16):
         exec( "df_TD_in_list.append(np.array(df_TD_200" + str(i) + "['Total Deaths']).tolist())")
     else:
         exec( "df_TD_in_list.append(np.array(df_TD_20" + str(i) + "['Total Deaths']).tolist())")
+print(size(df_TD_in_list))
 
 #------------ Population ---------------
 df_Population = pd.read_csv ('dataset/population/API_SP.POP.TOTL_DS2_en_csv_v2_1976634.csv',skiprows=4,usecols = ['Country Name','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015']) # Surface Area
@@ -822,51 +828,67 @@ df_Population=df_Population.rename(columns={'Country Name': 'Country_Name'})
 
 df_2000_Population = df_Population[['Country_Name','2000']].dropna()
 df_2000_Population['2000'] = df_2000_Population['2000'].astype(int)
+df_2000_Population = df_2000_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2001_Population = df_Population[['Country_Name','2001']].dropna()
 df_2001_Population['2001'] = df_2001_Population['2001'].astype(int)
+df_2001_Population = df_2001_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2002_Population = df_Population[['Country_Name','2002']].dropna()
 df_2002_Population['2002'] = df_2002_Population['2002'].astype(int)
+df_2002_Population = df_2002_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2003_Population = df_Population[['Country_Name','2003']].dropna()
 df_2003_Population['2003'] = df_2003_Population['2003'].astype(int)
+df_2003_Population = df_2003_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2004_Population = df_Population[['Country_Name','2004']].dropna()
 df_2004_Population['2004'] = df_2004_Population['2004'].astype(int)
+df_2004_Population = df_2004_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2005_Population = df_Population[['Country_Name','2005']].dropna()
 df_2005_Population['2005'] = df_2005_Population['2005'].astype(int)
+df_2005_Population = df_2005_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2006_Population = df_Population[['Country_Name','2006']].dropna()
 df_2006_Population['2006'] = df_2006_Population['2006'].astype(int)
+df_2006_Population = df_2006_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2007_Population = df_Population[['Country_Name','2007']].dropna()
 df_2007_Population['2007'] = df_2007_Population['2007'].astype(int)
+df_2007_Population = df_2007_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2008_Population = df_Population[['Country_Name','2008']].dropna()
 df_2008_Population['2008'] = df_2008_Population['2008'].astype(int)
+df_2008_Population = df_2008_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2009_Population = df_Population[['Country_Name','2009']].dropna()
 df_2009_Population['2009'] = df_2009_Population['2009'].astype(int)
+df_2009_Population = df_2009_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2010_Population = df_Population[['Country_Name','2010']].dropna()
 df_2010_Population['2010'] = df_2010_Population['2010'].astype(int)
+df_2010_Population = df_2010_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2011_Population = df_Population[['Country_Name','2011']].dropna()
 df_2011_Population['2011'] = df_2011_Population['2011'].astype(int)
+df_2011_Population = df_2011_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2012_Population = df_Population[['Country_Name','2012']].dropna()
 df_2012_Population['2012'] = df_2012_Population['2012'].astype(int)
+df_2012_Population = df_2012_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2013_Population = df_Population[['Country_Name','2013']].dropna()
 df_2013_Population['2013'] = df_2013_Population['2013'].astype(int)
+df_2013_Population = df_2013_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2014_Population = df_Population[['Country_Name','2014']].dropna()
 df_2014_Population['2014'] = df_2014_Population['2014'].astype(int)
+df_2014_Population = df_2014_Population.sort_values(by=['Country_Name'], ascending=True)
 
 df_2015_Population = df_Population[['Country_Name','2015']].dropna()
 df_2015_Population['2015'] = df_2015_Population['2015'].astype(int)
+df_2015_Population = df_2015_Population.sort_values(by=['Country_Name'], ascending=True)
 
 
 
@@ -984,18 +1006,17 @@ for i in range(0,16):
         exec( "df_population_in_list.append(np.array(df_20" + str(i) + "_Population['20" + str(i) + "']).tolist())")
 
 
-
-
-
+print(size(df_population_in_list))
 
 
 
 #------------ Air Pollulant Gas Emissions ---------------
+countryes=countryes.tolist()
 count = 0
 #------------ CO  ---------------
 #xsl is a panda Dataframe
 xls_co = pd.read_excel("dataset/air_pollulant_gas_emissions/v50_CO_1970_2015.xls", sheet_name='TOTALS BY COUNTRY', dtype={'strIPCC-Annex': str, 'World Region': str,	'ISO_A3': str,	'Name': str, '1970': float,	'1971': float,	'1972': float,	'1973': float,	'1974': float,	'1975': float,	'1976': float,	'1977': float,	'1978': float,	'1979': float,	'1980': float,	'1981': float,	'1982': float,	'1983': float,	'1984': float,	'1985': float,	'1986': float,	'1987': float,	'1988': float,	'1989': float,	'1990': float,	'1991': float,	'1992': float,	'1993': float,	'1994': float,	'1995': float,	'1996': float,	'1997': float, '1998': float,	'1999': float,	'2000': float,	'2001': float,	'2002': float,	'2003': float,	'2004': float,	'2005': float,	'2006': float,	'2007': float,	'2008': float,	'2009': float,	'2010': float,	'2011': float,	'2012': float,	'2013': float,	'2014': float,	'2015': float,})
-xsl_co_resized = xls_co.take([1, 3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
+xsl_co_resized = xls_co.take([3, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49], axis=1) #without axes 1 the array refers to the rows
 
 for index, row in xsl_co_resized.iterrows():
     if(math.isnan(row.iat[3])):
@@ -1117,10 +1138,6 @@ count = 0
 
 #----------------------------------------------------- Merge Tables and Write CSV -----------------------------------------------------
 
-#list with all countries
-
-world_regions = []
-
 #list with 16 lists with all values for each year
 co_years_separate = []
 pm_10_years_separate = []
@@ -1141,16 +1158,12 @@ for i in range(0, 16):
     nox_years_separate.append([])
     so2_years_separate.append([])
 
-#Take all the countries from the file with the minumin number of them (CO)
-for index, row in xsl_co_resized.iterrows():
-    countryes.append(row.iat[0])
-    world_regions.append
-    for i in range(0, 16):
-        co_years_separate[i].append(row.iat[i+1])
 
 #Initialize all the lists witj listst of None with sixe of the number of countries
+
 for j in range(0, 16):
     for i in range (0, size(countryes)):
+        co_years_separate[j].append(math.nan)
         pm_10_years_separate[j].append(math.nan)
         pm_25_years_separate[j].append(math.nan)
         ch4_years_separate[j].append(math.nan)
@@ -1159,56 +1172,183 @@ for j in range(0, 16):
         nox_years_separate[j].append(math.nan)
         so2_years_separate[j].append(math.nan)
 
+'''for j in range(0, 16):
+    for i in range (0, size(countryes)):
+        co_years_separate[j].append(999999999999)
+        pm_10_years_separate[j].append(999999999999)
+        pm_25_years_separate[j].append(999999999999)
+        ch4_years_separate[j].append(999999999999)
+        nh3_years_separate[j].append(999999999999)
+        nmvoc_years_separate[j].append(999999999999)
+        nox_years_separate[j].append(999999999999)
+        so2_years_separate[j].append(999999999999)'''
+
+
+
+
+list_buffer = []
+list_buffer_1 = []
+#list1 has the naming used in countries, list2 has the naming used in x 
+co_merge_association = [["Andorra", "Bolivia (Plurinational State of)", "Cabo Verde", "Czechia", "Côte d'Ivoire", "Democratic People's Republic of Korea", "Democratic Republic of the Congo", "Eswatini", "Iran (Islamic Republic of)", "Libya", "Marshall Islands", "Micronesia (Federated States of)", "Monaco", "Montenegro", "Nauru", "North Macedonia", "Northern Mariana Islands", "Palestine", "Republic of Korea", "Republic of Moldova", "San Marino", "Serbia", "South Sudan", "Taiwan (Province of China)", "Tuvalu", "United Republic of Tanzania", "United States Virgin Islands", "United States of America", "Venezuela (Bolivarian Republic of)"],
+                        ["", "Bolivia", "Cape Verde", "Czech Republic", "Cote d'Ivoire", "Korea, Democratic People's Republic of", "Congo_the Democratic Republic of the", "Swaziland", "Iran, Islamic Republic of", "Libyan Arab Jamahiriya", "", "Micronesia, Federated States of", "", "", "", "Macedonia, the former Yugoslav Republic of", "", "", "Korea, Republic of", "Moldova, Republic of", "", "Serbia and Montenegro", "", "Taiwan_Province of China", "", "Tanzania_United Republic of", "Virgin Islands_USA", "United States", "Venezuela"]]
+                        
+#Take all the countries from the file with the minumin number of them (CO)
+for index, row in xsl_co_resized.iterrows():
+    if(row.iat[0] in countryes):
+        for i in range(0, 16):
+            co_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+        #list_buffer.append(row.iat[0])
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            co_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
+'''    else:
+        #print(index, row.iat[0])
+        list_buffer_1.append(row.iat[0])
+
+    print("IN COUNTRIES BUT NOT IN X:\n")
+    counters = 0
+    for i in countryes:
+        if i not in list_buffer:
+            counters += 1
+            print(counters, i)
+
+    print('--------------------------------------------')
+    print("IN X BUT NOT IN COUNTRIES:\n")
+
+    counters = 0
+    for i in sorted(list_buffer_1):
+        counters += 1
+        print(counters, i)
+
+
+    print('--------------------------------------------')
+    print("IN COUNTRIES BUT NOT IN MAP:\n")
+    for j in range(0, len(co_merge_association[0])):
+        if co_merge_association[1][j] == "":
+            print(co_merge_association[0][j])
+
+    print('--------------------------------------------')
+    print("IN X BUT NOT IN MAP:\n")
+    for j in list_buffer_1:
+        print(j)
+    list_buffer = []
+    list_buffer_1 = []'''
 
 #Fill all the lists, each list will have one list per year
 for index, row in xsl_pm10_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             pm_10_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
-            #print(countryes.index(row.iat[0]), "-", i, row.iat[i+1])
-    '''else:
-        print(index, row.iat[0])'''
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            pm_10_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
 
 for index, row in xsl_pm25_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             pm_25_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            pm_25_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_ch4_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             ch4_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            ch4_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_nh3_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             nh3_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            nh3_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_nmvoc_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             nmvoc_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            nmvoc_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_nox_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             nox_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            nox_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
             
 for index, row in xsl_so2_resized.iterrows():
     if(row.iat[0] in countryes):
         for i in range(0, 16):
             so2_years_separate[i][countryes.index(row.iat[0])] = row.iat[i+1]
+    elif(row.iat[0] in co_merge_association[1]):
+        for i in range(0, 16):
+            index_in_map_list_x = co_merge_association[1].index(row.iat[0])
+            index_in_map_list_countries = countryes.index(co_merge_association[0][index_in_map_list_x])
+            so2_years_separate[i][index_in_map_list_countries] = row.iat[i+1]
 
-'''
-print(size(co_years_separate))
-print(size(pm_10_years_separate))
-print(size(pm_25_years_separate))
-print(size(ch4_years_separate))
-print(size(nh3_years_separate))
-print(size(nmvoc_years_separate))
-print(size(nox_years_separate))
-print(size(so2_years_separate))
-'''
+print('CO')
+list_buffer_print = []
+for listElem in co_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(co_years_separate))))).tolist())
+print('PM10')
+list_buffer_print = []
+for listElem in pm_10_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(pm_10_years_separate))))).tolist())
+print('PM25')
+list_buffer_print = []
+for listElem in pm_25_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(pm_25_years_separate))))).tolist())
+print('CH4')
+list_buffer_print = []
+for listElem in ch4_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(ch4_years_separate))))).tolist())
+print('NH3')
+list_buffer_print = []
+for listElem in nh3_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(nh3_years_separate))))).tolist())
+print('NMVOC')
+list_buffer_print = []
+for listElem in nmvoc_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(nmvoc_years_separate))))).tolist())
+print('NOX')
+list_buffer_print = []
+for listElem in nox_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(nox_years_separate))))).tolist())
+print('SO2')
+list_buffer_print = []
+for listElem in so2_years_separate: list_buffer_print.append(size(listElem))
+print(list_buffer_print)
+print((sum(~np.isnan(np.transpose(np.array(so2_years_separate))))).tolist())
+print('--------------------------------------------')
+
 
 
 #Make the full tables of DataFrames
@@ -1229,12 +1369,12 @@ table2013 = None
 table2014 = None
 table2015 = None
 
-'''
+
 for i in range(0, 16):
     if i < 10:
-        exec("table200" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "]})")
+        exec("table200" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "], 'Total Cancer' : df_TC_in_list[" + str(i) + "], 'Air Cancer' : df_AC_in_list[" + str(i) + "], 'Chronic Respiratory Diseases' : df_CRD_in_list[" + str(i) + "], 'Pneumoconiosis' : df_PNE_in_list[" + str(i) + "], 'Asthma' : df_AS_in_list[" + str(i) + "], 'Interstitial Lung Disease and Pulmonary Sarcoidosis' : df_PS_in_list[" + str(i) + "], 'Other Chronic Respiratory Diseases' : df_OCRD_in_list[" + str(i) + "], 'Total Population' : df_population_in_list[" + str(i) + "]})")
+        exec("table200" + str(i) + ".to_csv('dataset/total_merge/200" + str(i) + ".csv', index=False)")
     else:
-        exec("table20" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "]})")
-'''
-#print(table2000)
+        exec("table20" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "], 'Total Cancer' : df_TC_in_list[" + str(i) + "], 'Air Cancer' : df_AC_in_list[" + str(i) + "], 'Chronic Respiratory Diseases' : df_CRD_in_list[" + str(i) + "], 'Pneumoconiosis' : df_PNE_in_list[" + str(i) + "], 'Asthma' : df_AS_in_list[" + str(i) + "], 'Interstitial Lung Disease and Pulmonary Sarcoidosis' : df_PS_in_list[" + str(i) + "], 'Other Chronic Respiratory Diseases' : df_OCRD_in_list[" + str(i) + "], 'Total Population' : df_population_in_list[" + str(i) + "]})")
+        exec("table20" + str(i) + ".to_csv('dataset/total_merge/20" + str(i) + ".csv', index=False)")
 
