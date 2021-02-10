@@ -873,10 +873,104 @@ df_2015_Population['2015'] = df_2015_Population['2015'].astype(int)
 #We want to know the additional countries (even those with different names for the same country)
 countryes=np.array(df_TC_2000['location_name'])
 countryes_More=np.array(df_2000_Population['Country_Name'])
+#print(countryes_More)
+arr=[]
+for c in countryes_More:
+  if c not in countryes:
+    arr.append(c)
+print(np.array(arr))
+
+#after a manual checking we obtain the countries for which we need to change the labelling 
+to_change= ["Bolivia","St. Lucia","St. Kitts and Nevis","Bahamas, The","Cote d'Ivoire","Congo, Rep.",
+            "Congo, Dem. Rep.","Czech Republic","Micronesia, Fed. Sts.","Gambia, The","Egypt, Arab Rep.",
+            "Iran, Islamic Rep.","Kyrgyz Republic","Korea, Rep.","Lao PDR", "Moldova",
+            "Korea, Dem. People’s Rep.","Slovak Republic","Tanzania","United States",
+            "St. Vincent and the Grenadines" ,"Venezuela, RB","Virgin Islands (U.S.)","Yemen, Rep."]		
+
+#intersect the two arrays to see which countries need to be eliminated
+print(len(to_change))
+only_delete=[]
+for c in arr:
+    if c not in to_change:
+        only_delete.append(c)
+
+#print(np.array(only_delete))
+print(len(only_delete))
+
+#mapping in Population, we need to change the different names for the same country
+a_dict = {"Bolivia": "Bolivia (Plurinational State of)", 
+          "St. Lucia": "Saint Lucia",
+          "St. Kitts and Nevis":"Saint Kitts and Nevis",
+          "Bahamas, The":"Bahamas",
+          "Cote d'Ivoire":"Côte d'Ivoire",
+          "Congo, Rep.": "Congo",
+          "Congo, Dem. Rep.":"Democratic Republic of the Congo",
+          "Czech Republic":"Czechia",
+          "Micronesia, Fed. Sts.":"Micronesia (Federated States of)",
+          "Gambia, The":"Gambia",
+          "Egypt, Arab Rep.":"Egypt",
+          "Iran, Islamic Rep.":"Iran (Islamic Republic of)",
+          "Kyrgyz Republic":"Kyrgyzstan",
+          "Korea, Rep.":"Republic of Korea",
+          "Lao PDR":"Lao People's Democratic Republic",
+          "Moldova":"Republic of Moldova",
+          "Korea, Dem. People’s Rep.":"Democratic People's Republic of Korea",
+          "Slovak Republic":"Slovakia",
+          "Tanzania":"United Republic of Tanzania",
+          "United States":"United States of America",
+          "St. Vincent and the Grenadines":"Saint Vincent and the Grenadines",
+          "Venezuela, RB":"Venezuela (Bolivarian Republic of)",
+          "Virgin Islands (U.S.)":"United States Virgin Islands",
+          "Yemen, Rep.":"Yemen"
+          }
+
+for key in a_dict:
+  for i in range(0,16):
+    if i < 10:
+      exec('df_200'+ str(i) +'_Population.loc[df_200'+ str(i) +'_Population.Country_Name =="'+str(key)+'","Country_Name"]="'+str(a_dict[key])+'"')
+    else:
+      exec('df_20'+ str(i) +'_Population.loc[df_20'+ str(i) +'_Population.Country_Name =="'+str(key)+'","Country_Name"]="'+str(a_dict[key])+'"')
+
+
+#we delete the additional countries 
+for c_to_delete in only_delete:
+    for i in range(0,16):
+            if i < 10:
+                exec("df_200"+ str(i) +"_Population = df_200"+ str(i) +"_Population.drop(df_200"+ str(i) +"_Population[df_200"+ str(i) +"_Population.Country_Name == '"+ str(c_to_delete) +"'].index)")
+            else:
+                exec("df_20"+ str(i) +"_Population = df_20"+ str(i) +"_Population.drop(df_20"+ str(i) +"_Population[df_20"+ str(i) +"_Population.Country_Name == '" + str(c_to_delete) +"'].index)") 
 
 
 
+#Eritrea is not considered in Population Datset from 2012 to 2015, so we insert for each year in this time period with val=nan
+for i in range(12,16):
+    exec("df_20"+str(i) +"_Population =df_20"+ str(i) +"_Population.append({'Country_Name':'Eritrea'},ignore_index=True)")
 
+
+#print(np.array(df_2001_Population))
+print(len(df_2015_Population))
+
+#now we want to check if there is some country among the 204 which we have to insert for Population
+x=np.array(df_2000_Population['Country_Name'])
+y=np.array(df_TC_2000['location_name']) #204
+
+list_to_nan=[]
+for i in y:
+  if i not in x:
+    list_to_nan.append(i)
+print(list_to_nan)
+
+
+for el_toNan in list_to_nan:
+  for i in range(0,16):
+    if i < 10:
+      exec("df_200"+str(i) +"_Population =df_200"+ str(i) +"_Population.append({'Country_Name':'"+str(el_toNan)+"'},ignore_index=True)")
+    else:
+      exec("df_20"+str(i) +"_Population =df_20"+ str(i) +"_Population.append({'Country_Name':'"+str(el_toNan)+"'},ignore_index=True)")
+
+
+
+#print(np.array(df_2000_Population))
 
 
 
