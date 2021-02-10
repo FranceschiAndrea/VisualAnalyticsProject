@@ -717,17 +717,17 @@ df_TD= pd.read_csv ('dataset/deaths_total/deaths-by-cause-category-stacked.csv',
 df2_TD= df_TD[['Entity','Year','Deaths - Injuries - Sex: Both - Age: All Ages (Number)','Deaths - Communicable, maternal, neonatal, and nutritional diseases - Sex: Both - Age: All Ages (Number)','Deaths - Non-communicable diseases - Sex: Both - Age: All Ages (Number)']]    # selects two of the columns in your file
 
 
-df2_TD=df2_TD.rename(columns={'Entity': 'Country Name',
+df2_TD=df2_TD.rename(columns={'Entity': 'Country_Name',
                               'Deaths - Injuries - Sex: Both - Age: All Ages (Number)': 'Deaths_Inj',
                               'Deaths - Communicable, maternal, neonatal, and nutritional diseases - Sex: Both - Age: All Ages (Number)': 'Deaths_Com',
                               'Deaths - Non-communicable diseases - Sex: Both - Age: All Ages (Number)': 'Deaths_NonCom'})
 sum_row = df2_TD.sum(axis=1)
 df2_TD['Total Deaths'] = df2_TD['Deaths_Inj']+df2_TD['Deaths_Com']+df2_TD['Deaths_NonCom']
-print(df2_TD.head())
 
 
 
-df = pd.DataFrame(df2_TD,columns=['Country Name','Year','Deaths_Inj','Deaths_Com','Death_NonCom','Total Deaths'])
+
+df = pd.DataFrame(df2_TD,columns=['Country_Name','Year','Deaths_Inj','Deaths_Com','Death_NonCom','Total Deaths'])
 df['2000'] = df['Year'].apply(lambda x: 'True' if x == 2000 else 'False')
 df['2001'] = df['Year'].apply(lambda x: 'True' if x == 2001 else 'False')
 df['2002'] = df['Year'].apply(lambda x: 'True' if x == 2002 else 'False')
@@ -747,69 +747,191 @@ df['2015'] = df['Year'].apply(lambda x: 'True' if x == 2015 else 'False')
 
 
 
-df_TD_2000=pd.DataFrame(df.loc[df['2000']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2000=pd.DataFrame(df.loc[df['2000']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2000['Total Deaths'] = df_TD_2000['Total Deaths'].astype(int)
-df_TD_2000 = df_TD_2000.sort_values(by=['Country Name'], ascending=True)
+df_TD_2000 = df_TD_2000.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2001=pd.DataFrame(df.loc[df['2001']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2001=pd.DataFrame(df.loc[df['2001']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2001['Total Deaths'] = df_TD_2001['Total Deaths'].astype(int)
-df_TD_2001 = df_TD_2001.sort_values(by=['Country Name'], ascending=True)
+df_TD_2001 = df_TD_2001.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2002=pd.DataFrame(df.loc[df['2002']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2002=pd.DataFrame(df.loc[df['2002']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2002['Total Deaths'] = df_TD_2002['Total Deaths'].astype(int)
-df_TD_2002 = df_TD_2002.sort_values(by=['Country Name'], ascending=True)
+df_TD_2002 = df_TD_2002.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2003=pd.DataFrame(df.loc[df['2003']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2003=pd.DataFrame(df.loc[df['2003']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2003['Total Deaths'] = df_TD_2003['Total Deaths'].astype(int)
-df_TD_2003 = df_TD_2003.sort_values(by=['Country Name'], ascending=True)
+df_TD_2003 = df_TD_2003.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2004=pd.DataFrame(df.loc[df['2004']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2004=pd.DataFrame(df.loc[df['2004']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2004['Total Deaths'] = df_TD_2004['Total Deaths'].astype(int)
-df_TD_2004 = df_TD_2004.sort_values(by=['Country Name'], ascending=True)
+df_TD_2004 = df_TD_2004.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2005=pd.DataFrame(df.loc[df['2005']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2005=pd.DataFrame(df.loc[df['2005']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2005['Total Deaths'] = df_TD_2005['Total Deaths'].astype(int)
-df_TD_2005 = df_TD_2005.sort_values(by=['Country Name'], ascending=True)
+df_TD_2005 = df_TD_2005.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2006=pd.DataFrame(df.loc[df['2006']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2006=pd.DataFrame(df.loc[df['2006']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2006['Total Deaths'] = df_TD_2006['Total Deaths'].astype(int)
-df_TD_2006 = df_TD_2006.sort_values(by=['Country Name'], ascending=True)
+df_TD_2006 = df_TD_2006.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2007=pd.DataFrame(df.loc[df['2007']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2007=pd.DataFrame(df.loc[df['2007']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2007['Total Deaths'] = df_TD_2007['Total Deaths'].astype(int)
-df_TD_2007 = df_TD_2007.sort_values(by=['Country Name'], ascending=True)
+df_TD_2007 = df_TD_2007.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2008=pd.DataFrame(df.loc[df['2008']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2008=pd.DataFrame(df.loc[df['2008']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2008['Total Deaths'] = df_TD_2008['Total Deaths'].astype(int)
-df_TD_2008 = df_TD_2008.sort_values(by=['Country Name'], ascending=True)
+df_TD_2008 = df_TD_2008.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2009=pd.DataFrame(df.loc[df['2009']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2009=pd.DataFrame(df.loc[df['2009']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2009['Total Deaths'] = df_TD_2009['Total Deaths'].astype(int)
-df_TD_2009 = df_TD_2009.sort_values(by=['Country Name'], ascending=True)
+df_TD_2009 = df_TD_2009.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2010=pd.DataFrame(df.loc[df['2010']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2010=pd.DataFrame(df.loc[df['2010']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2010['Total Deaths'] = df_TD_2010['Total Deaths'].astype(int)
-df_TD_2010 = df_TD_2010.sort_values(by=['Country Name'], ascending=True)
+df_TD_2010 = df_TD_2010.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2011=pd.DataFrame(df.loc[df['2011']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2011=pd.DataFrame(df.loc[df['2011']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2011['Total Deaths'] = df_TD_2011['Total Deaths'].astype(int)
-df_TD_2011 = df_TD_2011.sort_values(by=['Country Name'], ascending=True)
+df_TD_2011 = df_TD_2011.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2012=pd.DataFrame(df.loc[df['2012']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2012=pd.DataFrame(df.loc[df['2012']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2012['Total Deaths'] = df_TD_2012['Total Deaths'].astype(int)
-df_TD_2012 = df_TD_2012.sort_values(by=['Country Name'], ascending=True)
+df_TD_2012 = df_TD_2012.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2013=pd.DataFrame(df.loc[df['2013']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2013=pd.DataFrame(df.loc[df['2013']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2013['Total Deaths'] = df_TD_2013['Total Deaths'].astype(int)
-df_TD_2013 = df_TD_2013.sort_values(by=['Country Name'], ascending=True)
+df_TD_2013 = df_TD_2013.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2014=pd.DataFrame(df.loc[df['2014']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2014=pd.DataFrame(df.loc[df['2014']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2014['Total Deaths'] = df_TD_2014['Total Deaths'].astype(int)
-df_TD_2014 = df_TD_2014.sort_values(by=['Country Name'], ascending=True)
+df_TD_2014 = df_TD_2014.sort_values(by=['Country_Name'], ascending=True)
 
-df_TD_2015=pd.DataFrame(df.loc[df['2015']== 'True'],columns=['Country Name','Total Deaths'])
+df_TD_2015=pd.DataFrame(df.loc[df['2015']== 'True'],columns=['Country_Name','Total Deaths'])
 df_TD_2015['Total Deaths'] = df_TD_2015['Total Deaths'].astype(int)
-df_TD_2015 = df_TD_2015.sort_values(by=['Country Name'], ascending=True)
+df_TD_2015 = df_TD_2015.sort_values(by=['Country_Name'], ascending=True)
+
+import numpy as np
+
+countryes=np.array(df_TD_2000['Country_Name'])#231 
+countryes_More=np.array(df_AC_2000['location_name'])#204
+#print(countryes_More)
+arry=[]
+for c in countryes:
+  if c not in countryes_More:
+    arry.append(c)
+print(len(np.array(arry)))
+
+
+
+
+to_changeo= ["Bolivia","Cote d'Ivoire","Democratic Republic of Congo","Iran","Laos",
+            "Micronesia (country)","Moldova","North Korea","South Korea","Russia","Syria",
+            "Taiwan","Tanzania","Timor","Venezuela","Vietnam","Brunei","Cape Verde","United States"]		
+print(len(to_changeo))
+
+only_deleteo=[]
+for c in arry:
+    if c not in to_changeo:
+        only_deleteo.append(c)
+
+#print(np.array(only_delete))
+print(np.array(only_deleteo))
+print(len(only_deleteo))
+#devo fare la map di to_change--> new value
+
+
+
+a_dict = {"Bolivia":"Bolivia (Plurinational State of)", 
+          "Cote d'Ivoire":"Côte d'Ivoire",
+          "Democratic Republic of Congo":"Democratic Republic of the Congo",
+          "Iran":"Iran (Islamic Republic of)",
+          "Laos":"Lao People's Democratic Republic",
+          "Micronesia (country)":"Micronesia (Federated States of)",
+          "Moldova":"Republic of Moldova",
+          "North Korea":"Democratic People's Republic of Korea",
+          "South Korea":"Republic of Korea",
+          "Russia":"Russian Federation",
+          "Syria":"Syrian Arab Republic",
+          "Taiwan":"Taiwan (Province of China)",
+          "Tanzania":"United Republic of Tanzania",
+          "Timor":"Timor-Leste",
+          "Venezuela":"Venezuela (Bolivarian Republic of)",
+          "Vietnam": "Viet Nam",
+          "Brunei":"Brunei Darussalam",
+          "Cape Verde":"Cabo Verde",
+          "United States": "United States of America"
+          }
+
+
+for key in a_dict:
+  for i in range(0,16):
+    if i < 10:
+      exec('df_TD_200'+ str(i) +'.loc[df_TD_200'+ str(i) +'.Country_Name =="'+str(key)+'","Country_Name"]="'+str(a_dict[key])+'"')
+    else:
+      exec('df_TD_20'+ str(i) +'.loc[df_TD_20'+ str(i) +'.Country_Name =="'+str(key)+'","Country_Name"]="'+str(a_dict[key])+'"')
+
+for c_to_delete in only_deleteo:
+    for i in range(0,16):
+            if i < 10:
+                exec("df_TD_200"+ str(i) +"= df_TD_200"+ str(i) +".drop(df_TD_200"+ str(i) +"[df_TD_200"+ str(i) +".Country_Name == '"+ str(c_to_delete) +"'].index)")
+            else:
+                exec("df_TD_20"+ str(i) +"= df_TD_20"+ str(i) +".drop(df_TD_20"+ str(i) +"[df_TD_20"+ str(i) +".Country_Name == '"+ str(c_to_delete) +"'].index)")
+#print(np.array(df_2001_Population))
+print(len(df_TD_2000))
+
+
+x=np.array(df_TD_2000['Country_Name'])
+y=np.array(df_TC_2000['location_name']) #204
+
+lista=[]
+for i in y:
+  if i not in x:
+    lista.append(i)
+
+
+
+to_changeo= ["Bolivia","Cote d'Ivoire","Democratic Republic of Congo","Iran","Laos",
+            "Micronesia (country)","Moldova","North Korea","South Korea","Russia","Syria",
+            "Taiwan","Tanzania","Timor","Venezuela","Vietnam","Brunei","Cape Verde","United States"]		
+
+
+add_nan=[]
+for el in lista:
+  if el not in to_changeo:
+    add_nan.append(el)
+
+print(np.array(add_nan))
+
+
+for el_toNan in add_nan:
+  for i in range(0,16):
+    if i < 10:
+      exec("df_TD_200"+str(i) +"=df_TD_200"+ str(i) +".append({'Country_Name':'"+str(el_toNan)+"'},ignore_index=True)")
+    else:
+      exec("df_TD_20"+str(i) +"=df_TD_20"+ str(i) +".append({'Country_Name':'"+str(el_toNan)+"'},ignore_index=True)")
+
+df_TD_2001 = df_TD_2001.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2002 = df_TD_2002.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2003 = df_TD_2003.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2004 = df_TD_2004.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2005 = df_TD_2005.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2006 = df_TD_2006.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2007 = df_TD_2007.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2008 = df_TD_2008.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2009 = df_TD_2009.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2010 = df_TD_2010.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2011 = df_TD_2011.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2012 = df_TD_2012.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2013 = df_TD_2013.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2014 = df_TD_2014.sort_values(by=['Country_Name'], ascending=True)
+df_TD_2015 = df_TD_2015.sort_values(by=['Country_Name'], ascending=True)
+
+
+
+
+
+
 
 df_TD_in_list = []
 for i in range(0,16):
@@ -994,6 +1116,24 @@ for el_toNan in list_to_nan:
 
 #print(np.array(df_2000_Population))
 
+
+
+df_2000_Population = df_2000_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2001_Population = df_2001_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2002_Population = df_2002_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2003_Population = df_2003_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2004_Population = df_2004_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2005_Population = df_2005_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2006_Population = df_2006_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2007_Population = df_2007_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2008_Population = df_2008_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2009_Population = df_2009_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2010_Population = df_2010_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2011_Population = df_2011_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2012_Population = df_2012_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2013_Population = df_2013_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2014_Population = df_2014_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2015_Population = df_2015_Population.sort_values(by=['Country_Name'], ascending=True)
 
 
 
