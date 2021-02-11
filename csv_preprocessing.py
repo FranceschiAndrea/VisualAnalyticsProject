@@ -1490,7 +1490,127 @@ print(list_buffer_print)
 print((sum(~np.isnan(np.transpose(np.array(so2_years_separate))))).tolist())
 print('--------------------------------------------')
 
+#----------------------------------------------------- Delete rows with empty fields -----------------------------------------------------
 
+list_index_to_delete = []
+list_to_remove=['Andorra','Cook Islands','Marshall Islands','Monaco','Montenegro','Nauru','Niue','Northern Mariana Islands','Palau','Palestine','Saint Kitts and Nevis','San Marino','South Sudan','Tokelau','Tuvalu','United States Virgin Islands']
+for d in list_to_remove:
+    list_index_to_delete.append(countryes.index(d))
+
+starting_number_of_countries = len(countryes)
+final_number_of_countries = len(countryes)-len(list_to_remove)
+
+for j in list_index_to_delete:
+    countryes[j] = "delete"
+    for c in range(0,16):
+        co_years_separate[c][j] = 1234567891011
+        ch4_years_separate[c][j] = 1234567891011
+        nh3_years_separate[c][j] = 1234567891011
+        nmvoc_years_separate[c][j] = 1234567891011
+        nox_years_separate[c][j] = 1234567891011
+        so2_years_separate[c][j] = 1234567891011
+        pm_10_years_separate[c][j] = 1234567891011
+        pm_25_years_separate[c][j] = 1234567891011
+        df_TC_in_list[c][j] = 1234567891011
+        df_AC_in_list[c][j] = 1234567891011
+        df_CRD_in_list[c][j] = 1234567891011
+        df_PNE_in_list[c][j] = 1234567891011
+        df_AS_in_list[c][j] = 1234567891011
+        df_PS_in_list[c][j] = 1234567891011
+        df_OCRD_in_list[c][j] = 1234567891011
+        df_TD_in_list[c][j] = 1234567891011
+        df_population_in_list[c][j] = 1234567891011
+
+big_buffer = []
+big_buffer.append([])
+for i in range(1, 18):
+    big_buffer.append([])
+    for j in range(0, 16):
+        big_buffer[i].append([])
+
+for j in range(0, starting_number_of_countries):
+        if(not countryes[j] == "delete"):
+            big_buffer[0].append(countryes[j])
+
+for i in range(0, 16):
+    for j in range(0, starting_number_of_countries):
+        if(not co_years_separate[i][j] == 1234567891011):
+            big_buffer[1][i].append(co_years_separate[i][j])
+        if(not ch4_years_separate[i][j] == 1234567891011):
+            big_buffer[2][i].append(ch4_years_separate[i][j])
+        if(not nh3_years_separate[i][j] == 1234567891011):
+            big_buffer[3][i].append(nh3_years_separate[i][j])
+        if(not nmvoc_years_separate[i][j] == 1234567891011):
+            big_buffer[4][i].append(nmvoc_years_separate[i][j])
+        if(not nox_years_separate[i][j] == 1234567891011):
+            big_buffer[5][i].append(nox_years_separate[i][j])
+        if(not so2_years_separate[i][j] == 1234567891011):
+            big_buffer[6][i].append(so2_years_separate[i][j])
+        if(not pm_10_years_separate[i][j] == 1234567891011):
+            big_buffer[7][i].append(pm_10_years_separate[i][j])
+        if(not pm_25_years_separate[i][j] == 1234567891011):
+            big_buffer[8][i].append(pm_25_years_separate[i][j])
+        if(not df_TC_in_list[i][j] == 1234567891011):
+            big_buffer[9][i].append(df_TC_in_list[i][j])
+        if(not df_AC_in_list[i][j] == 1234567891011):
+            big_buffer[10][i].append(df_AC_in_list[i][j])
+        if(not df_CRD_in_list[i][j] == 1234567891011):
+            big_buffer[11][i].append(df_CRD_in_list[i][j])
+        if(not df_PNE_in_list[i][j] == 1234567891011):
+            big_buffer[12][i].append(df_PNE_in_list[i][j])
+        if(not df_AS_in_list[i][j] == 1234567891011):
+            big_buffer[13][i].append(df_AS_in_list[i][j])
+        if(not df_PS_in_list[i][j] == 1234567891011):
+            big_buffer[14][i].append(df_PS_in_list[i][j])
+        if(not df_OCRD_in_list[i][j] == 1234567891011):
+            big_buffer[15][i].append(df_OCRD_in_list[i][j])
+        if(not df_TD_in_list[i][j] == 1234567891011):
+            big_buffer[16][i].append(df_TD_in_list[i][j])
+        if(not df_population_in_list[i][j] == 1234567891011):
+            big_buffer[17][i].append(df_population_in_list[i][j])
+
+
+countryes.clear()
+for j in range(0, final_number_of_countries):
+    countryes.append(big_buffer[0][j])
+
+co_years_separate.clear()
+ch4_years_separate.clear()
+nh3_years_separate.clear()
+nmvoc_years_separate.clear()
+nox_years_separate.clear()
+so2_years_separate.clear()
+pm_10_years_separate.clear()
+pm_25_years_separate.clear()
+df_TC_in_list.clear()
+df_AC_in_list.clear()
+df_CRD_in_list.clear()
+df_PNE_in_list.clear()
+df_AS_in_list.clear()
+df_PS_in_list.clear()
+df_OCRD_in_list.clear()
+df_TD_in_list.clear()
+df_population_in_list.clear()
+
+for i in range(0, 16):
+        co_years_separate.append(big_buffer[1][i])
+        ch4_years_separate.append(big_buffer[2][i])
+        nh3_years_separate.append(big_buffer[3][i])
+        nmvoc_years_separate.append(big_buffer[4][i])
+        nox_years_separate.append(big_buffer[5][i])
+        so2_years_separate.append(big_buffer[6][i])
+        pm_10_years_separate.append(big_buffer[7][i])
+        pm_25_years_separate.append(big_buffer[8][i])
+        df_TC_in_list.append(big_buffer[9][i])
+        df_AC_in_list.append(big_buffer[10][i])
+        df_CRD_in_list.append(big_buffer[11][i])
+        df_PNE_in_list.append(big_buffer[12][i])
+        df_AS_in_list.append(big_buffer[13][i])
+        df_PS_in_list.append(big_buffer[14][i])
+        df_OCRD_in_list.append(big_buffer[15][i])
+        df_TD_in_list.append(big_buffer[16][i])
+        df_population_in_list.append(big_buffer[17][i])
+        
 
 #Make the full tables of DataFrames
 table2000 = None
@@ -1509,7 +1629,6 @@ table2012 = None
 table2013 = None
 table2014 = None
 table2015 = None
-
 
 for i in range(0, 16):
     if i < 10:
