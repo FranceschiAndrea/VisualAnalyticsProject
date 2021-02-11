@@ -98,9 +98,6 @@ df_AC_2015=pd.DataFrame(df.loc[df['2015']== 'True'],columns=['location_name','va
 df_AC_2015['val'] = df_AC_2015['val'].astype(int)
 df_AC_2015 = df_AC_2015.sort_values(by=['location_name'], ascending=True)
 
-
-
-
 df_AC_in_list = []
 for i in range(0,16):
     if i < 10:
@@ -820,7 +817,7 @@ arry=[]
 for c in countryes:
   if c not in countryes_More:
     arry.append(c)
-print(len(np.array(arry)))
+#print(len(np.array(arry)))
 
 
 
@@ -828,7 +825,7 @@ print(len(np.array(arry)))
 to_changeo= ["Bolivia","Cote d'Ivoire","Democratic Republic of Congo","Iran","Laos",
             "Micronesia (country)","Moldova","North Korea","South Korea","Russia","Syria",
             "Taiwan","Tanzania","Timor","Venezuela","Vietnam","Brunei","Cape Verde","United States"]		
-print(len(to_changeo))
+#print(len(to_changeo))
 
 only_deleteo=[]
 for c in arry:
@@ -836,8 +833,8 @@ for c in arry:
         only_deleteo.append(c)
 
 #print(np.array(only_delete))
-print(np.array(only_deleteo))
-print(len(only_deleteo))
+#print(np.array(only_deleteo))
+#print(len(only_deleteo))
 #devo fare la map di to_change--> new value
 
 
@@ -878,7 +875,7 @@ for c_to_delete in only_deleteo:
             else:
                 exec("df_TD_20"+ str(i) +"= df_TD_20"+ str(i) +".drop(df_TD_20"+ str(i) +"[df_TD_20"+ str(i) +".Country_Name == '"+ str(c_to_delete) +"'].index)")
 #print(np.array(df_2001_Population))
-print(len(df_TD_2000))
+#print(len(df_TD_2000))
 
 
 x=np.array(df_TD_2000['Country_Name'])
@@ -901,7 +898,7 @@ for el in lista:
   if el not in to_changeo:
     add_nan.append(el)
 
-print(np.array(add_nan))
+#print(np.array(add_nan))
 
 
 for el_toNan in add_nan:
@@ -940,7 +937,7 @@ for i in range(0,16):
         exec( "df_TD_in_list.append(np.array(df_TD_200" + str(i) + "['Total Deaths']).tolist())")
     else:
         exec( "df_TD_in_list.append(np.array(df_TD_20" + str(i) + "['Total Deaths']).tolist())")
-print(size(df_TD_in_list))
+#print(size(df_TD_in_list))
 
 #------------ Population ---------------
 df_Population = pd.read_csv ('dataset/population/API_SP.POP.TOTL_DS2_en_csv_v2_1976634.csv',skiprows=4,usecols = ['Country Name','2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015']) # Surface Area
@@ -1023,7 +1020,7 @@ arr=[]
 for c in countryes_More:
   if c not in countryes:
     arr.append(c)
-print(np.array(arr))
+#print(np.array(arr))
 
 #after a manual checking we obtain the countries for which we need to change the labelling 
 to_change= ["Bolivia","St. Lucia","St. Kitts and Nevis","Bahamas, The","Cote d'Ivoire","Congo, Rep.",
@@ -1033,14 +1030,14 @@ to_change= ["Bolivia","St. Lucia","St. Kitts and Nevis","Bahamas, The","Cote d'I
             "St. Vincent and the Grenadines" ,"Venezuela, RB","Virgin Islands (U.S.)","Yemen, Rep."]		
 
 #intersect the two arrays to see which countries need to be eliminated
-print(len(to_change))
+#print(len(to_change))
 only_delete=[]
 for c in arr:
     if c not in to_change:
         only_delete.append(c)
 
 #print(np.array(only_delete))
-print(len(only_delete))
+#print(len(only_delete))
 
 #mapping in Population, we need to change the different names for the same country
 a_dict = {"Bolivia": "Bolivia (Plurinational State of)", 
@@ -1093,7 +1090,7 @@ for i in range(12,16):
 
 
 #print(np.array(df_2001_Population))
-print(len(df_2015_Population))
+#print(len(df_2015_Population))
 
 #now we want to check if there is some country among the 204 which we have to insert for Population
 x=np.array(df_2000_Population['Country_Name'])
@@ -1103,7 +1100,7 @@ list_to_nan=[]
 for i in y:
   if i not in x:
     list_to_nan.append(i)
-print(list_to_nan)
+#print(list_to_nan)
 
 
 for el_toNan in list_to_nan:
@@ -1137,8 +1134,6 @@ df_2014_Population = df_2014_Population.sort_values(by=['Country_Name'], ascendi
 df_2015_Population = df_2015_Population.sort_values(by=['Country_Name'], ascending=True)
 
 
-
-
 df_population_in_list = []
 for i in range(0,16):
     if i < 10:
@@ -1147,7 +1142,7 @@ for i in range(0,16):
         exec( "df_population_in_list.append(np.array(df_20" + str(i) + "_Population['20" + str(i) + "']).tolist())")
 
 
-print(size(df_population_in_list))
+print(size(df_population_in_list),"\n------------------------------------------")
 
 
 
