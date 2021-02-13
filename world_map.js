@@ -162,6 +162,26 @@ function world_map_loader(data){
     //Array that manage all the selected (clicked) countries
     var selected_countries = [];
     let mouse_over = function(d){
+                                    //Retrive the Sum for the country to display on the map
+                                    var sum_for_labels;
+                                    for(i in database_data){
+                                        if(database_data[i].Country == d.properties.name){
+                                            sum_for_labels = database_data[i].Sum;
+                                        }
+                                    }
+                                    for(i in map_countries){
+                                        if(map_countries[i][0] == d.properties.name){
+                                            if(map_countries[i][1] != ""){
+                                                for(j in database_data){
+                                                    if(database_data[j].Country == map_countries[i][1]){
+                                                        sum_for_labels = database_data[j].Sum;
+                                                    }
+                                                }
+                                            }else{
+                                                sum_for_labels = "No Data";
+                                            }
+                                        }
+                                    }
                                     //Check if hte country is one between the ones with database data not empty
                                     var list_buffer = JSON.stringify([d.properties.name, ""]);
                                     if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
@@ -176,14 +196,35 @@ function world_map_loader(data){
                                     d3.select(this).append("text")
                                                     .text(d.properties.name)
                                     //Used to display the countries name
-                                    tooltip.style("hidden", false).html(d.properties.name);
+                                    tooltip.style("hidden", false).html(d.properties.name + "<br>" + Math.round(sum_for_labels) + "&nbsp;Gg")
+                                
                                 }
     let mouse_move = function(d){
+                                    //Retrive the Sum for the country to display on the map
+                                    var sum_for_labels;
+                                    for(i in database_data){
+                                        if(database_data[i].Country == d.properties.name){
+                                            sum_for_labels = database_data[i].Sum;
+                                        }
+                                    }
+                                    for(i in map_countries){
+                                        if(map_countries[i][0] == d.properties.name){
+                                            if(map_countries[i][1] != ""){
+                                                for(j in database_data){
+                                                    if(database_data[j].Country == map_countries[i][1]){
+                                                        sum_for_labels = database_data[j].Sum;
+                                                    }
+                                                }
+                                            }else{
+                                                sum_for_labels = "No Data";
+                                            }
+                                        }
+                                    }
                                     //Move the div with the country name with the mouse on the map
                                     tooltip.classed("hidden", false)
                                             .style("top", (d3.event.pageY) + "px")
                                             .style("left", (d3.event.pageX + 15) + "px")
-                                            .html(d.properties.name);
+                                            .html(d.properties.name + "<br>" + Math.round(sum_for_labels) + "&nbsp;Gg");
                                 }
     let mouse_leave = function(d){
                                     //Check if hte country is one between the ones with database data not empty

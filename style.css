@@ -19,6 +19,7 @@ div.tooltip_world_map {
             font: 11px sans-serif;
             font-weight: 500;
             opacity: 0.9;
+            text-align:center;
             position: absolute;
             }
 /* Legend Position Style */
