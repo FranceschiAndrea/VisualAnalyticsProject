@@ -1,0 +1,44 @@
+html, body { height: 100%; padding: 0; margin: 0; }
+
+/**********************WORLD MAP STYLE**********************/
+#world_map{
+            width: 50%;
+            height: 50%;
+            background: rgb(52, 36, 145);
+            background: #000;
+            }
+.hidden {
+    display: none;
+}
+div.tooltip_world_map {
+            color: rgb(0, 0, 0); 
+            background: rgb(231, 231, 231); 
+            border-radius: 3px; 
+            box-shadow: 0px 0px 2px 0px #a6a6a6; 
+            padding: .2em; 
+            font: 11px sans-serif;
+            font-weight: 500;
+            opacity: 0.9;
+            position: absolute;
+            }
+/* Legend Position Style */
+.map_legend {
+	position:absolute;
+	left:20px;
+	top:25%;
+    opacity: 0.8;
+}
+.axis text {
+	font: 10px sans-serif;
+}
+.axis line, .axis path {
+	fill: none;
+	stroke: rgb(255, 255, 255);
+	shape-rendering: crispEdges;
+}
+svg text { 
+    fill: white;
+    font: 15px sans-serif;
+    text-anchor: start;
+} 
+/**********************************************************/
