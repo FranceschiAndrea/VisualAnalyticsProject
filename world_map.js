@@ -42,10 +42,10 @@ function world_map_loader(data){
                     .scaleExtent([1, 5])
                     .on('zoom', zoomed);
 
-    //Append the svg in the html world_map div
-    var svg = d3.select("#world_map").append("svg")
-                                .attr("width", width)
-                                .attr("height", height);
+    //Append the svg for the map in the html world_map div
+    var svg_layer_1 = d3.select("#world_map").append("svg")
+                        .attr("width", "100%")
+                        .attr("height", "100%");
 
     //Div for the countries label on mouse over
     var tooltip = d3.select("div.tooltip_world_map");
@@ -55,8 +55,12 @@ function world_map_loader(data){
                         .domain([1000, 10000, 100000, 1000000])
                         //.domain([min_data_value, max_data_value])
                         .range(d3.schemeReds[4]);
-
-    var g = svg.append("g");
+    /*var color_scale = d3.scaleLinear()
+                        .domain([1000, 10000, 100000, 1000000])
+                        //.domain([min_data_value, max_data_value])
+                        .range(d3.schemeReds[4])*/
+;
+    var g = svg_layer_1.append("g");
 
     var path = d3.geoPath()
                     .projection(projection);
@@ -141,7 +145,7 @@ function world_map_loader(data){
                                     }
                                 }
                             }
-                            return "#cacdd9";
+                            return "#69a3b2";
 
                         });
         console.log("Total number of matched countries:", counter);
@@ -196,7 +200,13 @@ function world_map_loader(data){
                                     d3.select(this).append("text")
                                                     .text(d.properties.name)
                                     //Used to display the countries name
-                                    tooltip.style("hidden", false).html(d.properties.name + "<br>" + Math.round(sum_for_labels) + "&nbsp;Gg")
+                                    tooltip.style("hidden", false)
+                                            .html(function(){
+                                                                if(sum_for_labels=="No Data"){
+                                                                    return d.properties.name + "<br>" +  sum_for_labels;
+                                                                }else{
+                                                                    return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                                                }});
                                 
                                 }
     let mouse_move = function(d){
@@ -224,7 +234,13 @@ function world_map_loader(data){
                                     tooltip.classed("hidden", false)
                                             .style("top", (d3.event.pageY) + "px")
                                             .style("left", (d3.event.pageX + 15) + "px")
-                                            .html(d.properties.name + "<br>" + Math.round(sum_for_labels) + "&nbsp;Gg");
+                                            .html(function(){
+                                                            if(sum_for_labels=="No Data"){
+                                                                return d.properties.name + "<br>" +  sum_for_labels;
+                                                            }else{
+                                                                return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                                            }
+                                                            });
                                 }
     let mouse_leave = function(d){
                                     //Check if hte country is one between the ones with database data not empty
@@ -269,67 +285,112 @@ function world_map_loader(data){
                                 }
 
     //Addition of the legend
-    var w = 400, h = 100;
-    var superscript = "⁰¹²³⁴⁵⁶",
-        formatPower = function(d) { return (d + "").split("").map(function(c) { return superscript[c]; }).join(""); };
-
     var threshold = d3.scaleThreshold()
                         .domain([1, 2, 3, 4])       //Used just to solor the legend
                         .range(d3.schemeReds[4]);
         
     var x = d3.scaleLinear()                        //Used to set the distance between the different colors
                 .domain([0, 4])
-                .range([0, 180]);                   //Increae or decrease the length of the colors block
+                .range([0, 200]);                   //Increae or decrease the length of the colors block
+    
+    /*var superscript = "⁰¹²³⁴⁵⁶",
+        formatPower = function(d) { return ( d + "").split("").map(function(c) { return superscript[c]; }).join(""); };
 
     var y = d3.scaleLog()                           //Used to se the numbers in a logaritmic way
                         .domain([1e6, 1e0])
-                        .range([260, 0]);           //Increae or decrease the spage between the legend's numbers
+                        .range([150, 0]);           //Increae or decrease the spage between the legend's numbers
 
 
-    var xAxis = d3.axisBottom(y)
-                    .tickSize(10)
+    var xAxis = d3.axisRight(y)
+                    .tickSize(0)
                     .tickValues([1000, 10000, 100000, 1000000])
                     .tickFormat(function(d) { 
                                                 //console.log(Math.log(d) / Math.LN10);
                                                 return 10 + formatPower(Math.round(Math.log(d) / Math.LN10)); })
 
     //var g = d3.select("g").call(xAxis);
-    var key = d3.select("#world_map")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", h)
-                .attr("class", "map_legend")
-                .attr("transform", "translate(-80,170)")        //Move all the legend, bar plus numbers
-                .call(xAxis)
+    
+    svg_layer_1.select(".domain")
+        .remove();*/
 
-    key.select(".domain")
-        .remove();
+    //Insert all the rectangles with the colors of the choroplet
+    svg_layer_1.selectAll("rect")
+                .data(threshold.range().map(function(color) {
+                                                            var d = threshold.invertExtent(color);
+                                                            if (d[0] == null) d[0] = x.domain()[0];
+                                                            if (d[1] == null) d[1] = x.domain()[1];
+                                                            return d;}))
+                .enter().insert("rect", ".tick")
+                        .attr("height", 20)
+                        .attr("x", function(d) { 
+                                                return 20 })
+                        .attr("y", function(d) { 
+                                                return (d[0]*25)+330 })
+                        .attr("width", function(d) { 
+                                                    return 20 })
+                        .attr("fill", function(d) { 
+                                                    if(d[0] == 0) return threshold(3);
+                                                    else if (d[0] == 1) return threshold(2);
+                                                    else if (d[0] == 2) return threshold(1);
+                                                    else if (d[0] == 3) return threshold(0);})
 
-    key.selectAll("rect")
-        .data(threshold.range().map(function(color) {
-                                                        var d = threshold.invertExtent(color);
-                                                        if (d[0] == null) d[0] = x.domain()[0];
-                                                        if (d[1] == null) d[1] = x.domain()[1];
-                                                        return d;
-                                                    }))
-        .enter().insert("rect", ".tick")
-                .attr("height", 10)
-                .attr("x", function(d) { 
-                                        console.log(x(d[0]));
-                                        return x(d[0]); })
-                .attr("width", function(d) { 
-                                            console.log(x(d[1]) - x(d[0]));
-                                            return x(d[1]) - x(d[0]); })
-                .attr("fill", function(d) { 
-                                            return threshold(d[0]); })
-                .attr("transform", "translate(90,30)")          //Move the legend's bar
-
-    key.append("text")
-        .attr("fill", "#FFF")
-        .attr("font-weight", "bold")
-        .attr("text-anchor", "start")
-        .attr("transform", "translate(70,60)")                   //Move the legend's text
-        .text("Total Air Pollulant Emissions in Gg");
+    //Insert the rectangle with the color of no data countries
+    svg_layer_1.append('rect')
+                .attr('x', 20)
+                .attr('y', 430)
+                .attr('width', 20)
+                .attr('height', 20)
+                //.attr('stroke', 'black')
+                .attr('fill', '#69a3b2')
+    //Insert the labels of the legend
+    svg_layer_1.append("text")
+                .attr('x', 45)
+                .attr('y', 345)
+                .attr("fill", "#FFF")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                //.attr("transform", "translate(85,21)")                   //Move the legend's text
+                .text("< 10⁶")
+    svg_layer_1.append("text")
+                .attr('x', 45)
+                .attr('y', 370)
+                .attr("fill", "#FFF")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                //.attr("transform", "translate(85,46)")                   //Move the legend's text
+                .text("< 10⁵")
+    svg_layer_1.append("text")
+                .attr('x', 45)
+                .attr('y', 395)
+                .attr("fill", "#FFF")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                //.attr("transform", "translate(85,71)")                   //Move the legend's text
+                .text("< 10⁴")
+    svg_layer_1.append("text")
+                .attr('x', 45)
+                .attr('y', 420)
+                .attr("fill", "#FFF")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                //.attr("transform", "translate(85,96)")                   //Move the legend's text
+                .text("< 10³")
+    svg_layer_1.append("text")
+                .attr('x', 48)
+                .attr('y', 445)
+                .attr("fill", "#FFF")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                //.attr("transform", "translate(89,121)")                   //Move the legend's text
+                .text("N.D.")
+    svg_layer_1.append("text")
+                .attr('x', 18)
+                .attr('y', 470)
+                .attr("fill", "#FFF")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                //.attr("transform", "translate(0,12)")                   //Move the legend's text
+                .text("Total Air Pollulant Emissions (Gg)")
 
 
 };

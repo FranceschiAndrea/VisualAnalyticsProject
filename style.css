@@ -22,21 +22,7 @@ div.tooltip_world_map {
             text-align:center;
             position: absolute;
             }
-/* Legend Position Style */
-.map_legend {
-	position:absolute;
-	left:20px;
-	top:25%;
-    opacity: 0.8;
-}
-.axis text {
-	font: 10px sans-serif;
-}
-.axis line, .axis path {
-	fill: none;
-	stroke: rgb(255, 255, 255);
-	shape-rendering: crispEdges;
-}
+/* Legend Text Style */
 svg text { 
     fill: white;
     font: 15px sans-serif;
