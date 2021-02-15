@@ -1027,7 +1027,7 @@ to_change= ["Bolivia","St. Lucia","St. Kitts and Nevis","Bahamas, The","Cote d'I
             "Congo, Dem. Rep.","Czech Republic","Micronesia, Fed. Sts.","Gambia, The","Egypt, Arab Rep.",
             "Iran, Islamic Rep.","Kyrgyz Republic","Korea, Rep.","Lao PDR", "Moldova",
             "Korea, Dem. People’s Rep.","Slovak Republic","Tanzania","United States",
-            "St. Vincent and the Grenadines" ,"Venezuela, RB","Virgin Islands (U.S.)","Yemen, Rep."]		
+            "St. Vincent and the Grenadines" ,"Venezuela, RB","Virgin Islands (U.S.)","Yemen, Rep.","Vietnam"]		
 
 #intersect the two arrays to see which countries need to be eliminated
 #print(len(to_change))
@@ -1063,7 +1063,8 @@ a_dict = {"Bolivia": "Bolivia (Plurinational State of)",
           "St. Vincent and the Grenadines":"Saint Vincent and the Grenadines",
           "Venezuela, RB":"Venezuela (Bolivarian Republic of)",
           "Virgin Islands (U.S.)":"United States Virgin Islands",
-          "Yemen, Rep.":"Yemen"
+          "Yemen, Rep.":"Yemen",
+          "Vietnam": "Viet Nam"
           }
 
 for key in a_dict:
@@ -1132,6 +1133,21 @@ df_2012_Population = df_2012_Population.sort_values(by=['Country_Name'], ascendi
 df_2013_Population = df_2013_Population.sort_values(by=['Country_Name'], ascending=True)
 df_2014_Population = df_2014_Population.sort_values(by=['Country_Name'], ascending=True)
 df_2015_Population = df_2015_Population.sort_values(by=['Country_Name'], ascending=True)
+
+
+
+#-----TAIWAN POPULATION- insert value because only the Attribute POPULATION is NAN 
+df_Taiwan = pd.read_csv ('dataset/population/Taiwan Population/taiwan-population.csv') 
+df2_Taiwan = df_Taiwan[['date',' Population']]    # selects two of the columns in your file
+
+pop_Taiwan_forYears=np.array(df2_Taiwan[' Population']).tolist()
+
+for i in range(0,16):
+  if i<10:
+    exec("df_200"+str(i) +"_Population.loc[(df_200"+ str(i) +"_Population['Country_Name']=='Taiwan (Province of China)','200"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
+  else:
+    exec("df_20"+str(i) +"_Population.loc[(df_20"+ str(i) +"_Population['Country_Name']=='Taiwan (Province of China)','20"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
+
 
 
 df_population_in_list = []
