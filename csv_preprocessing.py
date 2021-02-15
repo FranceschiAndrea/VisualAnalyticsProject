@@ -3,6 +3,9 @@ import pandas as pd
 import math 
 import csv
 import numpy as np
+from matplotlib import pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn import preprocessing
 
 countryes = []
 
@@ -1649,3 +1652,49 @@ for i in range(0, 16):
         exec("table20" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "], 'Total Cancer' : df_TC_in_list[" + str(i) + "], 'Air Cancer' : df_AC_in_list[" + str(i) + "], 'Chronic Respiratory Diseases' : df_CRD_in_list[" + str(i) + "], 'Pneumoconiosis' : df_PNE_in_list[" + str(i) + "], 'Asthma' : df_AS_in_list[" + str(i) + "], 'Interstitial Lung Disease and Pulmonary Sarcoidosis' : df_PS_in_list[" + str(i) + "], 'Other Chronic Respiratory Diseases' : df_OCRD_in_list[" + str(i) + "], 'Total Deaths' : df_TD_in_list[" + str(i) + "], 'Total Population' : df_population_in_list[" + str(i) + "]})")
         exec("table20" + str(i) + ".to_csv('dataset/total_merge/20" + str(i) + ".csv', index=False)")
 
+
+#----------------------------------------------------- Compute the PCA -----------------------------------------------------
+
+pca_attributes=['CO','CH4','NH3','NMVOC','NOx','SO2','PM 10','PM 2.5','Total Cancer','Air Cancer','Chronic Respiratory Diseases','Pneumoconiosis','Asthma','Interstitial Lung Disease and Pulmonary Sarcoidosis','Other Chronic Respiratory Diseases','Total Deaths','Total Population']
+
+pca_data = []
+pca_normalized_data = []
+pca_result = []
+
+
+for i in range(0, 16):
+    if i < 10:
+        exec("pca_data.append((table200" + str(i) + "[pca_attributes]).as_matrix())")
+    else:
+        exec("pca_data.append((table20" + str(i) + "[pca_attributes]).as_matrix())")
+    
+    
+
+
+for i in range(0, 16):
+
+    #Debug and bug to complete the pca
+    for k in range(len(pca_data[i])):
+        for j in range(len(pca_data[i][k])):
+            if not isinstance(pca_data[i][k][j], np.float64):
+                #pca_data[i][k][j] = np.float64(pca_data[i][k][j])
+                print("NOT ISTANCE")
+            if np.isnan(pca_data[i][k][j]):
+                pca_data[i][k][j] = 4900000+ (100*i)
+                print("NOT ISTANCE", i, k, j)
+        
+    pca_normalized_data.append(preprocessing.StandardScaler().fit_transform(pca_data[i]))
+    pca_result.append(PCA(n_components=17).fit_transform(pca_normalized_data[i]))
+
+#Print the covariance matrix to understand the best axes
+d_cov=np.cov(pca_result[9].T)
+for i in range(len(d_cov)):
+    print('Variance transformed data axis Y'+str(i+1),d_cov[i][i])
+print('Covariance matrix')
+for i in range (len(d_cov)):
+    for j in range(len(d_cov[0])):
+        print('%.2f ' % (d_cov[i][j]), end='\t')
+        #print(str(d_pca[i][j])[:6]+' ', end='')
+    print()
+
+print('--------------------------------------------')
