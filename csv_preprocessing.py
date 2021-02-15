@@ -6,6 +6,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn import preprocessing
+import warnings
+warnings.filterwarnings("ignore")
 
 countryes = []
 
@@ -1111,26 +1113,8 @@ for el_toNan in list_to_nan:
 
 
 #print(np.array(df_2000_Population))
-
-
-
-df_2000_Population = df_2000_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2001_Population = df_2001_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2002_Population = df_2002_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2003_Population = df_2003_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2004_Population = df_2004_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2005_Population = df_2005_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2006_Population = df_2006_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2007_Population = df_2007_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2008_Population = df_2008_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2009_Population = df_2009_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2010_Population = df_2010_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2011_Population = df_2011_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2012_Population = df_2012_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2013_Population = df_2013_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2014_Population = df_2014_Population.sort_values(by=['Country_Name'], ascending=True)
-df_2015_Population = df_2015_Population.sort_values(by=['Country_Name'], ascending=True)
-
+for i in range(12,16):
+    exec("df_20"+str(i) +"_Population =df_20"+ str(i) +"_Population.append({'Country_Name':'Eritrea'},ignore_index=True)")
 
 
 #-----TAIWAN POPULATION- insert value because only the Attribute POPULATION is NAN 
@@ -1159,8 +1143,22 @@ for i in range(0,16):
 
 
 
-
-
+df_2000_Population = df_2000_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2001_Population = df_2001_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2002_Population = df_2002_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2003_Population = df_2003_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2004_Population = df_2004_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2005_Population = df_2005_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2006_Population = df_2006_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2007_Population = df_2007_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2008_Population = df_2008_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2009_Population = df_2009_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2010_Population = df_2010_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2011_Population = df_2011_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2012_Population = df_2012_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2013_Population = df_2013_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2014_Population = df_2014_Population.sort_values(by=['Country_Name'], ascending=True)
+df_2015_Population = df_2015_Population.sort_values(by=['Country_Name'], ascending=True)
 
 
 df_population_in_list = []
@@ -1591,6 +1589,7 @@ for i in range(0, 16):
         if(not df_TD_in_list[i][j] == 1234567891011):
             big_buffer[16][i].append(df_TD_in_list[i][j])
         if(not df_population_in_list[i][j] == 1234567891011):
+            #print(df_population_in_list[i][j], i, j)
             big_buffer[17][i].append(df_population_in_list[i][j])
 
 
@@ -1657,10 +1656,9 @@ table2015 = None
 for i in range(0, 16):
     if i < 10:
         exec("table200" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "], 'Total Cancer' : df_TC_in_list[" + str(i) + "], 'Air Cancer' : df_AC_in_list[" + str(i) + "], 'Chronic Respiratory Diseases' : df_CRD_in_list[" + str(i) + "], 'Pneumoconiosis' : df_PNE_in_list[" + str(i) + "], 'Asthma' : df_AS_in_list[" + str(i) + "], 'Interstitial Lung Disease and Pulmonary Sarcoidosis' : df_PS_in_list[" + str(i) + "], 'Other Chronic Respiratory Diseases' : df_OCRD_in_list[" + str(i) + "], 'Total Deaths' : df_TD_in_list[" + str(i) + "], 'Total Population' : df_population_in_list[" + str(i) + "]})")
-        exec("table200" + str(i) + ".to_csv('dataset/total_merge/200" + str(i) + ".csv', index=False)")
     else:
         exec("table20" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "], 'Total Cancer' : df_TC_in_list[" + str(i) + "], 'Air Cancer' : df_AC_in_list[" + str(i) + "], 'Chronic Respiratory Diseases' : df_CRD_in_list[" + str(i) + "], 'Pneumoconiosis' : df_PNE_in_list[" + str(i) + "], 'Asthma' : df_AS_in_list[" + str(i) + "], 'Interstitial Lung Disease and Pulmonary Sarcoidosis' : df_PS_in_list[" + str(i) + "], 'Other Chronic Respiratory Diseases' : df_OCRD_in_list[" + str(i) + "], 'Total Deaths' : df_TD_in_list[" + str(i) + "], 'Total Population' : df_population_in_list[" + str(i) + "]})")
-        exec("table20" + str(i) + ".to_csv('dataset/total_merge/20" + str(i) + ".csv', index=False)")
+
 
 
 #----------------------------------------------------- Compute the PCA -----------------------------------------------------
@@ -1671,6 +1669,8 @@ pca_data = []
 pca_normalized_data = []
 pca_result = []
 
+pca_first_component_years_separate = []
+pca_second_component_years_separate = []
 
 for i in range(0, 16):
     if i < 10:
@@ -1683,7 +1683,7 @@ for i in range(0, 16):
 
 for i in range(0, 16):
 
-    #Debug and bug to complete the pca
+    ''' #Debug and bug to complete the pca
     for k in range(len(pca_data[i])):
         for j in range(len(pca_data[i][k])):
             if not isinstance(pca_data[i][k][j], np.float64):
@@ -1691,12 +1691,20 @@ for i in range(0, 16):
                 print("NOT ISTANCE")
             if np.isnan(pca_data[i][k][j]):
                 pca_data[i][k][j] = 4900000+ (100*i)
-                print("NOT ISTANCE", i, k, j)
+                print("NOT ISTANCE", i, k, j)'''
         
     pca_normalized_data.append(preprocessing.StandardScaler().fit_transform(pca_data[i]))
     pca_result.append(PCA(n_components=17).fit_transform(pca_normalized_data[i]))
 
-#Print the covariance matrix to understand the best axes
+    pca_first_component_years_separate.append(pca_result[i][:,0].tolist())
+    pca_second_component_years_separate.append(pca_result[i][:,1].tolist())
+
+'''
+print(pca_result[1])
+print(pca_result[1][:,0].tolist())
+print(pca_result[1][:,1].tolist())'''
+
+'''#Print the covariance matrix to understand the best axes
 d_cov=np.cov(pca_result[9].T)
 for i in range(len(d_cov)):
     print('Variance transformed data axis Y'+str(i+1),d_cov[i][i])
@@ -1705,6 +1713,15 @@ for i in range (len(d_cov)):
     for j in range(len(d_cov[0])):
         print('%.2f ' % (d_cov[i][j]), end='\t')
         #print(str(d_pca[i][j])[:6]+' ', end='')
-    print()
+    print()'''
 
 print('--------------------------------------------')
+
+
+for i in range(0, 16):
+    if i < 10:
+        exec("table200" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "], 'Total Cancer' : df_TC_in_list[" + str(i) + "], 'Air Cancer' : df_AC_in_list[" + str(i) + "], 'Chronic Respiratory Diseases' : df_CRD_in_list[" + str(i) + "], 'Pneumoconiosis' : df_PNE_in_list[" + str(i) + "], 'Asthma' : df_AS_in_list[" + str(i) + "], 'Interstitial Lung Disease and Pulmonary Sarcoidosis' : df_PS_in_list[" + str(i) + "], 'Other Chronic Respiratory Diseases' : df_OCRD_in_list[" + str(i) + "], 'Total Deaths' : df_TD_in_list[" + str(i) + "], 'Total Population' : df_population_in_list[" + str(i) + "], 'PCA first component' : pca_first_component_years_separate[" + str(i) + "], 'PCA second component' : pca_second_component_years_separate[" + str(i) + "]})")
+        exec("table200" + str(i) + ".to_csv('dataset/total_merge/200" + str(i) + ".csv', index=False)")
+    else:
+        exec("table20" + str(i) + " = pd.DataFrame(data={'Country': countryes, 'CO': co_years_separate[" + str(i) + "], 'CH4': ch4_years_separate[" + str(i) + "], 'NH3': nh3_years_separate[" + str(i) + "], 'NMVOC': nmvoc_years_separate[" + str(i) + "], 'NOx' : nox_years_separate[" + str(i) + "], 'SO2' : so2_years_separate[" + str(i) + "],'PM 10': pm_10_years_separate[" + str(i) + "], 'PM 2.5' : pm_25_years_separate[" + str(i) + "], 'Total Cancer' : df_TC_in_list[" + str(i) + "], 'Air Cancer' : df_AC_in_list[" + str(i) + "], 'Chronic Respiratory Diseases' : df_CRD_in_list[" + str(i) + "], 'Pneumoconiosis' : df_PNE_in_list[" + str(i) + "], 'Asthma' : df_AS_in_list[" + str(i) + "], 'Interstitial Lung Disease and Pulmonary Sarcoidosis' : df_PS_in_list[" + str(i) + "], 'Other Chronic Respiratory Diseases' : df_OCRD_in_list[" + str(i) + "], 'Total Deaths' : df_TD_in_list[" + str(i) + "], 'Total Population' : df_population_in_list[" + str(i) + "], 'PCA first component' : pca_first_component_years_separate[" + str(i) + "], 'PCA second component' : pca_second_component_years_separate[" + str(i) + "]})")
+        exec("table20" + str(i) + ".to_csv('dataset/total_merge/20" + str(i) + ".csv', index=False)")
