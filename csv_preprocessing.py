@@ -1087,12 +1087,6 @@ for c_to_delete in only_delete:
                 exec("df_20"+ str(i) +"_Population = df_20"+ str(i) +"_Population.drop(df_20"+ str(i) +"_Population[df_20"+ str(i) +"_Population.Country_Name == '" + str(c_to_delete) +"'].index)") 
 
 
-
-#Eritrea is not considered in Population Datset from 2012 to 2015, so we insert for each year in this time period with val=nan
-for i in range(12,16):
-    exec("df_20"+str(i) +"_Population =df_20"+ str(i) +"_Population.append({'Country_Name':'Eritrea'},ignore_index=True)")
-
-
 #print(np.array(df_2001_Population))
 #print(len(df_2015_Population))
 
@@ -1150,6 +1144,22 @@ for i in range(0,16):
     exec("df_200"+str(i) +"_Population.loc[(df_200"+ str(i) +"_Population['Country_Name']=='Taiwan (Province of China)','200"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
   else:
     exec("df_20"+str(i) +"_Population.loc[(df_20"+ str(i) +"_Population['Country_Name']=='Taiwan (Province of China)','20"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
+
+#-----ERITREA POPULATION- insert value because only the Attribute POPULATION is NAN 
+df_Eritrea= pd.read_csv ('dataset/population/Eritrea Population/eritrea-population-2021-02-15.csv') 
+df2_Eritrea= df_Eritrea[['date',' Population']]    # selects two of the columns in your file
+
+pop_Eritrea_forYears=np.array(df2_Eritrea[' Population']).tolist()
+
+for i in range(0,16):
+  if i<10:
+    exec("df_200"+str(i) +"_Population.loc[(df_200"+ str(i) +"_Population['Country_Name']=='Eritrea','200"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
+  else:
+    exec("df_20"+str(i) +"_Population.loc[(df_20"+ str(i) +"_Population['Country_Name']=='Eritrea','20"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
+
+
+
+
 
 
 
