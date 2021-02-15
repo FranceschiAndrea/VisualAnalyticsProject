@@ -1153,9 +1153,9 @@ pop_Eritrea_forYears=np.array(df2_Eritrea[' Population']).tolist()
 
 for i in range(0,16):
   if i<10:
-    exec("df_200"+str(i) +"_Population.loc[(df_200"+ str(i) +"_Population['Country_Name']=='Eritrea','200"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
+    exec("df_200"+str(i) +"_Population.loc[(df_200"+ str(i) +"_Population['Country_Name']=='Eritrea','200"+str(i)+"')]="+str(pop_Eritrea_forYears[i]))
   else:
-    exec("df_20"+str(i) +"_Population.loc[(df_20"+ str(i) +"_Population['Country_Name']=='Eritrea','20"+str(i)+"')]="+str(pop_Taiwan_forYears[i]))
+    exec("df_20"+str(i) +"_Population.loc[(df_20"+ str(i) +"_Population['Country_Name']=='Eritrea','20"+str(i)+"')]="+str(pop_Eritrea_forYears[i]))
 
 
 
