@@ -83,6 +83,8 @@ function parseTable(t){
         table[i]['Other Chronic Respiratory Diseases'] = parseFloat(table[i]['Other Chronic Respiratory Diseases']);
         table[i]['Total Deaths'] = parseFloat(table[i]['Total Deaths']);
         table[i]['Total Population'] = parseFloat(table[i]['Total Population']);
+        table[i]['PCA first component'] = parseFloat(table[i]['PCA first component']);
+        table[i]['PCA second component'] = parseFloat(table[i]['PCA second component']);
     }
     return table;
 }

@@ -151,7 +151,7 @@ function world_map_loader(data){
         console.log("Total number of matched countries:", counter);
 
         //Add the Zoom
-        g.call(zoom)
+        svg_layer_1.call(zoom)
 
 
     });
@@ -196,6 +196,7 @@ function world_map_loader(data){
                                         d3.select(this)
                                             .style("opacity", 1)
                                             .style("stroke", "white")
+                                            .style("stroke-width", "1.5px")
                                     }
                                     d3.select(this).append("text")
                                                     .text(d.properties.name)
@@ -254,10 +255,12 @@ function world_map_loader(data){
                                             if(selected_countries.length != 0){
                                                 d3.select(this)
                                                     .style("opacity", .6)
-                                                    .style("stroke", "transparent")
+                                                    .style("stroke", "white")
+                                                    .style("stroke-width", "0.3px")
                                             }else{
                                                 d3.select(this)
-                                                    .style("stroke", "transparent")
+                                                .style("stroke", "white")
+                                                .style("stroke-width", "0.3px")
                                             }
                                         }
                                     }
@@ -274,7 +277,8 @@ function world_map_loader(data){
                                             selected_countries.splice(selected_countries.indexOf(d.properties.name), 1);
                                             d3.select(this)
                                                 .style("opacity", .6)
-                                                .style("stroke", "transparent")
+                                                .style("stroke", "white")
+                                                .style("stroke-width", "0.3px")
                                             if(selected_countries.length==0){           //If no more selected countries bring all the other countries to the start map state (no selected countries)
                                                 d3.selectAll(".Country")
                                                     .style("opacity", .8)
@@ -333,6 +337,7 @@ function world_map_loader(data){
                                                     else if (d[0] == 1) return threshold(2);
                                                     else if (d[0] == 2) return threshold(1);
                                                     else if (d[0] == 3) return threshold(0);})
+                        .style("opacity", .8)
 
     //Insert the rectangle with the color of no data countries
     svg_layer_1.append('rect')
@@ -342,6 +347,7 @@ function world_map_loader(data){
                 .attr('height', 20)
                 //.attr('stroke', 'black')
                 .attr('fill', '#69a3b2')
+                .style("opacity", .8)
     //Insert the labels of the legend
     svg_layer_1.append("text")
                 .attr('x', 45)
