@@ -1663,7 +1663,8 @@ for i in range(0, 16):
 
 #----------------------------------------------------- Compute the PCA -----------------------------------------------------
 
-pca_attributes=['CO','CH4','NH3','NMVOC','NOx','SO2','PM 10','PM 2.5','Total Cancer','Air Cancer','Chronic Respiratory Diseases','Pneumoconiosis','Asthma','Interstitial Lung Disease and Pulmonary Sarcoidosis','Other Chronic Respiratory Diseases','Total Deaths','Total Population']
+#pca_attributes=['CO','CH4','NH3','NMVOC','NOx','SO2','PM 10','PM 2.5','Total Cancer','Air Cancer','Chronic Respiratory Diseases','Pneumoconiosis','Asthma','Interstitial Lung Disease and Pulmonary Sarcoidosis','Other Chronic Respiratory Diseases','Total Deaths','Total Population']
+pca_attributes=['CO','CH4','NH3','NMVOC','NOx','SO2','PM 10','PM 2.5','Air Cancer','Chronic Respiratory Diseases','Pneumoconiosis','Asthma','Interstitial Lung Disease and Pulmonary Sarcoidosis','Other Chronic Respiratory Diseases','Total Population']
 
 pca_data = []
 pca_normalized_data = []
@@ -1694,8 +1695,8 @@ for i in range(0, 16):
                 print("NOT ISTANCE", i, k, j)'''
         
     pca_normalized_data.append(preprocessing.StandardScaler().fit_transform(pca_data[i]))
-    pca_result.append(PCA(n_components=17).fit_transform(pca_normalized_data[i]))
-
+    #pca_result.append(PCA(n_components=17).fit_transform(pca_normalized_data[i]))
+    pca_result.append(PCA(n_components=15).fit_transform(pca_normalized_data[i]))
     pca_first_component_years_separate.append(pca_result[i][:,0].tolist())
     pca_second_component_years_separate.append(pca_result[i][:,1].tolist())
 

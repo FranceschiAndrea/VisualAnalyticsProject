@@ -1,8 +1,11 @@
+var selected_countries_world_map = [];
+var database_data;
+
 function world_map_loader(data){
     
     console.log(data)
     //Transform the dataset rows in Country, Sum rows
-    var database_data = data_elaboration_to_display(data);
+    database_data = data_elaboration_to_display_map(data);
     var min_data_value = database_data[0].Sum;
     var max_data_value = database_data[0].Sum;
     console.log(database_data)
@@ -39,7 +42,9 @@ function world_map_loader(data){
     
     //Map Zoom
     const zoom = d3.zoom()
-                    .scaleExtent([1, 5])
+                    .scaleExtent([1, 20])
+                    .translateExtent([[0,0], [width, height]])
+                    .extent([[0, 0], [width, height]])
                     .on('zoom', zoomed);
 
     //Append the svg for the map in the html world_map div
@@ -59,46 +64,11 @@ function world_map_loader(data){
                         .domain([1000, 10000, 100000, 1000000])
                         //.domain([min_data_value, max_data_value])
                         .range(d3.schemeReds[4])*/
-;
     var g = svg_layer_1.append("g");
 
     var path = d3.geoPath()
                     .projection(projection);
 
-    //Map of the countries, left the name on the world map, right the name in the dataset
-    var map_countries = [["French Southern and Antarctic Lands",""],
-                            ["The Bahamas","Bahamas"], 
-                            ["Bolivia","Bolivia (Plurinational State of)"], 
-                            ["Brunei","Brunei Darussalam"], 
-                            ["Ivory Coast",""],
-                            ["Republic of the Congo","Congo"],          
-                            ["Northern Cyprus","Cyprus"],                           //divided
-                            ["Czech Republic","Czechia"],
-                            ["Falkland Islands",""],
-                            ["England","United Kingdom"],                             //divided
-                            ["Guinea Bissau","Guinea-Bissau"],
-                            ["Iran","Iran (Islamic Republic of)"],
-                            ["South Korea","Republic of Korea"],
-                            ["Kosovo",""],
-                            ["Laos","Lao People's Democratic Republic"],
-                            ["Moldova","Republic of Moldova"],
-                            ["Macedonia","North Macedonia"],
-                            ["Montenegro",""],
-                            ["New Caledonia",""],
-                            ["North Korea","Democratic People's Republic of Korea"],
-                            ["Russia","Russian Federation"],
-                            ["Western Sahara",""],
-                            ["South Sudan","Sudan"],                                   //divided
-                            ["Somaliland",""],
-                            ["Republic of Serbia","Serbia"],
-                            ["Swaziland","Eswatini"],
-                            ["Syria","Syrian Arab Republic"],
-                            ["East Timor","Timor-Leste"],
-                            ["Taiwan","Taiwan (Province of China)"],
-                            ["USA","United States of America"],
-                            ["Venezuela","Venezuela (Bolivarian Republic of)"],
-                            ["Vietnam","Viet Nam"],
-                            ["West Bank",""]];
 
     var map_countries_stringifyed = JSON.stringify(map_countries);
 
@@ -122,7 +92,7 @@ function world_map_loader(data){
         //var just to debug
         var counter = 0;
         
-        //Color the world
+        //color the world
         g.selectAll('path')
             .attr('fill', function (d) {
                             for(i in database_data){
@@ -131,23 +101,12 @@ function world_map_loader(data){
                                     return color_scale(database_data[i].Sum);
                                 }
                             }
-                            for(i in map_countries){
-                                if(map_countries[i][0] == d.properties.name){
-                                    if(map_countries[i][1] != ""){
-                                        for(j in database_data){
-                                            if(database_data[j].Country == map_countries[i][1]){
-                                                counter += 1;
-                                                return color_scale(database_data[j].Sum);
-                                            }
-                                        }
-                                    }else{
+                            
                                         console.log("Country non matched:", d.properties.name);
-                                    }
-                                }
-                            }
+                                    
                             return "#69a3b2";
 
-                        });
+                        })
         console.log("Total number of matched countries:", counter);
 
         //Add the Zoom
@@ -158,38 +117,24 @@ function world_map_loader(data){
     
     //Zoom function
     function zoomed() {
-        g.selectAll('path') // To prevent stroke width from scaling
-          .attr('transform', d3.event.transform);
-      }
+                            g.selectAll('path') // To prevent stroke width from scaling
+                            .attr('transform', d3.event.transform);
+                        }
 
     //Interaction  functions
     //Array that manage all the selected (clicked) countries
-    var selected_countries = [];
     let mouse_over = function(d){
                                     //Retrive the Sum for the country to display on the map
-                                    var sum_for_labels;
+                                    var sum_for_labels = "No Data";
                                     for(i in database_data){
                                         if(database_data[i].Country == d.properties.name){
                                             sum_for_labels = database_data[i].Sum;
                                         }
                                     }
-                                    for(i in map_countries){
-                                        if(map_countries[i][0] == d.properties.name){
-                                            if(map_countries[i][1] != ""){
-                                                for(j in database_data){
-                                                    if(database_data[j].Country == map_countries[i][1]){
-                                                        sum_for_labels = database_data[j].Sum;
-                                                    }
-                                                }
-                                            }else{
-                                                sum_for_labels = "No Data";
-                                            }
-                                        }
-                                    }
                                     //Check if hte country is one between the ones with database data not empty
                                     var list_buffer = JSON.stringify([d.properties.name, ""]);
                                     if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
-                                        if(selected_countries.length == 0){
+                                        if(selected_countries_world_map.length == 0){
                                             d3.selectAll(".Country")
                                                 .style("opacity", .6)
                                         }
@@ -212,23 +157,10 @@ function world_map_loader(data){
                                 }
     let mouse_move = function(d){
                                     //Retrive the Sum for the country to display on the map
-                                    var sum_for_labels;
+                                    var sum_for_labels = "No Data";
                                     for(i in database_data){
                                         if(database_data[i].Country == d.properties.name){
                                             sum_for_labels = database_data[i].Sum;
-                                        }
-                                    }
-                                    for(i in map_countries){
-                                        if(map_countries[i][0] == d.properties.name){
-                                            if(map_countries[i][1] != ""){
-                                                for(j in database_data){
-                                                    if(database_data[j].Country == map_countries[i][1]){
-                                                        sum_for_labels = database_data[j].Sum;
-                                                    }
-                                                }
-                                            }else{
-                                                sum_for_labels = "No Data";
-                                            }
                                         }
                                     }
                                     //Move the div with the country name with the mouse on the map
@@ -247,12 +179,12 @@ function world_map_loader(data){
                                     //Check if hte country is one between the ones with database data not empty
                                     var list_buffer = JSON.stringify([d.properties.name, ""]);
                                     if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
-                                        if(selected_countries.length == 0){
+                                        if(selected_countries_world_map.length == 0){
                                             d3.selectAll(".Country")
                                                 .style("opacity", .8)
                                         }
-                                        if(!selected_countries.includes(d.properties.name)){
-                                            if(selected_countries.length != 0){
+                                        if(!selected_countries_world_map.includes(d.properties.name)){
+                                            if(selected_countries_world_map.length != 0){
                                                 d3.select(this)
                                                     .style("opacity", .6)
                                                     .style("stroke", "white")
@@ -271,21 +203,25 @@ function world_map_loader(data){
                                     //Check if hte country is one between the ones with database data not empty
                                     var list_buffer = JSON.stringify([d.properties.name, ""]);
                                     if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
-                                        if(!selected_countries.includes(d.properties.name)){
-                                            selected_countries.push(d.properties.name);
+                                        if(!selected_countries_world_map.includes(d.properties.name)){
+                                            selected_countries_world_map.push(d.properties.name);
+                                            map_selection_interaction(d.properties.name)
                                         }else{  //If the country was already selected, deselect that country
-                                            selected_countries.splice(selected_countries.indexOf(d.properties.name), 1);
+                                            selected_countries_world_map.splice(selected_countries_world_map.indexOf(d.properties.name), 1);
                                             d3.select(this)
                                                 .style("opacity", .6)
                                                 .style("stroke", "white")
                                                 .style("stroke-width", "0.3px")
-                                            if(selected_countries.length==0){           //If no more selected countries bring all the other countries to the start map state (no selected countries)
+                                            
+                                            map_deselection_interaction(d.properties.name)
+
+                                            if(selected_countries_world_map.length==0){           //If no more selected countries bring all the other countries to the start map state (no selected countries)
                                                 d3.selectAll(".Country")
                                                     .style("opacity", .8)
                                             }
                                         }
                                     }
-                                    console.log(selected_countries);
+                                    console.log(selected_countries_world_map);
                                 }
 
     //Addition of the legend
@@ -329,7 +265,7 @@ function world_map_loader(data){
                         .attr("x", function(d) { 
                                                 return 20 })
                         .attr("y", function(d) { 
-                                                return (d[0]*25)+330 })
+                                                return (d[0]*25) })
                         .attr("width", function(d) { 
                                                     return 20 })
                         .attr("fill", function(d) { 
@@ -342,16 +278,17 @@ function world_map_loader(data){
     //Insert the rectangle with the color of no data countries
     svg_layer_1.append('rect')
                 .attr('x', 20)
-                .attr('y', 430)
+                .attr('y', 100)
                 .attr('width', 20)
                 .attr('height', 20)
                 //.attr('stroke', 'black')
                 .attr('fill', '#69a3b2')
-                .style("opacity", .8)
+
+
     //Insert the labels of the legend
     svg_layer_1.append("text")
                 .attr('x', 45)
-                .attr('y', 345)
+                .attr('y', 14)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
@@ -359,7 +296,7 @@ function world_map_loader(data){
                 .text("< 10⁶")
     svg_layer_1.append("text")
                 .attr('x', 45)
-                .attr('y', 370)
+                .attr('y', 40)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
@@ -367,7 +304,7 @@ function world_map_loader(data){
                 .text("< 10⁵")
     svg_layer_1.append("text")
                 .attr('x', 45)
-                .attr('y', 395)
+                .attr('y', 65)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
@@ -375,7 +312,7 @@ function world_map_loader(data){
                 .text("< 10⁴")
     svg_layer_1.append("text")
                 .attr('x', 45)
-                .attr('y', 420)
+                .attr('y', 90)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
@@ -383,7 +320,7 @@ function world_map_loader(data){
                 .text("< 10³")
     svg_layer_1.append("text")
                 .attr('x', 48)
-                .attr('y', 445)
+                .attr('y', 116)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
@@ -391,19 +328,40 @@ function world_map_loader(data){
                 .text("N.D.")
     svg_layer_1.append("text")
                 .attr('x', 18)
-                .attr('y', 470)
+                .attr('y', 142)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
                 //.attr("transform", "translate(0,12)")                   //Move the legend's text
                 .text("Total Air Pollulant Emissions (Gg)")
+    
+    //Movetheleend to fit in the resized page
+    svg_layer_1.selectAll("rect")
+                .attr("transform", "translate(0,"+ ((height/2)+(width/14)) +")")
+    svg_layer_1.selectAll("text")
+                .attr("transform", "translate(0,"+ ((height/2)+(width/14)) +")")
+
+
+    //Update the selected countries when this start
+    g.selectAll('path', function(d){
+            if (selected_countries_world_map.indexOf(d.properties.name) > -1) {
+                //In the array!
+                d3.select(this)
+                .style("opacity", 1)
+                .style("stroke", "white")
+                .style("stroke-width", "1.5px")
+            } else {
+                //Not in the array
+            }
+        })
+
 
 
 };
 
-function data_elaboration_to_display(start_data){
+function data_elaboration_to_display_map(start_data){
     var output_data = [];
-    for(i in start_data){
+    for(i=0; i<start_data.length; i++){
         //sum of all the emissions
         var total = start_data[i]['CO'] +
                     start_data[i]['CH4'] +
@@ -420,6 +378,88 @@ function data_elaboration_to_display(start_data){
                             }
                         )
     }
-    
-    return output_data;
+    //console.log(output_data)
+    return output_data
+}
+
+
+//================================================================= BETWEEN GRAPHS INTERACTION =========================================================
+//Function to change the years
+function change_map_with_year(data){
+    var color_scale = d3.scaleThreshold()
+                        .domain([1000, 10000, 100000, 1000000])
+                        //.domain([min_data_value, max_data_value])
+                        .range(d3.schemeReds[4]);
+    database_data = data_elaboration_to_display_map(data);
+    d3.select("#world_map").selectAll("path").filter(function(f) {return true })
+                                                .attr('fill', function (d) {
+                                                    for(i in database_data){
+                                                        if(database_data[i].Country == d.properties.name){
+                                                            return color_scale(database_data[i].Sum);
+                                                        }
+                                                    }           
+                                                    return "#69a3b2";
+                                                })
+}
+
+//Function called by other graphs to select countries on the map
+function select_country_on_map(country){
+    if(selected_countries_world_map.length==0){
+        d3.selectAll(".Country")
+            .filter(function(f){
+                return true
+            })
+            .style("opacity", .6)
+    }
+    if(!selected_countries_world_map.includes(country)){
+        selected_countries_world_map.push(country);
+    }
+    d3.select("#world_map").selectAll("path").filter(function(f) {
+        if(f.properties.name == country){
+            console.log(f)
+            return true
+        }else{
+            return false
+        }
+    })
+    .style("opacity", 1)
+    .style("stroke", "white")
+    .style("stroke-width", "1.5px")
+
+}
+
+//Function called by other graphs to deselect countries on the map
+function deselect_country_on_map(country){
+    if(selected_countries_world_map.includes(country)){
+        selected_countries_world_map.splice(selected_countries_world_map.indexOf(country), 1);
+    }
+    d3.select("#world_map").selectAll("path").filter(function(f) {
+        if(f.properties.name == country){
+            console.log(f)
+            return true
+        }else{
+            return false
+        }
+    })
+    .style("opacity", .6)
+    .style("stroke", "white")
+    .style("stroke-width", "0.3px")
+
+    if(selected_countries_world_map.length==0){
+        d3.selectAll(".Country")
+            .filter(function(f){
+                return true
+            })
+            .style("opacity", .8)
+    }
+}
+
+//Function that trigger the selection from the map to the other graphs 
+function map_selection_interaction(country){
+    select_country_on_scatterplot(country)
+}
+
+//Function that trigger the deselection from the map to the other graphs 
+function map_deselection_interaction(country){
+    deselect_country_on_scatterplot(country)
 }
