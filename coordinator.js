@@ -1,6 +1,16 @@
 var full_data = [];
+var world_map_file;
+var starting_year = 4;
+var bar_graph_people_range = 1          //1(bigger)-5(lower)
 
-var map_countries_divided_flag = [false,false,false,false,false,false,true,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false]
+if(starting_year<10){
+    d3.selectAll(("input[name='range_years']")).property("value", "200"+starting_year)
+}else{
+    d3.selectAll(("input[name='range_years']")).property("value", "20"+starting_year)
+}
+d3.select("#bar_chart_dth_dropdown").property("value", bar_graph_people_range)
+
+var map_countries_divided_flag = [false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false]
 
 var map_countries = [["French Southern and Antarctic Lands",""],
     ["The Bahamas","Bahamas"], 
@@ -90,30 +100,29 @@ d3.queue()
             console.error('Something bad with the csv loading: ' + error);
         }
         else {
-
+                world_map_file = world
+                
                 full_data = [table2000, table2001, table2002, table2003, table2004, table2005, table2006, table2007, table2008, table2009, table2010, table2011, table2012, table2013, table2014, table2015];
                 for(i in full_data){
                     parseTable(full_data[i], world);
                 }
-                
-                world_map_loader(full_data[10]);
-                scatterplot_pca_loader(full_data[10]);
-            
+                world_map_loader(full_data[starting_year]);
+                scatterplot_pca_loader(full_data[starting_year]);
+                bar_chart_dht_loader(full_data[starting_year], bar_graph_people_range)
 
-            
         }
     });
 
 
 
 
-
+//Function that change the years of all the graphs
 d3.selectAll(("input[name='range_years']")).on("input", function(){
     var value = parseInt(this.value.slice(-2))
     console.log(value)
     change_map_with_year(full_data[value])
     change_scatterplot_with_year(full_data[value])
-    
+    change_bar_chart_dth_with_year(full_data[value], bar_graph_people_range)
 })
 
 

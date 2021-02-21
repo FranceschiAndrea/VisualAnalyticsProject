@@ -149,8 +149,20 @@ function scatterplot_pca_loader(data){
                                         .attr("r", 6.5)
                                         .style("fill", function (d) { return color_scale(d['Death Percentage']) } )
                                         //.style("opacity", 0.7)
-                                        .attr("stroke", "black",)
-                                        .attr("stroke-width", "0.1px")
+                                        .attr("stroke", function(d){
+                                                                        if(selected_countries_pca_scatterplot.includes(d.Country)){
+                                                                            return "red"
+                                                                        }else{
+                                                                            return "black"
+                                                                        }
+                                                                    })
+                                        .attr("stroke-width", function(d){
+                                                                            if(selected_countries_pca_scatterplot.includes(d.Country)){
+                                                                                return "2px"
+                                                                            }else{
+                                                                                return "0.1px"
+                                                                            }
+                                                                        })
                                         .on("mouseover", mouse_over )                    
                                         .on("mouseleave", mouse_leave )
                                         .on("click", mouse_click)
