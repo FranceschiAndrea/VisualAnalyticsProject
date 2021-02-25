@@ -3,15 +3,15 @@ var database_data;
 
 function world_map_loader(data){
     
-    console.log(data)
+    //console.log(data)
     //Transform the dataset rows in Country, Sum rows
     database_data = data_elaboration_to_display_map(data);
     var min_data_value = database_data[0].Sum;
     var max_data_value = database_data[0].Sum;
-    console.log(database_data)
+    //console.log(database_data)
 
     //Calculate the max and the min value in the dataset to choose the colors thresholds
-    for(i in database_data){
+    for(i=0; i<database_data.length; i++){
         if(database_data[i].Sum > max_data_value){
             max_data_value = database_data[i].Sum;
         }
@@ -19,7 +19,7 @@ function world_map_loader(data){
             min_data_value = database_data[i].Sum;
         }
     }    
-    console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
+    //console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
 
     /*var width = Math.max(960, d3.select("#world_map").style('width').slice(0, -2)),
     height = Math.max(500, d3.select("#world_map").style('height').slice(0, -2)),
@@ -64,6 +64,7 @@ function world_map_loader(data){
                         .domain([1000, 10000, 100000, 1000000])
                         //.domain([min_data_value, max_data_value])
                         .range(d3.schemeReds[4])*/
+
     var g = svg_layer_1.append("g");
 
     var path = d3.geoPath()
@@ -95,19 +96,19 @@ function world_map_loader(data){
         //color the world
         g.selectAll('path')
             .attr('fill', function (d) {
-                            for(i in database_data){
+                            for(i=0; i<database_data.length; i++){
                                 if(database_data[i].Country == d.properties.name){
                                     counter += 1;
                                     return color_scale(database_data[i].Sum);
                                 }
                             }
                             
-                                        console.log("Country non matched:", d.properties.name);
+                                        //console.log("Country non matched:", d.properties.name);
                                     
                             return "#69a3b2";
 
                         })
-        console.log("Total number of matched countries:", counter);
+        //console.log("Total number of matched countries:", counter);
 
         //Add the Zoom
         svg_layer_1.call(zoom)
@@ -126,14 +127,14 @@ function world_map_loader(data){
     let mouse_over = function(d){
                                     //Retrive the Sum for the country to display on the map
                                     var sum_for_labels = "No Data";
-                                    for(i in database_data){
+                                    for(i=0; i<database_data.length; i++){
                                         if(database_data[i].Country == d.properties.name){
                                             sum_for_labels = database_data[i].Sum;
                                         }
                                     }
                                     //Check if hte country is one between the ones with database data not empty
                                     var list_buffer = JSON.stringify([d.properties.name, ""]);
-                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
                                         if(selected_countries_world_map.length == 0){
                                             d3.selectAll(".Country")
                                                 .style("opacity", .6)
@@ -148,17 +149,19 @@ function world_map_loader(data){
                                     //Used to display the countries name
                                     tooltip.style("hidden", false)
                                             .html(function(){
-                                                                if(sum_for_labels=="No Data"){
+                                                            if(!overpopulated_countries_flag && overpopulated_countries.includes(d.properties.name)){
+                                                                return d.properties.name + "<br>" +  "Excluded";
+                                                            }else if(sum_for_labels=="No Data"){
                                                                     return d.properties.name + "<br>" +  sum_for_labels;
-                                                                }else{
-                                                                    return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
-                                                                }});
+                                                            }else{
+                                                                return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                                            }});
                                 
                                 }
     let mouse_move = function(d){
                                     //Retrive the Sum for the country to display on the map
                                     var sum_for_labels = "No Data";
-                                    for(i in database_data){
+                                    for(i=0; i<database_data.length; i++){
                                         if(database_data[i].Country == d.properties.name){
                                             sum_for_labels = database_data[i].Sum;
                                         }
@@ -168,7 +171,9 @@ function world_map_loader(data){
                                             .style("top", (d3.event.pageY) + "px")
                                             .style("left", (d3.event.pageX + 15) + "px")
                                             .html(function(){
-                                                            if(sum_for_labels=="No Data"){
+                                                            if(!overpopulated_countries_flag && overpopulated_countries.includes(d.properties.name)){
+                                                                return d.properties.name + "<br>" +  "Excluded";
+                                                            }else if(sum_for_labels=="No Data"){
                                                                 return d.properties.name + "<br>" +  sum_for_labels;
                                                             }else{
                                                                 return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
@@ -178,7 +183,7 @@ function world_map_loader(data){
     let mouse_leave = function(d){
                                     //Check if hte country is one between the ones with database data not empty
                                     var list_buffer = JSON.stringify([d.properties.name, ""]);
-                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
                                         if(selected_countries_world_map.length == 0){
                                             d3.selectAll(".Country")
                                                 .style("opacity", .8)
@@ -202,11 +207,12 @@ function world_map_loader(data){
     let mouse_click = function(d){
                                     //Check if hte country is one between the ones with database data not empty
                                     var list_buffer = JSON.stringify([d.properties.name, ""]);
-                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
-                                        if(!selected_countries_world_map.includes(d.properties.name)){
+                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                                        
+                                        if(!selected_countries_world_map.includes(d.properties.name) && selected_countries_bar_chart_dth.length==0){
                                             selected_countries_world_map.push(d.properties.name);
                                             map_selection_interaction(d.properties.name)
-                                        }else{  //If the country was already selected, deselect that country
+                                        }else if(selected_countries_world_map.includes(d.properties.name) && (selected_countries_bar_chart_dth.length==0 || selected_countries_bar_chart_dth.includes(d.properties.name))){
                                             selected_countries_world_map.splice(selected_countries_world_map.indexOf(d.properties.name), 1);
                                             d3.select(this)
                                                 .style("opacity", .6)
@@ -219,9 +225,26 @@ function world_map_loader(data){
                                                 d3.selectAll(".Country")
                                                     .style("opacity", .8)
                                             }
+
+                                        }else if (!selected_countries_world_map.includes(d.properties.name) && !selected_countries_bar_chart_dth.includes(d.properties.name)){ 
+                                            
+                                            for(i=0; i<selected_countries_world_map.length; i++){
+                                                map_deselection_interaction(selected_countries_world_map[i])
+                                            }
+                                            d3.selectAll(".Country")
+                                                    .style("opacity", .6)
+                                                    .style("stroke", "white")
+                                                    .style("stroke-width", "0.3px")
+                                            selected_countries_world_map = []
+                                            d3.select(this)
+                                                .style("opacity", 1)
+                                                .style("stroke", "white")
+                                                .style("stroke-width", "1.5px")
+                                            selected_countries_world_map.push(d.properties.name);
+                                            map_selection_interaction(d.properties.name)
                                         }
                                     }
-                                    console.log(selected_countries_world_map);
+                                    //console.log(selected_countries_world_map);
                                 }
 
     //Addition of the legend
@@ -355,6 +378,18 @@ function world_map_loader(data){
             }
         })
 
+    svg_layer_1
+        .append('defs')
+        .append('pattern')
+            .attr('id', 'diagonalHatch')
+            .attr('patternUnits', 'userSpaceOnUse')
+            .attr('width', 4)
+            .attr('height', 4)
+        .append('path')
+            .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
+            .attr('stroke', '#ffffff')
+            .attr('stroke-width', 1);
+
 
 
 };
@@ -385,21 +420,61 @@ function data_elaboration_to_display_map(start_data){
 
 //================================================================= BETWEEN GRAPHS INTERACTION =========================================================
 //Function to change the years
-function change_map_with_year(data){
+function change_map_with_year(ever_full_data, data, countries_array){
     var color_scale = d3.scaleThreshold()
                         .domain([1000, 10000, 100000, 1000000])
                         //.domain([min_data_value, max_data_value])
                         .range(d3.schemeReds[4]);
     database_data = data_elaboration_to_display_map(data);
-    d3.select("#world_map").selectAll("path").filter(function(f) {return true })
+    var ever_full_data_processed = data_elaboration_to_display_map(ever_full_data);
+    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {return true })
                                                 .attr('fill', function (d) {
-                                                    for(i in database_data){
-                                                        if(database_data[i].Country == d.properties.name){
-                                                            return color_scale(database_data[i].Sum);
+                                                    if(!overpopulated_countries_flag && countries_array.includes(d.properties.name)){
+                                                        for(i=0; i<ever_full_data_processed.length; i++){
+                                                            if(ever_full_data_processed[i].Country == d.properties.name){
+                                                                d3.select("#world_map").select("defs").select("pattern").select("path").attr('stroke', color_scale(ever_full_data_processed[i].Sum))
+                                                            }
                                                         }
-                                                    }           
-                                                    return "#69a3b2";
+                                                        return 'url(#diagonalHatch)'
+                                                    }else{
+                                                        for(i=0; i<database_data.length; i++){
+                                                            if(database_data[i].Country == d.properties.name){
+                                                                return color_scale(database_data[i].Sum);
+                                                            }
+                                                        }           
+                                                        return "#69a3b2";
+                                                    }
+                                                    
                                                 })
+}
+
+//Function to de/select the overpopulated countries
+function change_map_overpopulated(ever_full_data, countries_array){
+
+    var ever_full_data_processed = data_elaboration_to_display_map(ever_full_data);
+    var color_scale = d3.scaleThreshold()
+                        .domain([1000, 10000, 100000, 1000000])
+                        //.domain([min_data_value, max_data_value])
+                        .range(d3.schemeReds[4]);
+
+    for(i=0; i<countries_array.length; i++){
+        if(selected_countries_world_map.includes(countries_array[i])){
+            deselect_country_on_map(countries_array[i])
+        }
+    }
+    
+    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
+                                                                    if(countries_array.includes(f.properties.name)){
+                                                                        for(i=0; i<ever_full_data_processed.length; i++){
+                                                                            if(ever_full_data_processed[i].Country == f.properties.name){
+                                                                                d3.select("#world_map").select("defs").select("pattern").select("path").attr('stroke', color_scale(ever_full_data_processed[i].Sum))
+                                                                            }
+                                                                        }
+                                                                        return true
+                                                                    }else{
+                                                                        return false
+                                                                    }
+                                                                }).attr('fill', 'url(#diagonalHatch)')
 }
 
 //Function called by other graphs to select countries on the map
@@ -414,9 +489,9 @@ function select_country_on_map(country){
     if(!selected_countries_world_map.includes(country)){
         selected_countries_world_map.push(country);
     }
-    d3.select("#world_map").selectAll("path").filter(function(f) {
+    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
         if(f.properties.name == country){
-            console.log(f)
+            //console.log(f)
             return true
         }else{
             return false
@@ -433,9 +508,9 @@ function deselect_country_on_map(country){
     if(selected_countries_world_map.includes(country)){
         selected_countries_world_map.splice(selected_countries_world_map.indexOf(country), 1);
     }
-    d3.select("#world_map").selectAll("path").filter(function(f) {
+    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
         if(f.properties.name == country){
-            console.log(f)
+            //console.log(f)
             return true
         }else{
             return false
@@ -454,6 +529,13 @@ function deselect_country_on_map(country){
     }
 }
 
+function deselect_all_countries_on_map(){
+    var buffer = selected_countries_world_map.slice()
+    for(i=0; i<buffer.length; i++){
+        deselect_country_on_map(buffer[i])
+    }
+}
+
 //Function that trigger the selection from the map to the other graphs 
 function map_selection_interaction(country){
     select_country_on_scatterplot(country)
@@ -462,4 +544,5 @@ function map_selection_interaction(country){
 //Function that trigger the deselection from the map to the other graphs 
 function map_deselection_interaction(country){
     deselect_country_on_scatterplot(country)
+    deselect_country_on_bar_chart_dth(country)
 }

@@ -1,9 +1,10 @@
 var selected_countries_pca_scatterplot=[]
+var brush;
 
 function scatterplot_pca_loader(data){
 
     var database_data = data_elaboration_to_display_scutterplot_pca(data);
-    console.log(database_data)
+    //console.log(database_data)
 
     //calcuate the min and the max for each exes to set their values
     var min_x = database_data[0].Y1, 
@@ -24,10 +25,10 @@ function scatterplot_pca_loader(data){
             min_y = database_data[i].Y2;
         }
     }
-    console.log("min_x= "+min_x+", "+"max_x= "+max_x+", "+"min_y= "+min_y+", "+"max_y= "+max_y)
+    //console.log("min_x= "+min_x+", "+"max_x= "+max_x+", "+"min_y= "+min_y+", "+"max_y= "+max_y)
 
     //set the dimensions and margins of the graph
-    var margin = {top: 60, right: 30, bottom: 20, left: 80},
+    var margin = {top: 10, right: 30, bottom: 40, left: 80},
         width = (d3.select("#scatterplot_pca").style('width').slice(0, -2)) - margin.left - margin.right,
         height = (d3.select("#scatterplot_pca").style('height').slice(0, -2)) - margin.top - margin.bottom
 
@@ -47,8 +48,8 @@ function scatterplot_pca_loader(data){
 
     //add the x axes
     var x = d3.scaleLinear()
-                .domain([Math.round(min_x)-1, Math.ceil(max_x)+1])
-                .range([ 0, width ]);
+                .domain([Math.round(min_x)-1, Math.ceil(max_x)])
+                .range([ 0, width ])
     var xax = d3.axisBottom(x)
     var gx = SVG.append("g")
                     .attr("class", "scatterplot_pca_axes")
@@ -57,7 +58,7 @@ function scatterplot_pca_loader(data){
 
     //add the y axes
     var y = d3.scaleLinear()
-            .domain([Math.round(min_y)-1, Math.ceil(max_y)+1])
+            .domain([Math.round(min_y)-1, Math.ceil(max_y)+0.5])
             .range([ height, 0])
     var yax = d3.axisLeft(y).tickPadding(5) 
     var gy = SVG.append("g")
@@ -71,13 +72,16 @@ function scatterplot_pca_loader(data){
         .attr("x",0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("PCA Component 2");                    
+        .text("PCA Component 2");
     SVG.append("text")
-        .attr("y", height+margin.bottom+25)
-        .attr("x",(width)/2)       
+        .attr("y", height+margin.top+margin.bottom)
+        .attr("x",(width)/2)
         .style("text-anchor", "middle")
         .text("PCA Component 1");
 
+    //Div for the countries label on mouse over
+    var tooltip = d3.select("div.tooltip_scatterplot_pca");
+    tooltip.classed("hidden_scatterplot_pca", true);
     
     //functions that controll the mouse input in zoom modality
     let mouse_over = function(d){
@@ -85,7 +89,20 @@ function scatterplot_pca_loader(data){
                                         //.attr("opacity", 1)
                                         .attr("stroke", "red",)
                                         .attr("stroke-width", "2px")
-                                    
+
+                                    tooltip.style("hidden_scatterplot_pca", false)
+                                            .html(function(){
+                                                                return d.Country //+ "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                                            });
+                                }
+    let mouse_move = function(d){
+                                    //Move the div with the country name with the mouse on the map
+                                    tooltip.classed("hidden_scatterplot_pca", false)
+                                            .style("top", (d3.event.pageY) + "px")
+                                            .style("left", (d3.event.pageX + 15) + "px")
+                                            .html(function(){
+                                                                return d.Country
+                                                            });
                                 }
     let mouse_leave = function(d){
                                     if(!selected_countries_pca_scatterplot.includes(d.Country)){
@@ -95,24 +112,42 @@ function scatterplot_pca_loader(data){
                                             .attr("stroke", "black",)
                                             .attr("stroke-width", "0.1px")
                                     }
+
+                                    //Hide the label of the country name
+                                    tooltip.classed("hidden_scatterplot_pca", true);
                                 }
     let mouse_click = function(d){
-                                    if(!selected_countries_pca_scatterplot.includes(d.Country)){
+                                    if(!selected_countries_pca_scatterplot.includes(d.Country) && selected_countries_bar_chart_dth.length==0){
                                         d3.select(this)
                                             //.attr("opacity", 1)
                                             .attr("stroke", "red",)
                                             .attr("stroke-width", "2px")
                                         selected_countries_pca_scatterplot.push(d.Country)
                                         scatterplot_selection_interaction(d.Country)
-                                        console.log(selected_countries_pca_scatterplot)
-                                    }else{
+                                    }else if(selected_countries_pca_scatterplot.includes(d.Country) && (selected_countries_bar_chart_dth.length==0 || selected_countries_bar_chart_dth.includes(d.Country))){
                                         selected_countries_pca_scatterplot.splice(selected_countries_pca_scatterplot.indexOf(d.Country), 1)
                                         scatterplot_deselection_interaction(d.Country)
                                         d3.select(this)
                                             //.attr("opacity", 0.5)
                                             .attr("stroke", "black",)
                                             .attr("stroke-width", "0.1px")
-                                        console.log(selected_countries_pca_scatterplot)
+                                    }else if (!selected_countries_pca_scatterplot.includes(d.Country) && !selected_countries_bar_chart_dth.includes(d.Country)){ 
+                                        for(i=0; i<selected_countries_pca_scatterplot.length; i++){
+                                            scatterplot_deselection_interaction(selected_countries_pca_scatterplot[i])
+                                        }
+                                        myCircle.selectAll(function(d){
+                                                                        d3.select(this)
+                                                                            .attr("stroke", "black")
+                                                                            .attr("stroke-width", "0.1px")
+                                                                    })
+                                                    
+                                        selected_countries_pca_scatterplot = []
+                                        d3.select(this)
+                                            //.attr("opacity", 1)
+                                            .attr("stroke", "red",)
+                                            .attr("stroke-width", "2px")
+                                        selected_countries_pca_scatterplot.push(d.Country)
+                                        scatterplot_selection_interaction(d.Country)
                                     }
                                 }
 
@@ -163,12 +198,13 @@ function scatterplot_pca_loader(data){
                                                                                 return "0.1px"
                                                                             }
                                                                         })
-                                        .on("mouseover", mouse_over )                    
+                                        .on("mouseover", mouse_over )
+                                        .on("mousemove", mouse_move)                    
                                         .on("mouseleave", mouse_leave )
                                         .on("click", mouse_click)
     
     //create the brush feature
-    var brush =  d3.brush()
+    brush =  d3.brush()
                     //initialise the brush areawith start at 0,0 and finishes at width,height so that is possible select the whole graph area
                     .extent( [ [0,0], [width,height] ] ) 
                     //each time the brush selection changes trigger the 'update_chart' function
@@ -188,7 +224,7 @@ function scatterplot_pca_loader(data){
                                         if(!selected_countries_pca_scatterplot.includes(d.Country)){
                                             selected_countries_pca_scatterplot.push(d.Country)
                                             scatterplot_selection_interaction(d.Country)
-                                            console.log(selected_countries_pca_scatterplot)
+                                            //console.log(selected_countries_pca_scatterplot)
                                         }
                                     }else{
                                         d3.select(this)
@@ -256,12 +292,12 @@ function scatterplot_pca_loader(data){
                         
                             var svg = d3.select("#scatterplot_pca").select('svg');
                             svg.transition()
-                                .duration(750)
+                                .duration(0)
                                 .call(zoom.transform, d3.zoomIdentity);
                         }
     enableBrush()
     d3.selectAll(("input[name='scatterplot_pca_button']")).on("change", function(){
-                                                                                        console.log(this.value)
+                                                                                        //console.log(this.value)
                                                                                         if(this.value == "Zoom"){
                                                                                             disableBrush()
                                                                                         }else{
@@ -360,6 +396,29 @@ function data_elaboration_to_display_scutterplot_pca(start_data){
 function change_scatterplot_with_year(data){
     d3.select("#scatterplot_pca").select('svg').remove()
     scatterplot_pca_loader(data)
+    d3.selectAll(("input[name='scatterplot_pca_button']")).filter( function(){
+        //console.log(this.value)
+        if(this.value == "BrushSelection"){
+            d3.select(this).property("checked", true)
+        }
+    })
+}
+
+//Function to de/select the overpopulated countries
+function change_scatterplot_overpopulated(data, countries_array){
+    for(i=0; i<countries_array.length; i++){
+        if(selected_countries_pca_scatterplot.includes(countries_array[i])){
+            selected_countries_pca_scatterplot.splice(selected_countries_pca_scatterplot.indexOf(countries_array[i]), 1);
+        }
+    }
+    d3.select("#scatterplot_pca").select('svg').remove()
+    scatterplot_pca_loader(data)
+    d3.selectAll(("input[name='scatterplot_pca_button']")).filter( function(){
+        //console.log(this.value)
+        if(this.value == "BrushSelection"){
+            d3.select(this).property("checked", true)
+        }
+    })
 }
 
 //Function called by other graphs to select points on the scatterplot 
@@ -372,7 +431,7 @@ function select_country_on_scatterplot(country){
 
     d3.select("#scatterplot_pca").selectAll("circle").filter(function(f) {
         if(f.Country == country){
-            console.log(f)
+            //console.log(f)
             return true
         }else{
             return false
@@ -380,7 +439,7 @@ function select_country_on_scatterplot(country){
     })
     .attr("stroke", "red",)
     .attr("stroke-width", "2px")
-    
+
 }
 
 //Function called by other graphs to deselect points on the scatterplot 
@@ -392,7 +451,7 @@ function deselect_country_on_scatterplot(country){
 
     d3.select("#scatterplot_pca").selectAll("circle").filter(function(f) {
         if(f.Country == country){
-            console.log(f)
+            //console.log(f)
             return true
         }else{
             return false
@@ -400,6 +459,20 @@ function deselect_country_on_scatterplot(country){
     })
     .attr("stroke", "black",)
     .attr("stroke-width", "0.1px")
+
+    //Reset the brush if all points deselected
+    d3.selectAll(("input[name='scatterplot_pca_button']")).filter( function(){
+        if(this.value == "BrushSelection" && selected_countries_pca_scatterplot.length==0){
+            d3.select("#scatterplot_pca").select("g.brush").call(brush.move, [[0,0], [1,1]]);
+        }
+    })
+}
+
+function deselect_all_countries_on_scatterplot(){
+    var buffer = selected_countries_pca_scatterplot.slice()
+    for(i=0; i<buffer.length; i++){
+        deselect_country_on_scatterplot(buffer[i])
+    }
 
 }
 
@@ -412,4 +485,5 @@ function scatterplot_selection_interaction(country){
 //Function that trigger the deselection from the scatterplot to the other graphs 
 function scatterplot_deselection_interaction(country){
     deselect_country_on_map(country)
+    deselect_country_on_bar_chart_dth(country)
 }

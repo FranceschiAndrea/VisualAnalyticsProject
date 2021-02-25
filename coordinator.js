@@ -1,13 +1,15 @@
 var full_data = [];
+var full_data_no_overpopulated = [];
 var world_map_file;
-var starting_year = 4;
-var bar_graph_people_range = 1          //1(bigger)-5(lower)
+var current_year = 4;
+var bar_graph_people_range = 1;          //1(bigger)-5(lower)
 
-if(starting_year<10){
-    d3.selectAll(("input[name='range_years']")).property("value", "200"+starting_year)
+if(current_year<10){
+    d3.selectAll(("input[name='range_years']")).property("value", "200"+current_year)
 }else{
-    d3.selectAll(("input[name='range_years']")).property("value", "20"+starting_year)
+    d3.selectAll(("input[name='range_years']")).property("value", "20"+current_year)
 }
+
 d3.select("#bar_chart_dth_dropdown").property("value", bar_graph_people_range)
 
 var map_countries_divided_flag = [false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false]
@@ -46,36 +48,7 @@ var map_countries = [["French Southern and Antarctic Lands",""],
     ["Vietnam","Viet Nam"],
     ["West Bank",""]];
 
-/*d3.csv("dataset/total_merge/2015.csv", d3.autoType).then(function(data){
-    full_data.push(data);    
-    world_map_loader(full_data[0]);
-    });*/
-
-/*Promise.all([
-    d3_v5.csv("dataset/total_merge/2000.csv"),
-    d3_v5.csv("dataset/total_merge/2001.csv"),
-    d3_v5.csv("dataset/total_merge/2002.csv"),
-    d3_v5.csv("dataset/total_merge/2003.csv"),
-    d3_v5.csv("dataset/total_merge/2004.csv"),
-    d3_v5.csv("dataset/total_merge/2005.csv"),
-    d3_v5.csv("dataset/total_merge/2006.csv"),
-    d3_v5.csv("dataset/total_merge/2007.csv"),
-    d3_v5.csv("dataset/total_merge/2008.csv"),
-    d3_v5.csv("dataset/total_merge/2009.csv"),
-    d3_v5.csv("dataset/total_merge/2010.csv"),
-    d3_v5.csv("dataset/total_merge/2011.csv"),
-    d3_v5.csv("dataset/total_merge/2012.csv"),
-    d3_v5.csv("dataset/total_merge/2013.csv"),
-    d3_v5.csv("dataset/total_merge/2014.csv"),
-    d3_v5.csv("dataset/total_merge/2015.csv"),
-]).then(function(files) {
-
-    world_map_loader(files[0]);
-
-    //files[1]
-}).catch(function(err) {
-    // handle error here
-});*/
+var overpopulated_countries = ["India", "China", "USA"];
 
 d3.queue()
     .defer(d3.csv, "dataset/total_merge/2000.csv")
@@ -103,12 +76,15 @@ d3.queue()
                 world_map_file = world
                 
                 full_data = [table2000, table2001, table2002, table2003, table2004, table2005, table2006, table2007, table2008, table2009, table2010, table2011, table2012, table2013, table2014, table2015];
-                for(i in full_data){
-                    parseTable(full_data[i], world);
+                for(k=0; k<full_data.length; k++){
+                    parseTable(full_data[k], world);
+                    full_data_no_overpopulated.push(flter_overpopulated(full_data[k]))
                 }
-                world_map_loader(full_data[starting_year]);
-                scatterplot_pca_loader(full_data[starting_year]);
-                bar_chart_dht_loader(full_data[starting_year], bar_graph_people_range)
+                
+
+                world_map_loader(full_data[current_year]);
+                scatterplot_pca_loader(full_data[current_year]);
+                bar_chart_dht_loader(full_data[current_year], bar_graph_people_range)
 
         }
     });
@@ -119,13 +95,34 @@ d3.queue()
 //Function that change the years of all the graphs
 d3.selectAll(("input[name='range_years']")).on("input", function(){
     var value = parseInt(this.value.slice(-2))
-    console.log(value)
-    change_map_with_year(full_data[value])
-    change_scatterplot_with_year(full_data[value])
-    change_bar_chart_dth_with_year(full_data[value], bar_graph_people_range)
+    current_year = value
+    if(overpopulated_countries_flag){
+        change_map_with_year(full_data[current_year], full_data[current_year], overpopulated_countries)
+        change_scatterplot_with_year(full_data[current_year])
+        change_bar_chart_dth_with_year(full_data[current_year], bar_graph_people_range)
+    }else{
+        change_map_with_year(full_data[current_year], full_data_no_overpopulated[current_year], overpopulated_countries)
+        change_scatterplot_with_year(full_data_no_overpopulated[current_year])
+        change_bar_chart_dth_with_year(full_data_no_overpopulated[current_year], bar_graph_people_range)
+    }
 })
 
+var overpopulated_countries_flag = true;
+//Function to select or deselect the overpopulated countries
+d3.select("input[name='no_big_countries_checkbox']").on("change", function(){
 
+    if(overpopulated_countries_flag){
+        overpopulated_countries_flag = !overpopulated_countries_flag
+        change_bar_chart_dth_overpopulated(full_data_no_overpopulated[current_year], bar_graph_people_range, overpopulated_countries)
+        change_scatterplot_overpopulated(full_data_no_overpopulated[current_year], overpopulated_countries)
+        change_map_overpopulated(full_data[current_year], overpopulated_countries)
+    }else{
+        overpopulated_countries_flag = !overpopulated_countries_flag
+        change_bar_chart_dth_with_year(full_data[current_year], bar_graph_people_range)
+        change_scatterplot_with_year(full_data[current_year])
+        change_map_with_year(full_data[current_year], full_data[current_year], overpopulated_countries)
+    }
+})
 
 
 
@@ -205,4 +202,21 @@ function parseTable(table, topology){
     //This will contain 24 countries becasue 188 are the ones in the database - 176 are the ones in the world + 9 in the world are not in the database + 3 in the database but divided in the world so other 3 are in db but no in the world
 
     return table;
+}
+
+//Function to create the datawithout the overpopulated countries
+function flter_overpopulated(complete_data_table){
+
+    var buffer = complete_data_table.slice(0);
+
+    for(i=0; i<overpopulated_countries.length; i++){
+        for(j=0; j<complete_data_table.length; j++){
+            if(complete_data_table[j].Country == overpopulated_countries[i]){
+                buffer.splice(buffer.indexOf(complete_data_table[j]), 1)
+            }
+        }
+    }
+
+    return buffer
+
 }

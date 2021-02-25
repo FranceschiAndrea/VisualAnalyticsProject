@@ -15,26 +15,30 @@
 
     <body>
         <div class="grid-container">
-
-            <div class="range">
-                <input type="range" name="range_years" min="2000" max="2015"  class="slider">
-                <div class="sliderticks">
-                <p>2000</p>
-                <p>2001</p>
-                <p>2002</p>
-                <p>2003</p>
-                <p>2004</p>
-                <p>2005</p>
-                <p>2006</p>
-                <p>2007</p>
-                <p>2008</p>
-                <p>2009</p>
-                <p>2010</p>
-                <p>2011</p>
-                <p>2012</p>
-                <p>2013</p>
-                <p>2014</p>
-                <p>2015</p>
+            <div class="navigation_bar">
+                <div class="range">
+                    <input type="range" name="range_years" min="2000" max="2015"  class="slider">
+                    <div class="sliderticks">
+                    <p>2000</p>
+                    <p>2001</p>
+                    <p>2002</p>
+                    <p>2003</p>
+                    <p>2004</p>
+                    <p>2005</p>
+                    <p>2006</p>
+                    <p>2007</p>
+                    <p>2008</p>
+                    <p>2009</p>
+                    <p>2010</p>
+                    <p>2011</p>
+                    <p>2012</p>
+                    <p>2013</p>
+                    <p>2014</p>
+                    <p>2015</p>
+                    </div>
+                </div>
+                <div class="no_big_countries">
+                    Include the overpopulated countries (India, China, USA) <input type="checkbox" id="no_big_countries_checkbox" name="no_big_countries_checkbox" checked>
                 </div>
             </div>
             
@@ -43,15 +47,26 @@
 
             <div class="scatterplot_pca_container">
 
-                <div class="scatterplot_pca" id="scatterplot_pca" ></div>
 
 
-                <div class="scatterplot_pca button_pca">
-                    <input type="radio" name="scatterplot_pca_button" value="BrushSelection" checked> BrushSelection</input>
-                    <input type="radio" name="scatterplot_pca_button" value="Zoom"> Zoom</input>
+                <div class="scatterplot_pca_button_pca">
+                    <table class="scatterplot_pca_button_pca_table">
+                        <tbody>
+                            <tr>
+                                <td class="scatterplot_pca_button_pca_table_first_column">&nbsp;
+                                    <input type="radio" name="scatterplot_pca_button" value="BrushSelection" checked> BrushSelection</input>
+                                    <input type="radio" name="scatterplot_pca_button" value="Zoom"> Zoom</input>
+                                </td>
+                                <td class="scatterplot_pca_button_pca_table_second_column">&nbsp;
+                                    Ratio of deaths from respiratory<br>diseases to total deaths
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 
-                <div class="scatterplot_pca legend_description_pca">Ratio of deaths from respiratory diseases to total deaths</div>
+                <div class="scatterplot_pca" id="scatterplot_pca" ></div>
+                <div class="tooltip_scatterplot_pca"></div>
                 
             </div>
 

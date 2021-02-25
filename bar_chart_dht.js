@@ -1,3 +1,5 @@
+var selected_countries_bar_chart_dth = [];
+
 function bar_chart_dht_loader(data, pop_range){
 
     var max_total_causes_value = 0
@@ -72,7 +74,7 @@ function bar_chart_dht_loader(data, pop_range){
     var color = d3.scaleOrdinal()
                     .domain(color_array)
                     .range(d3.schemePaired);
-    console.log(subgroups)
+    //console.log(subgroups)
 
     //stack the data? --> stack per subgroup
     var stackedData = d3.stack()
@@ -85,16 +87,18 @@ function bar_chart_dht_loader(data, pop_range){
 
     // What happens when user hover a bar
     var mouseover = function(d) {
-                                    // what subgroup are we hovering?
-                                    var subgroupName = d3.select(this.parentNode).datum().key; // This was the tricky part
-                                    //console.log(subgroupName)
-                                    var subgroupValue = d.data[subgroupName];
-                                    //console.log(subgroupValue)
-                                    // Reduce opacity of all rect to 0.2
-                                    d3.selectAll(".myRect").style("opacity", 0.2)
-                                    // Highlight all rects of this subgroup with opacity 0.8. It is possible to select them since they have a specific class = their name.
-                                    d3.selectAll("."+subgroupName)
-                                        .style("opacity", 1)
+                                    if(selected_countries_bar_chart_dth.length==0){
+                                        // what subgroup are we hovering?
+                                        var subgroupName = d3.select(this.parentNode).datum().key; // This was the tricky part
+                                        //console.log(subgroupName)
+                                        var subgroupValue = d.data[subgroupName];
+                                        //console.log(subgroupValue)
+                                        // Reduce opacity of all rect to 0.2
+                                        d3.selectAll(".myRect").selectAll("rect").attr("opacity", 0.3)
+                                        // Highlight all rects of this subgroup with opacity 0.8. It is possible to select them since they have a specific class = their name.
+                                        d3.selectAll("."+subgroupName).selectAll("rect")
+                                            .attr("opacity", 1)
+                                    }
 
                                     //Interactive legend
                                     svg.selectAll(".temporary_text").remove()
@@ -108,7 +112,7 @@ function bar_chart_dht_loader(data, pop_range){
                                                 .attr("font-weight", "bold")
                                                 .attr("text-anchor", "start")
                                                 .text(function(){
-                                                                    if(d.data.Country.length>20){
+                                                                    if(d.data.Country.length>13){
                                                                         return d.data.Name_Abbreviation
                                                                     }else{
                                                                         return d.data.Country
@@ -138,9 +142,11 @@ function bar_chart_dht_loader(data, pop_range){
 
     // When user do not hover anymore
     var mouseleave = function(d) {
-                                    // Back to normal opacity: 0.8
-                                    d3.selectAll(".myRect")
-                                        .style("opacity",0.8)
+                                    if(selected_countries_bar_chart_dth.length==0){
+                                        // Back to normal opacity: 0.8
+                                        d3.selectAll(".myRect").selectAll("rect")
+                                            .attr("opacity",0.8)
+                                    }
                                     //Interactive legend
                                     svg.selectAll(".temporary_text").remove()
                                     for(i=0; i<6; i++){
@@ -175,6 +181,44 @@ function bar_chart_dht_loader(data, pop_range){
                                     }
                                 }
 
+    var mouseclick = function(d) {
+                                    if(!selected_countries_bar_chart_dth.includes(d.data.Country)){
+
+                                        bar_chart_dth_selection_interaction(d.data.Country)
+
+                                        selected_countries_bar_chart_dth.push(d.data.Country)
+                                        
+                                        d3.selectAll(".myRect")
+                                            .selectAll("rect")
+                                            .filter(function(d){
+                                                if(selected_countries_bar_chart_dth.includes(d.data.Country)){
+                                                    return false
+                                                }else{
+                                                    return true
+                                                }
+                                            })
+                                            .attr("opacity", 0.3)
+
+                                        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                            .attr("opacity",1)
+
+
+                                    }else{
+                                        selected_countries_bar_chart_dth.splice(selected_countries_bar_chart_dth.indexOf(d.data.Country), 1);
+                                        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                            .attr("opacity",0.3)
+
+                                        if(selected_countries_bar_chart_dth.length==0){
+                                            var subgroupName = d3.select(this.parentNode).datum().key;
+                                            d3.selectAll(".myRect").selectAll("rect").attr("opacity", 0.3)
+                                            d3.selectAll("."+subgroupName).selectAll("rect")
+                                                .attr("opacity", 1)
+                                        }
+                                        
+                                        bar_chart_dth_deselection_interaction(d.data.Country)
+                                    }  
+    }
+
     // Show the bars
     svg.append("g")
         .selectAll("g")
@@ -204,8 +248,19 @@ function bar_chart_dht_loader(data, pop_range){
                                                 })
                     .attr("width",x.bandwidth())
                     .attr("stroke", "grey")
+                    .attr("opacity", function(d){
+                                                    if(selected_countries_bar_chart_dth.length==0 || selected_countries_bar_chart_dth.includes(d.data.Country)){
+                                                        return 1
+                                                    }else{
+                                                        return 0.3
+                                                    }
+                                                 })
+                    .attr("id", function(d){
+                                            return "bar_chart_dth_"+d.data.Country.split(' ').join('_')
+                                        })
         .on("mouseover", mouseover)
         .on("mouseleave", mouseleave)
+        .on("click", mouseclick)
 
         /*d3.selectAll(("button[id='bar_chart_dth_button_1']")).on("click", function(){
             console.log("Premuto",this.value)
@@ -239,6 +294,12 @@ function bar_chart_dht_loader(data, pop_range){
         })*/
 
         d3.select("#bar_chart_dth_dropdown").on("change", function(d) {
+            if(selected_countries_bar_chart_dth.length!=0){
+                for(i=0; i<selected_countries_bar_chart_dth.length; i++){
+                    bar_chart_dth_deselection_interaction(selected_countries_bar_chart_dth[i])
+                }
+                selected_countries_bar_chart_dth = []
+            }
             bar_graph_people_range = parseInt(this.value)
             d3.select("#bar_chart_dth").select('svg').remove()
             bar_chart_dht_loader(data, parseInt(this.value))
@@ -444,4 +505,49 @@ function data_elaboration_to_display_bar_chart_dth(start_data, pop_range){
 function change_bar_chart_dth_with_year(data, pop_range){
     d3.select("#bar_chart_dth").select('svg').remove()
     bar_chart_dht_loader(data, pop_range)
+}
+
+//Function to de/select the overpopulated countries
+function change_bar_chart_dth_overpopulated(data, pop_range, countries_array){
+    //console.log("BAR CHART OVERPOPULATED COUNTRYESARRRAY LENTH", countries_array)
+    for(i=0; i<countries_array.length; i++){
+        /*console.log(selected_countries_bar_chart_dth)
+        console.log(countries_array)
+        console.log(selected_countries_bar_chart_dth.includes(countries_array[0]))*/
+        if(selected_countries_bar_chart_dth.includes(countries_array[i])){
+            //console.log("BAR CHART FOR x OVERPOPULATED IF")
+            selected_countries_bar_chart_dth.splice(selected_countries_bar_chart_dth.indexOf(countries_array[i]), 1);
+        }
+    }
+    d3.select("#bar_chart_dth").select('svg').remove()
+    bar_chart_dht_loader(data, pop_range)
+}
+
+//Function to deselect the countries from the other charts only if alredy selected in thebar chart
+function deselect_country_on_bar_chart_dth(country){
+    if(selected_countries_bar_chart_dth.includes(country)){
+        selected_countries_bar_chart_dth.splice(selected_countries_bar_chart_dth.indexOf(country), 1);
+        d3.selectAll(("#bar_chart_dth_"+country.split(' ').join('_'))).filter(function(f){/*console.log(f);*/ return true;})
+            .attr("opacity",0.3)
+
+        if(selected_countries_bar_chart_dth.length==0){
+            d3.selectAll(".myRect").selectAll("rect").attr("opacity", 1)
+        }
+    }
+}
+
+//Function that trigger the selection from the bar chart to the other graphs 
+function bar_chart_dth_selection_interaction(country){
+    if(selected_countries_bar_chart_dth.length==0){
+        deselect_all_countries_on_map()
+        deselect_all_countries_on_scatterplot()
+    }
+    select_country_on_scatterplot(country)
+    select_country_on_map(country)
+}
+
+//Function that trigger the deselection from the bar chart to the other graphs 
+function bar_chart_dth_deselection_interaction(country){
+    deselect_country_on_scatterplot(country)
+    deselect_country_on_map(country)
 }
