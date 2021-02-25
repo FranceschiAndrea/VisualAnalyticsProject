@@ -174,7 +174,7 @@ var gP = svg.selectAll("axis")
     .append("text")
     .attr("class","text_parallel_axis")
     .style("text-anchor", "middle")
-    .attr("y", -9)
+    .attr("y", -14)
     .text(function (d) { return d; })
     
     

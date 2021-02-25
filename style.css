@@ -96,9 +96,8 @@ div.tooltip_world_map {
 
 .text_parallel_axis{ 
     fill:#fff;
-    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
-    font-weight: 100;
-    font: 12px sans-serif;
+    font: 14px sans-serif;
+    font-weight: bold;
 }
 
 /*****************************************************************
@@ -198,9 +197,9 @@ div.tooltip_scatterplot_pca {
     width: 100%;
     height: 10px;
     margin-top: 10px;
-    background: #000000;
+    background: #0000009f;
     outline: none;
-    opacity: 0.5;
+    opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
