@@ -50,6 +50,88 @@ var map_countries = [["French Southern and Antarctic Lands",""],
 
 var overpopulated_countries = ["India", "China", "USA"];
 
+    //-----------------------------------------EUROPE--------------------------------------------------
+    //comprende western+southern
+    var region_southern_europe=[
+    "Albania","Austria","Belgium","Bosnia and Herzegovina","Slovenia","Croatia","Greece","Italy","Germany",
+    "Spain","Portugal","Switzerland","Netherlands","Republic of Serbia","Macedonia","France","Luxembourg"
+    ]
+    
+    //comprende northern+eastern
+    var region_northern_europe=[
+    "Belarus","Bulgaria","Czech Republic","Denmark","Estonia","Finland","Russia","Latvia","Lithuania","Sweden",
+    "Norway","England","Ireland","Iceland","Poland","Ukraine","Moldova","Romania","Slovakia","Hungary"
+    ]
+    //----------------------------------------------------------------------------------------------------
+    
+    //-----------------------------------------ASIA---------------------------------------------------- 
+    var region_southern_asia=[
+    "Afghanistan","Bangladesh","Pakistan","India","Nepal","Bhutan","Sri Lanka","Iran",
+    ]
+    
+    var region_central_asia=[
+    "Kazakhstan","Turkmenistan","Uzbekistan","Tajikistan","Kyrgyzstan"
+    ]
+    
+    var region_western_asia=[
+    "Armenia","Azerbaijan","Turkey","Cyprus","Northern Cyprus","Georgia","Oman","Yemen","Saudi Arabia",
+    "United Arab Emirates","Qatar","Kuwait","Iraq","Jordan","Israel","Lebanon","Syria"
+    ]
+    
+    var region_eastern_asia=[
+    "China","North Korea","South Korea","Japan","Mongolia","Taiwan"
+    ]
+    
+    var region_southeastern_asia=[
+    "Brunei","Cambodia","Myanmar","Thailand","Laos","Vietnam","Malaysia","Indonesia","Philippines","East Timor"
+    ]
+    //----------------------------------------------------------------------------------------------------
+    
+    //-----------------------------------------AFRICA---------------------------------------------------- DONE
+    
+    //comprende northern+ western
+    var region_northern_africa=[
+    "Algeria","Benin","Burkina Faso","Niger","Nigeria","Togo","Ghana","Liberia","Sierra Leone","Guinea",
+    "Guinea Bissau","Gambia","Senegal","Mauritania","Mali","Morocco","Tunisia","Libya","Egypt","Sudan"
+    ]
+    //comprende middle+eastern
+    var region_central_africa=[
+    "Angola","Burundi","Zambia","Zimbabwe","Mozambique","Madagascar","Cameroon",
+    "Central African Republic","Chad","Republic of the Congo","Democratic Republic of the Congo",
+    "South Sudan","Ethiopia","Eritrea","Somalia","Uganda","Kenya","Rwanda","United Republic of Tanzania",
+    "Malawi","Equatorial Guinea","Gabon","Djibouti"
+    ]
+    var region_southern_africa=[
+    "Botswana","Namibia","South Africa","Lesotho","Swaziland"
+    ]
+    //----------------------------------------------------------------------------------------------------
+    
+    //-----------------------------------------AMERICA----------------------------------------------------
+    
+    //DONE
+    
+    //comprendere northern+central+Caribbean
+    var region_northern_america=[
+    "The Bahamas","Belize","Canada","Costa Rica","Cuba","Dominican Republic","USA","Mexico","Guatemala",
+    "Honduras","Nicaragua","Panama","Jamaica","Haiti","Puerto Rico","Greenland","El Salvador"
+    ]
+    
+    var region_southern_america=[
+    "Argentina","Bolivia","Brazil","Chile","Colombia","Ecuador","Peru","Venezuela","Trinidad and Tobago",
+    "Guyana","Suriname","Paraguay","Uruguay"
+    ]
+    
+    //----------------------------------------------------------------------------------------------------
+    
+    //------------------------------------------OCEANIA---------------------------------------------------
+    var region_oceania=[
+    "Australia","New Zealand","Papua New Guinea","Solomon Islands","Vanuatu","Fiji"
+    ]
+    
+    //----------------------------------------------------------------------------------------------------
+    
+
+
 d3.queue()
     .defer(d3.csv, "dataset/total_merge/2000.csv")
     .defer(d3.csv, "dataset/total_merge/2001.csv")
@@ -81,10 +163,10 @@ d3.queue()
                     full_data_no_overpopulated.push(flter_overpopulated(full_data[k]))
                 }
                 
-
                 world_map_loader(full_data[current_year]);
                 scatterplot_pca_loader(full_data[current_year]);
                 bar_chart_dht_loader(full_data[current_year], bar_graph_people_range)
+                parallel_loader(full_data[current_year])
 
         }
     });
@@ -100,10 +182,12 @@ d3.selectAll(("input[name='range_years']")).on("input", function(){
         change_map_with_year(full_data[current_year], full_data[current_year], overpopulated_countries)
         change_scatterplot_with_year(full_data[current_year])
         change_bar_chart_dth_with_year(full_data[current_year], bar_graph_people_range)
+        change_parallel_with_year(full_data[current_year])
     }else{
         change_map_with_year(full_data[current_year], full_data_no_overpopulated[current_year], overpopulated_countries)
         change_scatterplot_with_year(full_data_no_overpopulated[current_year])
         change_bar_chart_dth_with_year(full_data_no_overpopulated[current_year], bar_graph_people_range)
+        change_parallel_with_year(full_data_no_overpopulated[current_year])
     }
 })
 
@@ -116,11 +200,14 @@ d3.select("input[name='no_big_countries_checkbox']").on("change", function(){
         change_bar_chart_dth_overpopulated(full_data_no_overpopulated[current_year], bar_graph_people_range, overpopulated_countries)
         change_scatterplot_overpopulated(full_data_no_overpopulated[current_year], overpopulated_countries)
         change_map_overpopulated(full_data[current_year], overpopulated_countries)
+        change_parallel_overpopulated(full_data_no_overpopulated[current_year],overpopulated_countries)
+
     }else{
         overpopulated_countries_flag = !overpopulated_countries_flag
         change_bar_chart_dth_with_year(full_data[current_year], bar_graph_people_range)
         change_scatterplot_with_year(full_data[current_year])
         change_map_with_year(full_data[current_year], full_data[current_year], overpopulated_countries)
+        change_parallel_with_year(full_data[current_year])
     }
 })
 
@@ -200,7 +287,58 @@ function parseTable(table, topology){
         table.push(countries_to_duplicate[i])
     }
     //This will contain 24 countries becasue 188 are the ones in the database - 176 are the ones in the world + 9 in the world are not in the database + 3 in the database but divided in the world so other 3 are in db but no in the world
+    for(i=0;i<table.length;i++){
 
+        //EUROPE
+        if(region_southern_europe.includes(table[i]['Country'])){
+            table[i]["World Region"]="Southern Europe"
+        }
+        else if(region_northern_europe.includes(table[i]['Country'])){
+            table[i]["World Region"]="Northern Europe"
+        }
+  
+        //AFRICA
+        else if(region_central_africa.includes(table[i]['Country'])){
+            table[i]["World Region"]="Central Africa"
+        }
+        else if(region_southern_africa.includes(table[i]['Country'])){
+            table[i]["World Region"]="Southern Africa"
+        }
+        else if(region_northern_africa.includes(table[i]['Country'])){
+            table[i]["World Region"]="Northern Africa"
+        }
+  
+        //ASIA
+        else if(region_central_asia.includes(table[i]['Country'])){
+            table[i]["World Region"]="Central Asia"
+        }
+        else if(region_eastern_asia.includes(table[i]['Country'])){
+            table[i]["World Region"]="Eastern Asia"
+        }
+        else if(region_western_asia.includes(table[i]['Country'])){
+            table[i]["World Region"]="Western Asia"
+        }
+        else if(region_southern_asia.includes(table[i]['Country'])){
+            table[i]["World Region"]="Southern Asia"
+        }
+        else if(region_southeastern_asia.includes(table[i]['Country'])){
+            table[i]["World Region"]="Southeastern Asia"
+        }
+  
+        //AMERICA
+        else if(region_southern_america.includes(table[i]['Country'])){
+            table[i]["World Region"]="Southern America"
+        }
+        else if(region_northern_america.includes(table[i]['Country'])){
+            table[i]["World Region"]="Northern America"
+        }
+  
+        //OCEANIA
+        else if(region_oceania.includes(table[i]['Country'])){
+            table[i]["World Region"]="Oceania"
+        }
+    }
+  
     return table;
 }
 

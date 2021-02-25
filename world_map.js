@@ -539,10 +539,12 @@ function deselect_all_countries_on_map(){
 //Function that trigger the selection from the map to the other graphs 
 function map_selection_interaction(country){
     select_country_on_scatterplot(country)
+    select_on_parallel(country)
 }
 
 //Function that trigger the deselection from the map to the other graphs 
 function map_deselection_interaction(country){
     deselect_country_on_scatterplot(country)
     deselect_country_on_bar_chart_dth(country)
+    deselect_on_parallel(country)
 }

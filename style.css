@@ -12,6 +12,7 @@ html, body, .grid-container { height: 100%; padding: 0; margin: 0;font: 15px san
             height: 100%;
             /*background: rgb(52, 36, 145);*/
             background: #000;
+            border-left: 4px solid rgb(129, 135, 143);
             }
 .hidden {
     display: none;
@@ -38,6 +39,70 @@ div.tooltip_world_map {
     font: 15px sans-serif;
 }*/
 /**********************************************************/
+
+/**********************************************************/
+
+/*PARALLEL*/
+#parallel_graph{
+    grid-area: 2 / 2 / 3 / 3;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-left: 4px solid rgb(129, 135, 143);
+    border-right: 4px solid rgb(129, 135, 143);
+}
+
+
+.brushParallel .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
+}
+
+
+.axis_parallel line,
+.axis_parallel path{
+    stroke: rgb(255, 255, 255);
+}
+
+.axis_parallel text {
+    fill: #fff;
+    cursor: move;
+}
+
+
+.axisParallel line,
+.axisParallel path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axisParallel text {
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    cursor: move;
+}
+
+.background path {
+    fill: none;
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+}
+
+.foreground path {
+    fill: none;
+    stroke: steelblue;
+}
+
+.text_parallel_axis{ 
+    fill:#fff;
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    font-weight: 100;
+    font: 12px sans-serif;
+}
+
+/*****************************************************************
+
 /**********************SCATTERPLOT PCA STYLE**********************/
 
 .scatterplot_pca_container{
@@ -48,6 +113,10 @@ div.tooltip_world_map {
     background: white;
     background: #000;*/
     background: rgb(255, 255, 255);
+    border-top:5px solid rgb(129, 135, 143);
+    border-left: 4px solid rgb(129, 135, 143);
+    border-right: 4px solid rgb(129, 135, 143);
+    border-bottom: 4px solid rgb(129, 135, 143);
 }
 .scatterplot_pca{
     width: 100%;
@@ -106,6 +175,8 @@ div.tooltip_scatterplot_pca {
     grid-area: 1 / 1 / 2 / 3;
     display: flex;
     justify-content: center;
+    background-color: rgb(150, 155, 161);
+    /*color:#fff*/
 }
 .no_big_countries{
     margin-top: 1%;
@@ -127,9 +198,9 @@ div.tooltip_scatterplot_pca {
     width: 100%;
     height: 10px;
     margin-top: 10px;
-    background: #D3D3D3;
+    background: #000000;
     outline: none;
-    opacity: 0.7;
+    opacity: 0.5;
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
@@ -143,7 +214,7 @@ div.tooltip_scatterplot_pca {
     appearance: none;
     width: 20px;
     height: 20px;
-    background: #000000;
+    background: #005CC8;
     cursor: pointer;
 }
 
@@ -167,7 +238,7 @@ div.tooltip_scatterplot_pca {
     justify-content: center;
     text-align: center;
     width: 1px;
-    background: #D3D3D3;
+    background: #000000;
     height: 10px;
     line-height: 40px;
     margin: 5px 0 20px 0;
@@ -179,7 +250,9 @@ div.tooltip_scatterplot_pca {
     grid-area: 3 / 1 / 4 / 2;
     background: white;
     position: relative;
-
+    border-top: 5px solid rgb(129, 135, 143);
+    border-left: 4px solid rgb(129, 135, 143);
+    border-bottom: 4px solid rgb(129, 135, 143);
 }
 
 .bar_chart_dth{
