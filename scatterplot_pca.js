@@ -1,4 +1,5 @@
 var selected_countries_pca_scatterplot=[]
+var selected_countries_pca_scatterplot_by_parallel=[]
 var brush;
 
 function scatterplot_pca_loader(data){
@@ -87,7 +88,7 @@ function scatterplot_pca_loader(data){
     let mouse_over = function(d){
                                     d3.select(this)
                                         //.attr("opacity", 1)
-                                        .attr("stroke", "red",)
+                                        .attr("stroke", "#eb04f7",)
                                         .attr("stroke-width", "2px")
 
                                     tooltip.style("hidden_scatterplot_pca", false)
@@ -120,7 +121,7 @@ function scatterplot_pca_loader(data){
                                     if(!selected_countries_pca_scatterplot.includes(d.Country) && selected_countries_bar_chart_dth.length==0){
                                         d3.select(this)
                                             //.attr("opacity", 1)
-                                            .attr("stroke", "red",)
+                                            .attr("stroke", "#eb04f7",)
                                             .attr("stroke-width", "2px")
                                         selected_countries_pca_scatterplot.push(d.Country)
                                         scatterplot_selection_interaction(d.Country)
@@ -144,7 +145,7 @@ function scatterplot_pca_loader(data){
                                         selected_countries_pca_scatterplot = []
                                         d3.select(this)
                                             //.attr("opacity", 1)
-                                            .attr("stroke", "red",)
+                                            .attr("stroke", "#eb04f7",)
                                             .attr("stroke-width", "2px")
                                         selected_countries_pca_scatterplot.push(d.Country)
                                         scatterplot_selection_interaction(d.Country)
@@ -159,7 +160,7 @@ function scatterplot_pca_loader(data){
     //color scale used to color the various points
     var color_scale = d3.scaleThreshold()
                         .domain([0.03, 0.05, 0.1, 0.15])
-                        .range(d3.schemeYlGn[4]);
+                        .range(d3.schemePuBu[4]);
 
     //add a clip path where everything out of this area won't be drawn to not see the points overlap the axes
     var clip = SVG.append('defs')
@@ -182,11 +183,17 @@ function scatterplot_pca_loader(data){
                                         .attr("cx", function (d) { return x(d.Y1); } )
                                         .attr("cy", function (d) { return y(d.Y2); } )
                                         .attr("r", 6.5)
-                                        .style("fill", function (d) { return color_scale(d['Death Percentage']) } )
+                                        .style("fill", function (d) { 
+                                                                        if(selected_countries_pca_scatterplot_by_parallel.includes(d.Country) || (selected_countries_world_map.includes(d.Country) && selected_countries_onAllAxis.includes(d.Country)) || selected_countries_bar_chart_dth.includes(d.Country)){
+                                                                            return "#16bc21"
+                                                                        }else{
+                                                                            return color_scale(d['Death Percentage']) 
+                                                                        }
+                                                                    } )
                                         //.style("opacity", 0.7)
                                         .attr("stroke", function(d){
                                                                         if(selected_countries_pca_scatterplot.includes(d.Country)){
-                                                                            return "red"
+                                                                            return "#eb04f7"
                                                                         }else{
                                                                             return "black"
                                                                         }
@@ -215,17 +222,20 @@ function scatterplot_pca_loader(data){
                             extent = d3.event.selection
                                 myCircle.selectAll(function(d){
                                     if(isBrushed(extent, x(d.Y1), y(d.Y2) )){
-                                        d3.select(this)
+                                        //if(selected_countries_pca_scatterplot_by_parallel.includes(d.Country) || selected_countries_pca_scatterplot_by_parallel.length==0){
+                                            d3.select(this)
                                             //.classed("selected", true)
                                             //.attr("opacity", 1)
-                                            .attr("stroke", "red",)
+                                            .attr("stroke", "#eb04f7",)
                                             .attr("stroke-width", "2px")
-
+                                        //}
+                                        //Per la mappa QUIIIIIIIIIIIIIII
                                         if(!selected_countries_pca_scatterplot.includes(d.Country)){
                                             selected_countries_pca_scatterplot.push(d.Country)
                                             scatterplot_selection_interaction(d.Country)
                                             //console.log(selected_countries_pca_scatterplot)
                                         }
+                                        
                                     }else{
                                         d3.select(this)
                                             //.classed("selected", false)
@@ -331,7 +341,7 @@ function scatterplot_pca_loader(data){
 
     var threshold = d3.scaleThreshold()
                         .domain([1, 2, 3, 4])
-                        .range(d3.schemeYlGn[5]);
+                        .range(d3.schemePuBu[5]);
 
     var legend_labels = ["< 0,03","< 0,05","< 0,1","< 0,15"]
 
@@ -410,6 +420,9 @@ function change_scatterplot_overpopulated(data, countries_array){
         if(selected_countries_pca_scatterplot.includes(countries_array[i])){
             selected_countries_pca_scatterplot.splice(selected_countries_pca_scatterplot.indexOf(countries_array[i]), 1);
         }
+        if(selected_countries_pca_scatterplot_by_parallel.includes(overpopulated_countries[i])){
+            selected_countries_pca_scatterplot_by_parallel.splice(selected_countries_pca_scatterplot_by_parallel.indexOf(overpopulated_countries[i]),1)
+        }
     }
     d3.select("#scatterplot_pca").select('svg').remove()
     scatterplot_pca_loader(data)
@@ -437,14 +450,17 @@ function select_country_on_scatterplot(country){
             return false
         }
     })
-    .attr("stroke", "red",)
+    .attr("stroke", "#eb04f7",)
     .attr("stroke-width", "2px")
+    .style("fill", "#16bc21")
 
 }
 
 //Function called by other graphs to deselect points on the scatterplot 
 function deselect_country_on_scatterplot(country){
-
+    var color_scale = d3.scaleThreshold()
+                            .domain([0.03, 0.05, 0.1, 0.15])
+                            .range(d3.schemePuBu[4]);
     if(selected_countries_pca_scatterplot.includes(country)){
         selected_countries_pca_scatterplot.splice(selected_countries_pca_scatterplot.indexOf(country), 1)
     }
@@ -452,6 +468,7 @@ function deselect_country_on_scatterplot(country){
     d3.select("#scatterplot_pca").selectAll("circle").filter(function(f) {
         if(f.Country == country){
             //console.log(f)
+            d3.select(this).style("fill", color_scale(f['Death Percentage']))
             return true
         }else{
             return false
@@ -476,14 +493,95 @@ function deselect_all_countries_on_scatterplot(){
 
 }
 
+//-----------------------------------////////////////----------------------------/////////////////////----------------------////////////////////---------------------------
+//POSSIBILTA DI AGGIUNTA DOVE CAMBIO LO STROKE ANCHE DEL CAMBIO SULLA MAPPA POICHE DOVRANNO ESSERE SOLO QUELLE LE NAZIONI SELEZIONATE SULLA MAPPA
+//OPPURE GESTISCI IL CAMBIO SULLA MAPPA DALLA FUNZIONE CHE VERRA CHIAMATA PER SELEZIONARE E DESELEZIONARE SULLO SCATTERPLOT
+//OPPURE GESTISCI TUTTO DAL CODICE GENERALE (SCELTA MENO CONSIGLIATA PER VIA DEL CASINO)
+
+function select_for_parallel_to_scatterplot(country){
+    if(!selected_countries_pca_scatterplot_by_parallel.includes(country)){
+        //Elimino la trasparenza in quello selezionato
+        d3.select("#scatterplot_pca").selectAll("circle").filter(function(f) {
+            if(f.Country == country){
+                selected_countries_pca_scatterplot_by_parallel.push(country)
+                //Se gia selezionato nello scatterplot diventa rosso lo stroke
+                if(selected_countries_pca_scatterplot.includes(country)){
+                    d3.select(this)
+                        .attr("stroke", "#eb04f7",)
+                        .attr("stroke-width", "2px")
+                }
+
+                return true
+            }
+        }).style("fill", "#16bc21")
+    }
+   
+}
+
+
+function deselect_for_parallel_to_scatterplot(country){
+    var color_scale = d3.scaleThreshold()
+                        .domain([0.03, 0.05, 0.1, 0.15])
+                        .range(d3.schemePuBu[4]);
+    //Se è incluso tra quelli selezionati dal parallel devo deselezionarlo
+    if(selected_countries_pca_scatterplot_by_parallel.includes(country)){
+        //Lo elimino dall'array
+        selected_countries_pca_scatterplot_by_parallel.splice(selected_countries_pca_scatterplot_by_parallel.indexOf(country), 1)
+    
+        //Cerco tra tutti i punti quello con la country che mi è stato passata
+        d3.select("#scatterplot_pca").selectAll("circle").filter(function(f) {
+            if(f.Country == country){
+                //Se deselezionato dal parallel e gia selezioanto nello scatter lo stroke deve rimanere rosso il colore deve tornare da verde a blue
+                if(selected_countries_pca_scatterplot.includes(country)){
+                    /*d3.select(this)
+                        .attr("stroke", "black")
+                        .attr("stroke-width", "0.1px")*/
+                }
+                d3.select(this).style("fill",  color_scale(f['Death Percentage']))
+            }
+        })
+
+        //Se sto deselezionando l'ultimo tornano tutti a opacità piena i tondi
+        //console.log(selected_countries_pca_scatterplot_by_parallel)
+        if(selected_countries_pca_scatterplot_by_parallel.length==0){
+            d3.select("#scatterplot_pca").selectAll("circle").filter(function(f) {
+                //Tutti i selezionati dello scatterplot tornano con lo stroke rosso
+                if(selected_countries_pca_scatterplot.includes(f.Country)){
+                    d3.select(this)
+                        .attr("stroke", "#eb04f7",)
+                        .attr("stroke-width", "2px")
+                }
+                d3.select(this).style("fill",  color_scale(f['Death Percentage']))
+                //return true
+            })
+        }
+    }
+    
+}
+//-----------------------------------////////////////----------------------------/////////////////////----------------------////////////////////---------------------------
 
 //Function that trigger the selection from the scatterplot to the other graphs 
 function scatterplot_selection_interaction(country){
-    select_country_on_map(country)
+
+    if(!selected_countries_pca_scatterplot_by_parallel.includes(country)){
+        select_country_on_map(country, "scatterplot")
+    }else{
+        select_country_on_map_triple(country)
+    }
+
+    select_on_parallel_from_pca(country)
 }
 
 //Function that trigger the deselection from the scatterplot to the other graphs 
 function scatterplot_deselection_interaction(country){
-    deselect_country_on_map(country)
+
+    if(!selected_countries_pca_scatterplot_by_parallel.includes(country)){
+        deselect_country_on_map(country)
+        deselect_on_parallel(country)
+    }else{
+        deselect_country_on_map_triple(country)
+    }
+
     deselect_country_on_bar_chart_dth(country)
+    deselect_on_parallel_from_pca(country)
 }

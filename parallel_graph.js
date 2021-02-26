@@ -1,4 +1,5 @@
 var selected_countries_onAllAxis=[]
+var selected_countries_onAllAxis_by_scatterplot=[]
 
 
 function parallel_loader(data_table){
@@ -104,6 +105,8 @@ for (i in dimensions) {
       }
     });
     countries.sort();
+    countries.unshift("  ")
+    countries.push(" ")
     y[j] = d3.scalePoint()
       .domain(countries)
       .range([0, height]);
@@ -234,7 +237,8 @@ function parallelFiltering(d) {
 function brushstart() {
   d3.event.sourceEvent.stopPropagation();
 }
-//var cambio=false;
+
+var flag_onClick=false;
 
 function cancelSelection() {
   key = this.__data__;
@@ -245,6 +249,9 @@ function cancelSelection() {
     if (children[i].__data__.type == 'selection' && children[i].y.animVal.value == 0) hide = true;
   }
   if (!hide) return;
+
+  flag_onClick=true
+
   for (i in dimensions) {
     if (key == dimensions[i]) {
       extents[i] = [0, 0];
@@ -259,6 +266,7 @@ function cancelSelection() {
     for(i=0;i<selected_countries_onAllAxis.length;i++){
       deselect_from_parallel(selected_countries_onAllAxis[i])
     }
+    d3.selectAll(".path_foreground").filter(function(d){d3.select(this).style("stroke", color_scale(d.Sum))})
   }
   selected_countries_onAllAxis=[]
 }
@@ -290,6 +298,22 @@ function brushParallel() {
       if (value) {
         selected_countries_onAllAxis.push(d['Country'])
         select_from_parallel(d['Country'])
+        d3.select(this).style("stroke", function(d){
+                                                      if(!flag_onClick){
+                                                        if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country'])){
+                                                          return "#eb04f7"
+                                                        }else{
+                                                          return "#16bc21"
+                                                        }
+                                                      }else if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country'])){
+                                                        return "#eb04f7"
+                                                      }/*else if(selected_countries_onAllAxis.includes(d['Country'])){
+                                                        return "#16bc21"
+                                                      }*/else{
+                                                        //return color_scale(d.Sum)
+                                                        return "#16bc21"
+                                                      }                   
+        })
         return null;
       }
         /*
@@ -298,13 +322,14 @@ function brushParallel() {
         }*/
       
       deselect_from_parallel(d['Country'])
+      //d3.select(this).style("stroke", color_scale(d.Sum))
       return "none";
   });
 
-  flag_onClick=true
+  flag_onClick=false
 
-  console.log("stampo dopo la brush")
-  console.log(selected_countries_onAllAxis)
+  //console.log("stampo dopo la brush")
+  //console.log(selected_countries_onAllAxis)
 
 
 }
@@ -322,11 +347,16 @@ function change_parallel_overpopulated(data_current_year, overpopulated_countrie
     if(selected_countries_onAllAxis.includes(overpopulated_countries[i])){
       selected_countries_onAllAxis.splice(selected_countries_onAllAxis.indexOf(overpopulated_countries[i]),1)
     }
+    if(selected_countries_onAllAxis_by_scatterplot.includes(overpopulated_countries[i])){
+      selected_countries_onAllAxis_by_scatterplot.splice(selected_countries_onAllAxis_by_scatterplot.indexOf(overpopulated_countries[i]),1)
+    }
   }
   if(selected_countries_onAllAxis.length!=0){
     d3.selectAll(".path_foreground").filter(function(d){
-      if(selected_countries_onAllAxis.includes(d['Country'])){
-        d3.select(this).style("display",null)
+      if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) || (selected_countries_world_map.includes(d.Country) && selected_countries_pca_scatterplot.includes(d.Country)) || selected_countries_bar_chart_dth.includes(d.Country)){
+        d3.select(this).style("display",null).style("stroke", "#eb04f7")
+      }else if(selected_countries_onAllAxis.includes(d['Country'])){
+        d3.select(this).style("display",null).style("stroke", "#16bc21")
       }else{
         d3.select(this).style("display","none")
       }
@@ -335,12 +365,15 @@ function change_parallel_overpopulated(data_current_year, overpopulated_countrie
 }
 
 function change_parallel_with_year(data_new_year){
+  var color_scale = d3.scaleThreshold().domain([1000, 10000, 100000, 1000000]).range(d3.schemeReds[4]);
   d3.select("#parallel_graph").select('svg').remove()
   parallel_loader(data_new_year)
   if(selected_countries_onAllAxis.length!=0){
     d3.selectAll(".path_foreground").filter(function(d){
-      if(selected_countries_onAllAxis.includes(d['Country'])){
-        d3.select(this).style("display",null)
+      if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) || (selected_countries_world_map.includes(d.Country) && selected_countries_pca_scatterplot.includes(d.Country)) || selected_countries_bar_chart_dth.includes(d.Country)){
+        d3.select(this).style("display",null).style("stroke", "#eb04f7")
+      }else if(selected_countries_onAllAxis.includes(d['Country'])){
+        d3.select(this).style("display",null).style("stroke", "#16bc21")
       }else{
         d3.select(this).style("display","none")
       }
@@ -351,12 +384,27 @@ function change_parallel_with_year(data_new_year){
 
 
 function select_from_parallel(country){
-  select_country_on_map(country)
+
+  if(!selected_countries_onAllAxis_by_scatterplot.includes(country)){
+    select_country_on_map(country, "parallel")
+  }else{
+    select_country_on_map_triple(country)
+  }
+
+  select_for_parallel_to_scatterplot(country)
 }
 
 
 function deselect_from_parallel(country){
-  deselect_country_on_map(country)
+  if(!selected_countries_onAllAxis_by_scatterplot.includes(country)){
+    deselect_country_on_map(country)
+    deselect_country_on_scatterplot(country)
+  }else{
+    deselect_country_on_map_triple(country)
+  }
+
+  deselect_country_on_bar_chart_dth(country)
+  deselect_for_parallel_to_scatterplot(country)
 }
 
 
@@ -364,7 +412,7 @@ function select_on_parallel(country){
   d3.selectAll(".path_foreground").filter(function(d){
     if(d['Country']==country){
       selected_countries_onAllAxis.push(country)
-      d3.select(this).style("display",null)
+      d3.select(this).style("display",null).style("stroke", "#eb04f7"/*"#16bc21"*/)
     }else{
       if(!selected_countries_onAllAxis.includes(d['Country'])){
         d3.select(this).style("display","none")
@@ -375,6 +423,7 @@ function select_on_parallel(country){
 
 
 function deselect_on_parallel(country){
+  var color_scale = d3.scaleThreshold().domain([1000, 10000, 100000, 1000000]).range(d3.schemeReds[4]);
   if(selected_countries_onAllAxis.includes(country)){
     selected_countries_onAllAxis.splice(selected_countries_onAllAxis.indexOf(country),1)
     d3.selectAll(".path_foreground").filter(function(d){
@@ -383,18 +432,72 @@ function deselect_on_parallel(country){
         d3.select(this).style("display","none")
       } 
     })
-    console.log("sono in deselect")
-    console.log(selected_countries_onAllAxis)
+    //console.log("sono in deselect")
+    //console.log(selected_countries_onAllAxis)
 
     if(selected_countries_onAllAxis.length==0){
-      console.log("lunghezza 0")
-      d3.selectAll(".path_foreground").filter(function(d){return true}).style("display",null)
+      //console.log("lunghezza 0")
+      d3.selectAll(".path_foreground").filter(function(d){d3.select(this).style("stroke", color_scale(d.Sum));return true}).style("display",null)
     }
   }
 }
 
+function deselect_all_on_parallel(){
+  selected_countries_onAllAxis=[]
+  d3.selectAll(".path_foreground").filter(function(d){return true}).style("display",null)
+}
 
 
+function select_on_parallel_from_pca(country){
+  var color_scale = d3.scaleThreshold().domain([1000, 10000, 100000, 1000000]).range(d3.schemeReds[4]);
+  //Se qiello che seleziono non è gia stato selezionato lo seleziono
+  if(!selected_countries_onAllAxis_by_scatterplot.includes(country)){
+      
+      d3.selectAll(".path_foreground").filter(function(f) {
+          if(f.Country == country){
+            selected_countries_onAllAxis_by_scatterplot.push(country)
+              //Se gia selezionato nel parallel diventa verde e anche se non ho niente selezionato nel paralle (tutti preselezionati) diventa verde
+              if(selected_countries_onAllAxis.includes(country) || selected_countries_onAllAxis.length==0){
+                return true
+              }
+          }
+      }).style("stroke", "#eb04f7")
+  }
+     //console.log("select_parallel", selected_countries_onAllAxis_by_scatterplot)
+
+}
+
+function deselect_on_parallel_from_pca(country){
+  var color_scale = d3.scaleThreshold().domain([1000, 10000, 100000, 1000000]).range(d3.schemeReds[4]);
+  //Se la country è tra quelle gia selezionate la devo deselezionare
+  if(selected_countries_onAllAxis_by_scatterplot.includes(country)){
+    //La elimino dall'array 
+    selected_countries_onAllAxis_by_scatterplot.splice(selected_countries_onAllAxis_by_scatterplot.indexOf(country), 1)
+  
+    d3.selectAll(".path_foreground").filter(function(f) {
+          if(f.Country == country){
+              //Se deselezionato dallo scatter ma è selezionato nel paralle
+              if(selected_countries_onAllAxis.includes(country)){
+                  d3.select(this).style("stroke", "#16bc21")
+              }
+              //Se deselezionato dallo scatter e non è selezionato nel paralle
+              else{
+                //Se non ho selezionato nulla è come se fossero tutti selezionati nel parralle quindi devo rimettere solo il colore rosso
+                if(selected_countries_onAllAxis.length==0){
+                  d3.select(this).style("stroke", color_scale(f.Sum))
+                }
+                //Se ho selezioanto qualcosa nella parallel, oltre a mettere il colore originale lo devo nascondeere percè se sono arrivato qui non è tra quelli selezionati nella parallel
+                else{
+                  d3.select(this).style("stroke", color_scale(f.Sum)).style("display", "none")
+                }
+              }
+          }
+      })
+
+  }
+  //console.log("deselect_parallel", selected_countries_onAllAxis_by_scatterplot)
+
+}
 //-------------------------------------------------PRE-PROCESSING
 function data_elaboration_to_display_parallel(start_data){
   var output_data = [];

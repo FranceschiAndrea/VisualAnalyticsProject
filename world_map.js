@@ -1,4 +1,5 @@
 var selected_countries_world_map = [];
+var selected_countries_world_map_triple = []
 var database_data;
 
 function world_map_loader(data){
@@ -54,6 +55,7 @@ function world_map_loader(data){
 
     //Div for the countries label on mouse over
     var tooltip = d3.select("div.tooltip_world_map");
+        tooltip.classed("hidden", true)
 
     //Colors of the map with a the threshhold, white < 1000, red >10000000
     var color_scale = d3.scaleThreshold()
@@ -125,37 +127,39 @@ function world_map_loader(data){
     //Interaction  functions
     //Array that manage all the selected (clicked) countries
     let mouse_over = function(d){
-                                    //Retrive the Sum for the country to display on the map
-                                    var sum_for_labels = "No Data";
-                                    for(i=0; i<database_data.length; i++){
-                                        if(database_data[i].Country == d.properties.name){
-                                            sum_for_labels = database_data[i].Sum;
+                                    if(!selected_countries_world_map_triple.includes(d.properties.name) && !selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name) && !selected_countries_onAllAxis_by_scatterplot.includes(d.properties.name)){
+                                        //Retrive the Sum for the country to display on the map
+                                        var sum_for_labels = "No Data";
+                                        for(i=0; i<database_data.length; i++){
+                                            if(database_data[i].Country == d.properties.name){
+                                                sum_for_labels = database_data[i].Sum;
+                                            }
                                         }
-                                    }
-                                    //Check if hte country is one between the ones with database data not empty
-                                    var list_buffer = JSON.stringify([d.properties.name, ""]);
-                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
-                                        if(selected_countries_world_map.length == 0){
-                                            d3.selectAll(".Country")
-                                                .style("opacity", .6)
+                                        //Check if hte country is one between the ones with database data not empty
+                                        var list_buffer = JSON.stringify([d.properties.name, ""]);
+                                        if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                                            if(selected_countries_world_map.length == 0){
+                                                d3.selectAll(".Country")
+                                                    .style("opacity", .6)
+                                            }
+                                            d3.select(this)
+                                                .style("opacity", 1)
+                                                .style("stroke", "white")
+                                                .style("stroke-width", "1.5px")
                                         }
-                                        d3.select(this)
-                                            .style("opacity", 1)
-                                            .style("stroke", "white")
-                                            .style("stroke-width", "1.5px")
+                                        d3.select(this).append("text")
+                                                        .text(d.properties.name)
+                                        //Used to display the countries name
+                                        tooltip.style("hidden", false)
+                                                .html(function(){
+                                                                if(!overpopulated_countries_flag && overpopulated_countries.includes(d.properties.name)){
+                                                                    return d.properties.name + "<br>" +  "Excluded";
+                                                                }else if(sum_for_labels=="No Data"){
+                                                                        return d.properties.name + "<br>" +  sum_for_labels;
+                                                                }else{
+                                                                    return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                                                }});
                                     }
-                                    d3.select(this).append("text")
-                                                    .text(d.properties.name)
-                                    //Used to display the countries name
-                                    tooltip.style("hidden", false)
-                                            .html(function(){
-                                                            if(!overpopulated_countries_flag && overpopulated_countries.includes(d.properties.name)){
-                                                                return d.properties.name + "<br>" +  "Excluded";
-                                                            }else if(sum_for_labels=="No Data"){
-                                                                    return d.properties.name + "<br>" +  sum_for_labels;
-                                                            }else{
-                                                                return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
-                                                            }});
                                 
                                 }
     let mouse_move = function(d){
@@ -181,28 +185,30 @@ function world_map_loader(data){
                                                             });
                                 }
     let mouse_leave = function(d){
-                                    //Check if hte country is one between the ones with database data not empty
-                                    var list_buffer = JSON.stringify([d.properties.name, ""]);
-                                    if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
-                                        if(selected_countries_world_map.length == 0){
-                                            d3.selectAll(".Country")
-                                                .style("opacity", .8)
-                                        }
-                                        if(!selected_countries_world_map.includes(d.properties.name)){
-                                            if(selected_countries_world_map.length != 0){
-                                                d3.select(this)
-                                                    .style("opacity", .6)
+                                    if(!selected_countries_world_map_triple.includes(d.properties.name) && !selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name) && !selected_countries_onAllAxis_by_scatterplot.includes(d.properties.name)){
+                                        //Check if hte country is one between the ones with database data not empty
+                                        var list_buffer = JSON.stringify([d.properties.name, ""]);
+                                        if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                                            if(selected_countries_world_map.length == 0){
+                                                d3.selectAll(".Country")
+                                                    .style("opacity", .8)
+                                            }
+                                            if(!selected_countries_world_map.includes(d.properties.name)){
+                                                if(selected_countries_world_map.length != 0){
+                                                    d3.select(this)
+                                                        .style("opacity", .6)
+                                                        .style("stroke", "white")
+                                                        .style("stroke-width", "0.3px")
+                                                }else{
+                                                    d3.select(this)
                                                     .style("stroke", "white")
                                                     .style("stroke-width", "0.3px")
-                                            }else{
-                                                d3.select(this)
-                                                .style("stroke", "white")
-                                                .style("stroke-width", "0.3px")
+                                                }
                                             }
                                         }
+                                        //Hide the label of the country name
+                                        tooltip.classed("hidden", true);
                                     }
-                                    //Hide the label of the country name
-                                    tooltip.classed("hidden", true);
                                 }
     let mouse_click = function(d){
                                     //Check if hte country is one between the ones with database data not empty
@@ -390,8 +396,6 @@ function world_map_loader(data){
             .attr('stroke', '#ffffff')
             .attr('stroke-width', 1);
 
-
-
 };
 
 function data_elaboration_to_display_map(start_data){
@@ -461,6 +465,9 @@ function change_map_overpopulated(ever_full_data, countries_array){
         if(selected_countries_world_map.includes(countries_array[i])){
             deselect_country_on_map(countries_array[i])
         }
+        if(selected_countries_world_map_triple.includes(overpopulated_countries[i])){
+            selected_countries_world_map_triple.splice(selected_countries_world_map_triple.indexOf(overpopulated_countries[i]),1)
+        }
     }
     
     d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
@@ -478,7 +485,7 @@ function change_map_overpopulated(ever_full_data, countries_array){
 }
 
 //Function called by other graphs to select countries on the map
-function select_country_on_map(country){
+function select_country_on_map(country, from){
     if(selected_countries_world_map.length==0){
         d3.selectAll(".Country")
             .filter(function(f){
@@ -498,7 +505,16 @@ function select_country_on_map(country){
         }
     })
     .style("opacity", 1)
-    .style("stroke", "white")
+    .style("stroke", function(){
+        
+                    if(from == "scatterplot"){
+                        return "#eb04f7"
+                    }else if (from == "parallel"){
+                        return "#16bc21"
+                    }else{
+                        return "white"
+                    }
+    })
     .style("stroke-width", "1.5px")
 
 }
@@ -529,6 +545,58 @@ function deselect_country_on_map(country){
     }
 }
 
+//Function to select in the case of triple interaction
+function select_country_on_map_triple(country){
+    
+    if(!selected_countries_world_map_triple.includes(country)){
+        //Se non era gia in tripla selezione la aggiungo all'array
+        selected_countries_world_map_triple.push(country);
+
+        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
+            if(f.properties.name == country){
+                //console.log(f)
+                return true
+            }else{
+                return false
+            }
+        })
+        .style("opacity", 1)
+        .style("stroke", "white")
+        .style("stroke-width", "1.5px")
+    }
+}
+
+//Function to select in the case of triple interaction
+function deselect_country_on_map_triple(country){
+    
+    if(selected_countries_world_map_triple.includes(country)){
+        //Se non era gia in tripla selezione la aggiungo all'array
+        selected_countries_world_map_triple.splice(selected_countries_world_map_triple.indexOf(country), 1);
+
+        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
+            if(f.properties.name == country){
+                //console.log(f)
+                return true
+            }else{
+                return false
+            }
+        })
+        .style("opacity", 1)
+        .style("stroke", function(d){
+                                        if(selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name)){
+                                            return "#eb04f7"
+                                        }else if(selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name)){
+                                            return "#16bc21"
+                                        }else{
+                                            return "white"
+                                        }
+                                        
+    
+                                    })
+        .style("stroke-width", "1.5px")
+    }
+}
+
 function deselect_all_countries_on_map(){
     var buffer = selected_countries_world_map.slice()
     for(i=0; i<buffer.length; i++){
@@ -544,7 +612,41 @@ function map_selection_interaction(country){
 
 //Function that trigger the deselection from the map to the other graphs 
 function map_deselection_interaction(country){
+    if(selected_countries_pca_scatterplot_by_parallel.includes(country)){
+        deselect_for_parallel_to_scatterplot(country)
+        deselect_country_on_map_triple(country)
+    }
+    if(selected_countries_onAllAxis_by_scatterplot.includes(country)){
+        deselect_on_parallel_from_pca(country)
+        deselect_country_on_map_triple(country)
+    }
     deselect_country_on_scatterplot(country)
     deselect_country_on_bar_chart_dth(country)
     deselect_on_parallel(country)
 }
+
+var  set_interval = false;
+
+/*setInterval(function(){ 
+    
+                        set_interval = !set_interval
+                
+                        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
+                            if(selected_countries_pca_scatterplot_by_parallel.includes(f.properties.name) && selected_countries_onAllAxis_by_scatterplot.includes(f.properties.name)){
+                                
+                                return true
+                            }else{
+                                return false
+                            }
+                        })
+                        .style("opacity", 1)
+                        .style("stroke", function(){
+                                                        if(set_interval){
+                                                            return "white"
+                                                        }else{
+                                                            return "#16bc21"
+                                                        }
+                                                        })
+                        .style("stroke-width", "1.5px")
+
+                    }, 500);*/

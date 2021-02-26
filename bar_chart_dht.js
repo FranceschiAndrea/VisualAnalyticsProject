@@ -541,13 +541,16 @@ function bar_chart_dth_selection_interaction(country){
     if(selected_countries_bar_chart_dth.length==0){
         deselect_all_countries_on_map()
         deselect_all_countries_on_scatterplot()
+        deselect_all_on_parallel()
     }
     select_country_on_scatterplot(country)
     select_country_on_map(country)
+    select_on_parallel(country)
 }
 
 //Function that trigger the deselection from the bar chart to the other graphs 
 function bar_chart_dth_deselection_interaction(country){
     deselect_country_on_scatterplot(country)
     deselect_country_on_map(country)
+    deselect_on_parallel(country)
 }
