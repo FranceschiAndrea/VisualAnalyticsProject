@@ -12,7 +12,7 @@ html, body, .grid-container { height: 100%; padding: 0; margin: 0;font: 15px san
             height: 100%;
             /*background: rgb(52, 36, 145);*/
             background: #000;
-            border-left: 4px solid rgb(129, 135, 143);
+            border: 3px solid rgb(129, 135, 143);
             }
 .hidden {
     display: none;
@@ -48,8 +48,7 @@ div.tooltip_world_map {
     width: 100%;
     height: 100%;
     background: #000;
-    border-left: 4px solid rgb(129, 135, 143);
-    border-right: 4px solid rgb(129, 135, 143);
+    border: 3px solid #16bc21;
 }
 
 
@@ -112,10 +111,7 @@ div.tooltip_world_map {
     background: white;
     background: #000;*/
     background: rgb(255, 255, 255);
-    border-top:5px solid rgb(129, 135, 143);
-    border-left: 4px solid rgb(129, 135, 143);
-    border-right: 4px solid rgb(129, 135, 143);
-    border-bottom: 4px solid rgb(129, 135, 143);
+    border:3px solid #eb04f7;
 }
 .scatterplot_pca{
     width: 100%;
@@ -249,9 +245,7 @@ div.tooltip_scatterplot_pca {
     grid-area: 3 / 1 / 4 / 2;
     background: white;
     position: relative;
-    border-top: 5px solid rgb(129, 135, 143);
-    border-left: 4px solid rgb(129, 135, 143);
-    border-bottom: 4px solid rgb(129, 135, 143);
+    border: 3px solid rgb(129, 135, 143);
 }
 
 .bar_chart_dth{

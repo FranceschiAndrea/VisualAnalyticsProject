@@ -29,7 +29,7 @@ function scatterplot_pca_loader(data){
     //console.log("min_x= "+min_x+", "+"max_x= "+max_x+", "+"min_y= "+min_y+", "+"max_y= "+max_y)
 
     //set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 40, left: 80},
+    var margin = {top: 10, right: 50, bottom: 40, left: 80},
         width = (d3.select("#scatterplot_pca").style('width').slice(0, -2)) - margin.left - margin.right,
         height = (d3.select("#scatterplot_pca").style('height').slice(0, -2)) - margin.top - margin.bottom
 

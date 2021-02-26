@@ -49,7 +49,7 @@ var max_pm10=Math.max.apply(Math, total_pm10_forCountry);
 
 
 
-  var margin = {top: 40, right:5, bottom: 10, left: 5},
+  var margin = {top: 40, right:5, bottom: 20, left: 5},
   width = d3.select("#parallel_graph").style('width').slice(0, -2)-margin.left-margin.right,
   height = d3.select("#parallel_graph").style('height').slice(0, -2)-margin.bottom-margin.top
  
