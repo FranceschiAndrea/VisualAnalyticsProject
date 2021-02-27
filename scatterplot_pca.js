@@ -132,6 +132,13 @@ function scatterplot_pca_loader(data){
                                             //.attr("opacity", 0.5)
                                             .attr("stroke", "black",)
                                             .attr("stroke-width", "0.1px")
+                                            /*.attr("fill", function(){
+                                                                    if(selected_countries_pca_scatterplot_by_parallel.includes(d.Country)){
+                                                                        return "#16bc21"
+                                                                    }else{
+                                                                        return color_scale(d['Death Percentage'])
+                                                                    }
+                                                                    })*/
                                     }else if (!selected_countries_pca_scatterplot.includes(d.Country) && !selected_countries_bar_chart_dth.includes(d.Country)){ 
                                         for(i=0; i<selected_countries_pca_scatterplot.length; i++){
                                             scatterplot_deselection_interaction(selected_countries_pca_scatterplot[i])
@@ -140,6 +147,13 @@ function scatterplot_pca_loader(data){
                                                                         d3.select(this)
                                                                             .attr("stroke", "black")
                                                                             .attr("stroke-width", "0.1px")
+                                                                            /*.attr("fill", function(){
+                                                                                                    if(selected_countries_pca_scatterplot_by_parallel.includes(d.Country)){
+                                                                                                        return "#16bc21"
+                                                                                                    }else{
+                                                                                                        return color_scale(d['Death Percentage'])
+                                                                                                    }
+                                                                                                    })*/
                                                                     })
                                                     
                                         selected_countries_pca_scatterplot = []
@@ -235,6 +249,7 @@ function scatterplot_pca_loader(data){
                                             scatterplot_selection_interaction(d.Country)
                                             //console.log(selected_countries_pca_scatterplot)
                                         }
+
                                         
                                     }else{
                                         d3.select(this)
@@ -243,9 +258,13 @@ function scatterplot_pca_loader(data){
                                             .attr("stroke", "black")
                                             .attr("stroke-width", "0.1px")
                                             if(selected_countries_pca_scatterplot.includes(d.Country)){
+                                                //console.log(selected_countries_pca_scatterplot)
                                                 selected_countries_pca_scatterplot.splice(selected_countries_pca_scatterplot.indexOf(d.Country), 1)
                                                 scatterplot_deselection_interaction(d.Country)
                                             }
+                                            /*if(selected_countries_onAllAxis_by_scatterplot.includes(d.Country)){
+                                                scatterplot_deselection_interaction(d.Country)
+                                            }*/
                                             
                                     }
                                 })
@@ -450,9 +469,13 @@ function select_country_on_scatterplot(country){
             return false
         }
     })
-    .attr("stroke", "#eb04f7",)
+    .attr("stroke", "#eb04f7")
     .attr("stroke-width", "2px")
-    .style("fill", "#16bc21")
+    /*.filter(function(d){
+                            if(selected_countries_pca_scatterplot.includes(d.Country)){
+                                d3.select(this).style("fill", "#16bc21")
+                            }
+                        })*/
 
 }
 
@@ -489,6 +512,10 @@ function deselect_all_countries_on_scatterplot(){
     var buffer = selected_countries_pca_scatterplot.slice()
     for(i=0; i<buffer.length; i++){
         deselect_country_on_scatterplot(buffer[i])
+    }
+    var buffer = selected_countries_pca_scatterplot_by_parallel.slice()
+    for(i=0; i<buffer.length; i++){
+        deselect_for_parallel_to_scatterplot(buffer[i])
     }
 
 }
@@ -575,13 +602,16 @@ function scatterplot_selection_interaction(country){
 //Function that trigger the deselection from the scatterplot to the other graphs 
 function scatterplot_deselection_interaction(country){
 
+    
+    
     if(!selected_countries_pca_scatterplot_by_parallel.includes(country)){
         deselect_country_on_map(country)
         deselect_on_parallel(country)
     }else{
+        console.log("deselect_country_on_map_triple", country)
         deselect_country_on_map_triple(country)
     }
-
     deselect_country_on_bar_chart_dth(country)
     deselect_on_parallel_from_pca(country)
+
 }

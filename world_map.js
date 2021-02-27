@@ -127,7 +127,10 @@ function world_map_loader(data){
     //Interaction  functions
     //Array that manage all the selected (clicked) countries
     let mouse_over = function(d){
+                                    console.log("Prima dell'if mouse over")
+                                    console.log(selected_countries_world_map_triple, selected_countries_pca_scatterplot_by_parallel, selected_countries_onAllAxis_by_scatterplot)
                                     if(!selected_countries_world_map_triple.includes(d.properties.name) && !selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name) && !selected_countries_onAllAxis_by_scatterplot.includes(d.properties.name)){
+                                        console.log("Dopo dell'if mouse over")
                                         //Retrive the Sum for the country to display on the map
                                         var sum_for_labels = "No Data";
                                         for(i=0; i<database_data.length; i++){
@@ -149,17 +152,18 @@ function world_map_loader(data){
                                         }
                                         d3.select(this).append("text")
                                                         .text(d.properties.name)
-                                        //Used to display the countries name
-                                        tooltip.style("hidden", false)
-                                                .html(function(){
-                                                                if(!overpopulated_countries_flag && overpopulated_countries.includes(d.properties.name)){
-                                                                    return d.properties.name + "<br>" +  "Excluded";
-                                                                }else if(sum_for_labels=="No Data"){
-                                                                        return d.properties.name + "<br>" +  sum_for_labels;
-                                                                }else{
-                                                                    return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
-                                                                }});
+                                        
                                     }
+                                    //Used to display the countries name
+                                    tooltip.style("hidden", false)
+                                    .html(function(){
+                                                    if(!overpopulated_countries_flag && overpopulated_countries.includes(d.properties.name)){
+                                                        return d.properties.name + "<br>" +  "Excluded";
+                                                    }else if(sum_for_labels=="No Data"){
+                                                            return d.properties.name + "<br>" +  sum_for_labels;
+                                                    }else{
+                                                        return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                                    }});
                                 
                                 }
     let mouse_move = function(d){
@@ -206,9 +210,10 @@ function world_map_loader(data){
                                                 }
                                             }
                                         }
-                                        //Hide the label of the country name
-                                        tooltip.classed("hidden", true);
+                                        
                                     }
+                                    //Hide the label of the country name
+                                    tooltip.classed("hidden", true);
                                 }
     let mouse_click = function(d){
                                     //Check if hte country is one between the ones with database data not empty
@@ -217,9 +222,15 @@ function world_map_loader(data){
                                         
                                         if(!selected_countries_world_map.includes(d.properties.name) && selected_countries_bar_chart_dth.length==0){
                                             selected_countries_world_map.push(d.properties.name);
+                                            if(!selected_countries_world_map_triple.includes(d.properties.name)){
+                                                selected_countries_world_map_triple.push(d.properties.name);
+                                            }
                                             map_selection_interaction(d.properties.name)
                                         }else if(selected_countries_world_map.includes(d.properties.name) && (selected_countries_bar_chart_dth.length==0 || selected_countries_bar_chart_dth.includes(d.properties.name))){
                                             selected_countries_world_map.splice(selected_countries_world_map.indexOf(d.properties.name), 1);
+                                            if(selected_countries_world_map_triple.includes(d.properties.name)){
+                                                selected_countries_world_map_triple.splice(selected_countries_world_map_triple.indexOf(d.properties.name), 1);
+                                            }
                                             d3.select(this)
                                                 .style("opacity", .6)
                                                 .style("stroke", "white")
@@ -242,11 +253,14 @@ function world_map_loader(data){
                                                     .style("stroke", "white")
                                                     .style("stroke-width", "0.3px")
                                             selected_countries_world_map = []
+                                            selected_countries_world_map_triple = []
                                             d3.select(this)
                                                 .style("opacity", 1)
                                                 .style("stroke", "white")
                                                 .style("stroke-width", "1.5px")
                                             selected_countries_world_map.push(d.properties.name);
+                                            selected_countries_world_map_triple.push(d.properties.name);
+
                                             map_selection_interaction(d.properties.name)
                                         }
                                     }
@@ -292,7 +306,7 @@ function world_map_loader(data){
                 .enter().insert("rect", ".tick")
                         .attr("height", 20)
                         .attr("x", function(d) { 
-                                                return 20 })
+                                                return 15 })
                         .attr("y", function(d) { 
                                                 return (d[0]*25) })
                         .attr("width", function(d) { 
@@ -306,7 +320,7 @@ function world_map_loader(data){
 
     //Insert the rectangle with the color of no data countries
     svg_layer_1.append('rect')
-                .attr('x', 20)
+                .attr('x', 15)
                 .attr('y', 100)
                 .attr('width', 20)
                 .attr('height', 20)
@@ -316,7 +330,7 @@ function world_map_loader(data){
 
     //Insert the labels of the legend
     svg_layer_1.append("text")
-                .attr('x', 45)
+                .attr('x', 40)
                 .attr('y', 14)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
@@ -324,7 +338,7 @@ function world_map_loader(data){
                 //.attr("transform", "translate(85,21)")                   //Move the legend's text
                 .text("< 10⁶")
     svg_layer_1.append("text")
-                .attr('x', 45)
+                .attr('x', 40)
                 .attr('y', 40)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
@@ -332,7 +346,7 @@ function world_map_loader(data){
                 //.attr("transform", "translate(85,46)")                   //Move the legend's text
                 .text("< 10⁵")
     svg_layer_1.append("text")
-                .attr('x', 45)
+                .attr('x', 40)
                 .attr('y', 65)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
@@ -340,7 +354,7 @@ function world_map_loader(data){
                 //.attr("transform", "translate(85,71)")                   //Move the legend's text
                 .text("< 10⁴")
     svg_layer_1.append("text")
-                .attr('x', 45)
+                .attr('x', 40)
                 .attr('y', 90)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
@@ -348,7 +362,7 @@ function world_map_loader(data){
                 //.attr("transform", "translate(85,96)")                   //Move the legend's text
                 .text("< 10³")
     svg_layer_1.append("text")
-                .attr('x', 48)
+                .attr('x', 43)
                 .attr('y', 116)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
@@ -356,7 +370,7 @@ function world_map_loader(data){
                 //.attr("transform", "translate(89,121)")                   //Move the legend's text
                 .text("N.D.")
     svg_layer_1.append("text")
-                .attr('x', 18)
+                .attr('x', 13)
                 .attr('y', 142)
                 .attr("fill", "#FFF")
                 .attr("font-weight", "bold")
@@ -366,9 +380,9 @@ function world_map_loader(data){
     
     //Movetheleend to fit in the resized page
     svg_layer_1.selectAll("rect")
-                .attr("transform", "translate(0,"+ ((height/2)+(width/14)) +")")
+                .attr("transform", "translate(0,"+ ((height/2)+(width/15)) +")")
     svg_layer_1.selectAll("text")
-                .attr("transform", "translate(0,"+ ((height/2)+(width/14)) +")")
+                .attr("transform", "translate(0,"+ ((height/2)+(width/15)) +")")
 
 
     //Update the selected countries when this start
@@ -583,10 +597,12 @@ function deselect_country_on_map_triple(country){
         })
         .style("opacity", 1)
         .style("stroke", function(d){
+                                        console.log(selected_countries_pca_scatterplot_by_parallel)
+                                        console.log(selected_countries_onAllAxis_by_scatterplot)
                                         if(selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name)){
-                                            return "#eb04f7"
-                                        }else if(selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name)){
                                             return "#16bc21"
+                                        }else if(selected_countries_onAllAxis_by_scatterplot.includes(d.properties.name)){
+                                            return "#eb04f7"
                                         }else{
                                             return "white"
                                         }
@@ -602,12 +618,19 @@ function deselect_all_countries_on_map(){
     for(i=0; i<buffer.length; i++){
         deselect_country_on_map(buffer[i])
     }
+    /*var buffer = selected_countries_world_map_triple.slice()
+    for(i=0; i<buffer.length; i++){
+        deselect_country_on_map_triple(buffer[i])
+    }*/
 }
 
 //Function that trigger the selection from the map to the other graphs 
 function map_selection_interaction(country){
     select_country_on_scatterplot(country)
+    select_for_parallel_to_scatterplot(country)
     select_on_parallel(country)
+    select_on_parallel_from_pca(country)
+    //select_country_on_map_triple(country)
 }
 
 //Function that trigger the deselection from the map to the other graphs 
@@ -623,6 +646,7 @@ function map_deselection_interaction(country){
     deselect_country_on_scatterplot(country)
     deselect_country_on_bar_chart_dth(country)
     deselect_on_parallel(country)
+    //select_country_on_map_triple(country)
 }
 
 var  set_interval = false;

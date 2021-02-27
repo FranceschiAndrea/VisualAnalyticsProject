@@ -184,7 +184,7 @@ function bar_chart_dht_loader(data, pop_range){
     var mouseclick = function(d) {
                                     if(!selected_countries_bar_chart_dth.includes(d.data.Country)){
 
-                                        bar_chart_dth_selection_interaction(d.data.Country)
+                                        bar_chart_dth_selection_interaction(d.data.Country, data)
 
                                         selected_countries_bar_chart_dth.push(d.data.Country)
                                         
@@ -537,7 +537,7 @@ function deselect_country_on_bar_chart_dth(country){
 }
 
 //Function that trigger the selection from the bar chart to the other graphs 
-function bar_chart_dth_selection_interaction(country){
+function bar_chart_dth_selection_interaction(country, data){
     if(selected_countries_bar_chart_dth.length==0){
         deselect_all_countries_on_map()
         deselect_all_countries_on_scatterplot()
@@ -546,6 +546,20 @@ function bar_chart_dth_selection_interaction(country){
     select_country_on_scatterplot(country)
     select_country_on_map(country)
     select_on_parallel(country)
+
+    //Bug (so said CAFONATA) to refresh and make appear the green fill on scatterplot
+    d3.select("#scatterplot_pca").select('svg').remove()
+    scatterplot_pca_loader(data)
+    d3.selectAll(("input[name='scatterplot_pca_button']")).filter( function(){
+        //console.log(this.value)
+        if(this.value == "BrushSelection"){
+            d3.select(this).property("checked", true)
+        }
+    })
+    /*select_for_parallel_to_scatterplot(country)
+    select_on_parallel_from_pca(country)*/
+
+    //d3.select("#scatterplot_pca").selectAll("Circle")
 }
 
 //Function that trigger the deselection from the bar chart to the other graphs 

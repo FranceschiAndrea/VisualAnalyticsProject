@@ -148,8 +148,8 @@ for (i in dimensions) {
     .enter().append("path")
     .attr("d", path)
     .attr("class", "path_background")
-    .style("stroke", "grey");
-    
+    .style("stroke", "#6b5e5e");
+    //.style("stroke", "grey");
   foreground = svg.append("g")
     .attr("class", "foreground")
     .selectAll("path")
@@ -266,7 +266,13 @@ function cancelSelection() {
     for(i=0;i<selected_countries_onAllAxis.length;i++){
       deselect_from_parallel(selected_countries_onAllAxis[i])
     }
-    d3.selectAll(".path_foreground").filter(function(d){d3.select(this).style("stroke", color_scale(d.Sum))})
+    d3.selectAll(".path_foreground").filter(function(d){
+                                                          if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country'])){
+                                                            d3.select(this).style("stroke", "#eb04f7")
+                                                          }else{
+                                                            d3.select(this).style("stroke", color_scale(d.Sum))
+                                                          }
+                                                        })
   }
   selected_countries_onAllAxis=[]
 }
@@ -299,23 +305,26 @@ function brushParallel() {
         selected_countries_onAllAxis.push(d['Country'])
         select_from_parallel(d['Country'])
         d3.select(this).style("stroke", function(d){
+                                                      //Se non vengo dal click
                                                       if(!flag_onClick){
                                                         if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country'])){
-                                                          return "#eb04f7"
+                                                          //return "#eb04f7"
+                                                          return "white"
                                                         }else{
                                                           return "#16bc21"
                                                         }
-                                                      }else if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country'])){
-                                                        return "#eb04f7"
-                                                      }/*else if(selected_countries_onAllAxis.includes(d['Country'])){
-                                                        return "#16bc21"
-                                                      }*/else{
+                                                      }//Se vengo dal click
+                                                      else if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country'])){
+                                                        return "white"
+                                                      }else{
                                                         //return color_scale(d.Sum)
                                                         return "#16bc21"
-                                                      }                   
+                                                      }          
+                                                               
         })
         return null;
       }
+      
         /*
         if(selected_countries_onAllAxis.includes(d['Country'])){
           selected_countries_onAllAxis.splice(selected_countries_onAllAxis.indexOf(d['Country']),1)
@@ -326,6 +335,16 @@ function brushParallel() {
       return "none";
   });
 
+  if(!flag_onClick){
+    foreground.filter(function(d){
+      if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) && !selected_countries_onAllAxis.includes(d.Country) ){
+        return true
+      }else{
+        return false
+      }
+    }).style("stroke", "#eb04f7").style("display", null)
+  }
+  
   flag_onClick=false
 
   //console.log("stampo dopo la brush")
@@ -351,35 +370,43 @@ function change_parallel_overpopulated(data_current_year, overpopulated_countrie
       selected_countries_onAllAxis_by_scatterplot.splice(selected_countries_onAllAxis_by_scatterplot.indexOf(overpopulated_countries[i]),1)
     }
   }
-  if(selected_countries_onAllAxis.length!=0){
-    d3.selectAll(".path_foreground").filter(function(d){
-      if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) || (selected_countries_world_map.includes(d.Country) && selected_countries_pca_scatterplot.includes(d.Country)) || selected_countries_bar_chart_dth.includes(d.Country)){
-        d3.select(this).style("display",null).style("stroke", "#eb04f7")
-      }else if(selected_countries_onAllAxis.includes(d['Country'])){
-        d3.select(this).style("display",null).style("stroke", "#16bc21")
-      }else{
-        d3.select(this).style("display","none")
-      }
-    })
-  }
+  d3.selectAll(".path_foreground").filter(function(d){
+    if((selected_countries_onAllAxis_by_scatterplot.includes(d.Country) && selected_countries_pca_scatterplot_by_parallel.includes(d.Country)) || 
+              selected_countries_bar_chart_dth.includes(d.Country) || 
+              (selected_countries_world_map.includes(d.Country) && selected_countries_pca_scatterplot.includes(d.Country) && selected_countries_onAllAxis.includes(d['Country']))){
+      d3.select(this).style("display",null).style("stroke", "white")
+    }else if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) && !selected_countries_pca_scatterplot_by_parallel.includes(d.Country) /*|| (selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) && !selected_countries_onAllAxis.includes(d.Country))*/){
+      d3.select(this).style("display",null).style("stroke", "#eb04f7")
+    }else if(selected_countries_onAllAxis.includes(d['Country'])){
+      d3.select(this).style("display",null).style("stroke", "#16bc21")
+    }else if(selected_countries_onAllAxis.length==0){
+      d3.select(this).style("display",null).style("stroke", color_scale(d.Sum))
+    }else{
+      d3.select(this).style("display","none")
+    }
+  })
 }
 
 function change_parallel_with_year(data_new_year){
   var color_scale = d3.scaleThreshold().domain([1000, 10000, 100000, 1000000]).range(d3.schemeReds[4]);
   d3.select("#parallel_graph").select('svg').remove()
   parallel_loader(data_new_year)
-  if(selected_countries_onAllAxis.length!=0){
+  //if(selected_countries_onAllAxis.length!=0){
     d3.selectAll(".path_foreground").filter(function(d){
-      if(selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) || (selected_countries_world_map.includes(d.Country) && selected_countries_pca_scatterplot.includes(d.Country)) || selected_countries_bar_chart_dth.includes(d.Country)){
+      if((selected_countries_onAllAxis_by_scatterplot.includes(d.Country) && selected_countries_pca_scatterplot_by_parallel.includes(d.Country)) || selected_countries_bar_chart_dth.includes(d.Country) || (selected_countries_world_map.includes(d.Country) && selected_countries_pca_scatterplot.includes(d.Country) && selected_countries_onAllAxis.includes(d['Country']))){
+        d3.select(this).style("display",null).style("stroke", "white")
+      }else if(selected_countries_onAllAxis_by_scatterplot.includes(d.Country) && !selected_countries_pca_scatterplot_by_parallel.includes(d.Country) /*|| (selected_countries_onAllAxis_by_scatterplot.includes(d['Country']) && !selected_countries_onAllAxis.includes(d.Country))*/ ){
         d3.select(this).style("display",null).style("stroke", "#eb04f7")
       }else if(selected_countries_onAllAxis.includes(d['Country'])){
         d3.select(this).style("display",null).style("stroke", "#16bc21")
+      }else if(selected_countries_onAllAxis.length==0){
+        d3.select(this).style("display",null).style("stroke", color_scale(d.Sum))
       }else{
         d3.select(this).style("display","none")
       }
     })
-  }
-  
+//}
+  //console.log(selected_countries_onAllAxis_by_scatterplot, selected_countries_pca_scatterplot_by_parallel)
 }
 
 
@@ -396,6 +423,10 @@ function select_from_parallel(country){
 
 
 function deselect_from_parallel(country){
+
+  deselect_country_on_bar_chart_dth(country)
+  deselect_for_parallel_to_scatterplot(country)
+
   if(!selected_countries_onAllAxis_by_scatterplot.includes(country)){
     deselect_country_on_map(country)
     deselect_country_on_scatterplot(country)
@@ -403,8 +434,6 @@ function deselect_from_parallel(country){
     deselect_country_on_map_triple(country)
   }
 
-  deselect_country_on_bar_chart_dth(country)
-  deselect_for_parallel_to_scatterplot(country)
 }
 
 
@@ -412,9 +441,15 @@ function select_on_parallel(country){
   d3.selectAll(".path_foreground").filter(function(d){
     if(d['Country']==country){
       selected_countries_onAllAxis.push(country)
-      d3.select(this).style("display",null).style("stroke", "#eb04f7"/*"#16bc21"*/)
+      d3.select(this).style("display",null).style("stroke", function(d){
+                                                                          if(selected_countries_onAllAxis.includes(d.Country)){
+                                                                            return "white"
+                                                                          }else{
+                                                                            return "#eb04f7"
+                                                                          }
+                                                                        })
     }else{
-      if(!selected_countries_onAllAxis.includes(d['Country'])){
+      if(!selected_countries_onAllAxis.includes(d['Country']) && !selected_countries_onAllAxis_by_scatterplot.includes(d['Country'])){
         d3.select(this).style("display","none")
       }
     }
@@ -444,6 +479,7 @@ function deselect_on_parallel(country){
 
 function deselect_all_on_parallel(){
   selected_countries_onAllAxis=[]
+  selected_countries_onAllAxis_by_scatterplot=[]
   d3.selectAll(".path_foreground").filter(function(d){return true}).style("display",null)
 }
 
@@ -457,13 +493,20 @@ function select_on_parallel_from_pca(country){
           if(f.Country == country){
             selected_countries_onAllAxis_by_scatterplot.push(country)
               //Se gia selezionato nel parallel diventa verde e anche se non ho niente selezionato nel paralle (tutti preselezionati) diventa verde
-              if(selected_countries_onAllAxis.includes(country) || selected_countries_onAllAxis.length==0){
+              /*if(selected_countries_onAllAxis.includes(country) || selected_countries_onAllAxis.length==0){
                 return true
-              }
+              }*/
+              return true
           }
-      }).style("stroke", "#eb04f7")
+      }).style("stroke", function(d){
+                                      if(selected_countries_onAllAxis.includes(d.Country)){
+                                        return "white"
+                                      }else{
+                                        d3.select(this).style("display", null)
+                                        return "#eb04f7"
+                                      }
+                                    })
   }
-     //console.log("select_parallel", selected_countries_onAllAxis_by_scatterplot)
 
 }
 
