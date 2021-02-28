@@ -547,6 +547,14 @@ function bar_chart_dth_selection_interaction(country, data){
     select_country_on_map(country)
     select_on_parallel(country)
 
+    /*console.log("world map", selected_countries_world_map)
+    console.log("world map triple", selected_countries_world_map_triple)
+    console.log("scatterplot", selected_countries_pca_scatterplot)
+    console.log("scatterplot from p", selected_countries_pca_scatterplot_by_parallel)
+    console.log("parallel", selected_countries_onAllAxis)
+    console.log("scatterplot from s", selected_countries_onAllAxis_by_scatterplot)
+    console.log("------------------------------------")*/
+
     //Bug (so said CAFONATA) to refresh and make appear the green fill on scatterplot
     d3.select("#scatterplot_pca").select('svg').remove()
     scatterplot_pca_loader(data)
@@ -567,4 +575,38 @@ function bar_chart_dth_deselection_interaction(country){
     deselect_country_on_scatterplot(country)
     deselect_country_on_map(country)
     deselect_on_parallel(country)
+
+    /*console.log("world map", selected_countries_world_map)
+    console.log("world map triple", selected_countries_world_map_triple)
+    console.log("scatterplot", selected_countries_pca_scatterplot)
+    console.log("scatterplot from p", selected_countries_pca_scatterplot_by_parallel)
+    console.log("parallel", selected_countries_onAllAxis)
+    console.log("scatterplot from s", selected_countries_onAllAxis_by_scatterplot)
+    console.log("------------------------------------")*/
 }
+
+/*
+setInterval(function(){ 
+            
+                        set_interval = !set_interval
+                
+                        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
+                            if(selected_countries_pca_scatterplot_by_parallel.includes(f.properties.name) && selected_countries_onAllAxis_by_scatterplot.includes(f.properties.name)){
+                                
+                                return true
+                            }else{
+                                return false
+                            }
+                        })
+                        .style("opacity", 1)
+                        .style("stroke", function(){
+                                                        if(set_interval){
+                                                            return "white"
+                                                        }else{
+                                                            return "#16bc21"
+                                                        }
+                                                        })
+                        .style("stroke-width", "1.5px")
+            
+                    }, 500);
+*/

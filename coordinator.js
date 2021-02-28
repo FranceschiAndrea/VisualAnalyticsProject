@@ -163,7 +163,7 @@ d3.queue()
                     full_data_no_overpopulated.push(flter_overpopulated(full_data[k]))
                 }
                 
-                world_map_loader(full_data[current_year]);
+                world_map_loader(full_data[current_year], world_map_file);
                 scatterplot_pca_loader(full_data[current_year]);
                 bar_chart_dht_loader(full_data[current_year], bar_graph_people_range)
                 parallel_loader(full_data[current_year])
@@ -212,10 +212,33 @@ d3.select("input[name='no_big_countries_checkbox']").on("change", function(){
 })
 
 
+d3.select(("button[id='total_reset_button']")).on("click", function(){
 
+    selected_countries_world_map = []
+    selected_countries_world_map_triple = []
+    selected_countries_pca_scatterplot = []
+    selected_countries_pca_scatterplot_by_parallel = []
+    selected_countries_onAllAxis = []
+    selected_countries_onAllAxis_by_scatterplot = []
+    selected_countries_bar_chart_dth = []
 
+    d3.select("#world_map").select('svg').remove()
 
+    world_map_loader(full_data[current_year], world_map_file)
 
+    if(overpopulated_countries_flag){
+        //change_map_with_year(full_data[current_year], full_data_no_overpopulated[current_year], overpopulated_countries)
+        change_scatterplot_with_year(full_data[current_year])
+        change_bar_chart_dth_with_year(full_data[current_year], bar_graph_people_range)
+        change_parallel_with_year(full_data[current_year])
+    }else{
+        //change_map_with_year(full_data[current_year], full_data_no_overpopulated[current_year], overpopulated_countries)
+        //change_map_overpopulated(full_data[current_year], overpopulated_countries)
+        change_scatterplot_with_year(full_data_no_overpopulated[current_year])
+        change_bar_chart_dth_with_year(full_data_no_overpopulated[current_year], bar_graph_people_range)
+        change_parallel_with_year(full_data_no_overpopulated[current_year])
+    }
+})
 
 
 

@@ -49,7 +49,7 @@ function scatterplot_pca_loader(data){
 
     //add the x axes
     var x = d3.scaleLinear()
-                .domain([Math.round(min_x)-1, Math.ceil(max_x)])
+                .domain([Math.round(min_x)-1, Math.ceil(max_x)+1])
                 .range([ 0, width ])
     var xax = d3.axisBottom(x)
     var gx = SVG.append("g")
@@ -93,7 +93,7 @@ function scatterplot_pca_loader(data){
 
                                     tooltip.style("hidden_scatterplot_pca", false)
                                             .html(function(){
-                                                                return d.Country //+ "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                                                return d.Country + "<br>" +  /*Math.round(sum_for_labels)*/ d['Death Percentage'].toFixed(4) /*+ "&nbsp;Gg"*/;
                                                             });
                                 }
     let mouse_move = function(d){
@@ -102,7 +102,7 @@ function scatterplot_pca_loader(data){
                                             .style("top", (d3.event.pageY) + "px")
                                             .style("left", (d3.event.pageX + 15) + "px")
                                             .html(function(){
-                                                                return d.Country
+                                                            return d.Country + "<br>" +  /*Math.round(sum_for_labels)*/ d['Death Percentage'].toFixed(4) /*+ "&nbsp;Gg"*/;
                                                             });
                                 }
     let mouse_leave = function(d){
@@ -139,6 +139,9 @@ function scatterplot_pca_loader(data){
                                                                         return color_scale(d['Death Percentage'])
                                                                     }
                                                                     })*/
+                                            if(!selected_countries_pca_scatterplot_by_parallel.includes(d.Country)){
+                                                d3.select(this).style("fill", function(d){return color_scale(d['Death Percentage'])})
+                                            }
                                     }else if (!selected_countries_pca_scatterplot.includes(d.Country) && !selected_countries_bar_chart_dth.includes(d.Country)){ 
                                         for(i=0; i<selected_countries_pca_scatterplot.length; i++){
                                             scatterplot_deselection_interaction(selected_countries_pca_scatterplot[i])
@@ -261,6 +264,11 @@ function scatterplot_pca_loader(data){
                                                 //console.log(selected_countries_pca_scatterplot)
                                                 selected_countries_pca_scatterplot.splice(selected_countries_pca_scatterplot.indexOf(d.Country), 1)
                                                 scatterplot_deselection_interaction(d.Country)
+                                                
+                                                if(!selected_countries_pca_scatterplot_by_parallel.includes(d.Country)){
+                                                    d3.select(this).style("fill", function(d){return color_scale(d['Death Percentage'])})
+                                                }
+                                                
                                             }
                                             /*if(selected_countries_onAllAxis_by_scatterplot.includes(d.Country)){
                                                 scatterplot_deselection_interaction(d.Country)
@@ -608,7 +616,7 @@ function scatterplot_deselection_interaction(country){
         deselect_country_on_map(country)
         deselect_on_parallel(country)
     }else{
-        console.log("deselect_country_on_map_triple", country)
+        //console.log("deselect_country_on_map_triple", country)
         deselect_country_on_map_triple(country)
     }
     deselect_country_on_bar_chart_dth(country)

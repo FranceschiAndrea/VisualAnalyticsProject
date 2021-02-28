@@ -170,13 +170,18 @@ div.tooltip_scatterplot_pca {
     grid-area: 1 / 1 / 2 / 3;
     display: flex;
     justify-content: center;
-    background-color: rgb(150, 155, 161);
+    background-color: rgb(219, 211, 211);
     /*color:#fff*/
 }
 .no_big_countries{
     margin-top: 1%;
-    margin-left: 6%;
-    width : 30%;
+    margin-left: 3%;
+    width : 25%;
+}
+.total_reset_button_container{
+    margin-top: 1%;
+    margin-left: 3%;
+    width : 5%;
 }
 .range{
     padding-left: 1%;

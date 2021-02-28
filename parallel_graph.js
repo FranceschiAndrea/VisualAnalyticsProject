@@ -371,6 +371,7 @@ function change_parallel_overpopulated(data_current_year, overpopulated_countrie
     }
   }
   d3.selectAll(".path_foreground").filter(function(d){
+    var color_scale = d3.scaleThreshold().domain([1000, 10000, 100000, 1000000]).range(d3.schemeReds[4]);
     if((selected_countries_onAllAxis_by_scatterplot.includes(d.Country) && selected_countries_pca_scatterplot_by_parallel.includes(d.Country)) || 
               selected_countries_bar_chart_dth.includes(d.Country) || 
               (selected_countries_world_map.includes(d.Country) && selected_countries_pca_scatterplot.includes(d.Country) && selected_countries_onAllAxis.includes(d['Country']))){
