@@ -1,5 +1,5 @@
 var selected_countries_world_map = [];
-var selected_countries_world_map_triple = []
+
 var database_data;
 
 function world_map_loader(data, topology){
@@ -7,20 +7,20 @@ function world_map_loader(data, topology){
     //console.log(data)
     //Transform the dataset rows in Country, Sum rows
     database_data = data_elaboration_to_display_map(data);
-    var min_data_value = database_data[0].Sum;
-    var max_data_value = database_data[0].Sum;
+    var min_data_value = database_data[0]["Mean of emissions over years"];
+    var max_data_value = database_data[0]["Mean of emissions over years"];
     //console.log(database_data)
 
     //Calculate the max and the min value in the dataset to choose the colors thresholds
     for(i=0; i<database_data.length; i++){
-        if(database_data[i].Sum > max_data_value){
-            max_data_value = database_data[i].Sum;
+        if(database_data[i]["Mean of emissions over years"] > max_data_value){
+            max_data_value = database_data[i]["Mean of emissions over years"];
         }
-        if(database_data[i].Sum < min_data_value){
-            min_data_value = database_data[i].Sum;
+        if(database_data[i]["Mean of emissions over years"] < min_data_value){
+            min_data_value = database_data[i]["Mean of emissions over years"];
         }
     }    
-    //console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
+    console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
 
     /*var width = Math.max(960, d3.select("#world_map").style('width').slice(0, -2)),
     height = Math.max(500, d3.select("#world_map").style('height').slice(0, -2)),
@@ -59,7 +59,7 @@ function world_map_loader(data, topology){
 
     //Colors of the map with a the threshhold, white < 1000, red >10000000
     var color_scale = d3.scaleThreshold()
-                        .domain([1000, 10000, 100000, 1000000])
+                        .domain([100, 500, 5000, 10000])
                         //.domain([min_data_value, max_data_value])
                         .range(d3.schemeReds[4]);
     /*var color_scale = d3.scaleLinear()
@@ -82,32 +82,29 @@ function world_map_loader(data, topology){
     //Array that manage all the selected (clicked) countries
     let mouse_over = function(d){
             //console.log("Prima dell'if mouse over")
-                //console.log(selected_countries_world_map_triple, selected_countries_pca_scatterplot_by_parallel, selected_countries_onAllAxis_by_scatterplot)
-                if(!selected_countries_world_map_triple.includes(d.properties.name) && !selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name) && !selected_countries_onAllAxis_by_scatterplot.includes(d.properties.name)){
-                    //console.log("Dopo dell'if mouse over")
-                    //Retrive the Sum for the country to display on the map
-                    var sum_for_labels = "No Data";
-                    for(i=0; i<database_data.length; i++){
-                        if(database_data[i].Country == d.properties.name){
-                            sum_for_labels = database_data[i].Sum;
-                        }
+                //Retrive the Sum for the country to display on the map
+                var sum_for_labels = "No Data";
+                for(i=0; i<database_data.length; i++){
+                    if(database_data[i].Country == d.properties.name){
+                        sum_for_labels = database_data[i]["Mean of emissions over years"];
                     }
-                    //Check if hte country is one between the ones with database data not empty
-                    var list_buffer = JSON.stringify([d.properties.name, ""]);
-                    if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
-                        if(selected_countries_world_map.length == 0){
-                            d3.selectAll(".Country")
-                                .style("opacity", .6)
-                        }
-                        d3.select(this)
-                            .style("opacity", 1)
-                            .style("stroke", "white")
-                            .style("stroke-width", "1.5px")
-                    }
-                    d3.select(this).append("text")
-                                    .text(d.properties.name)
-                    
                 }
+                //Check if hte country is one between the ones with database data not empty
+                var list_buffer = JSON.stringify([d.properties.name, ""]);
+                if(map_countries_stringifyed.indexOf(list_buffer) == -1 ){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                    if(selected_countries_world_map.length == 0){
+                        d3.selectAll(".Country")
+                            .style("opacity", .6)
+                    }
+                    d3.select(this)
+                        .style("opacity", 1)
+                        .style("stroke", "white")
+                        .style("stroke-width", "1.5px")
+                }
+                d3.select(this).append("text")
+                                .text(d.properties.name)
+                    
+            
                 //Used to display the countries name
                 tooltip.style("hidden", false)
                 .html(function(){
@@ -125,7 +122,7 @@ function world_map_loader(data, topology){
                 var sum_for_labels = "No Data";
                 for(i=0; i<database_data.length; i++){
                     if(database_data[i].Country == d.properties.name){
-                        sum_for_labels = database_data[i].Sum;
+                        sum_for_labels = database_data[i]["Mean of emissions over years"];
                     }
                 }
                 //Move the div with the country name with the mouse on the map
@@ -143,10 +140,9 @@ function world_map_loader(data, topology){
                                         });
             }
     let mouse_leave = function(d){
-                if(!selected_countries_world_map_triple.includes(d.properties.name) && !selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name) && !selected_countries_onAllAxis_by_scatterplot.includes(d.properties.name)){
                     //Check if hte country is one between the ones with database data not empty
                     var list_buffer = JSON.stringify([d.properties.name, ""]);
-                    if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                    if(map_countries_stringifyed.indexOf(list_buffer) == -1){   //If the country is in the map_countries list with value "" this will return its index, not -1
                         if(selected_countries_world_map.length == 0){
                             d3.selectAll(".Country")
                                 .style("opacity", .8)
@@ -164,61 +160,36 @@ function world_map_loader(data, topology){
                             }
                         }
                     }
-                    
-                }
                 //Hide the label of the country name
                 tooltip.classed("hidden", true);
             }
     let mouse_click = function(d){
                 //Check if hte country is one between the ones with database data not empty
                 var list_buffer = JSON.stringify([d.properties.name, ""]);
-                if(map_countries_stringifyed.indexOf(list_buffer) == -1 && (overpopulated_countries_flag || (!overpopulated_countries_flag && !overpopulated_countries.includes(d.properties.name)))){   //If the country is in the map_countries list with value "" this will return its index, not -1
+                if(map_countries_stringifyed.indexOf(list_buffer) == -1 ){   //If the country is in the map_countries list with value "" this will return its index, not -1
                     
-                    if(!selected_countries_world_map.includes(d.properties.name) && selected_countries_bar_chart_dth.length==0){
+                    if(!selected_countries_world_map.includes(d.properties.name)){
                         selected_countries_world_map.push(d.properties.name);
-                        if(!selected_countries_world_map_triple.includes(d.properties.name)){
-                            selected_countries_world_map_triple.push(d.properties.name);
-                        }
-                        map_selection_interaction(d.properties.name)
-                    }else if(selected_countries_world_map.includes(d.properties.name) && (selected_countries_bar_chart_dth.length==0 || selected_countries_bar_chart_dth.includes(d.properties.name))){
+                        //map_selection_interaction(d.properties.name)
+
+                    }else {
                         selected_countries_world_map.splice(selected_countries_world_map.indexOf(d.properties.name), 1);
-                        if(selected_countries_world_map_triple.includes(d.properties.name)){
-                            selected_countries_world_map_triple.splice(selected_countries_world_map_triple.indexOf(d.properties.name), 1);
-                        }
+
                         d3.select(this)
                             .style("opacity", .6)
                             .style("stroke", "white")
                             .style("stroke-width", "0.3px")
                         
-                        map_deselection_interaction(d.properties.name)
+                        //map_deselection_interaction(d.properties.name)
 
                         if(selected_countries_world_map.length==0){           //If no more selected countries bring all the other countries to the start map state (no selected countries)
                             d3.selectAll(".Country")
                                 .style("opacity", .8)
                         }
 
-                    }else if (!selected_countries_world_map.includes(d.properties.name) && !selected_countries_bar_chart_dth.includes(d.properties.name)){ 
-                        
-                        for(i=0; i<selected_countries_world_map.length; i++){
-                            map_deselection_interaction(selected_countries_world_map[i])
-                        }
-                        d3.selectAll(".Country")
-                                .style("opacity", .6)
-                                .style("stroke", "white")
-                                .style("stroke-width", "0.3px")
-                        selected_countries_world_map = []
-                        selected_countries_world_map_triple = []
-                        d3.select(this)
-                            .style("opacity", 1)
-                            .style("stroke", "white")
-                            .style("stroke-width", "1.5px")
-                        selected_countries_world_map.push(d.properties.name);
-                        selected_countries_world_map_triple.push(d.properties.name);
-
-                        map_selection_interaction(d.properties.name)
                     }
                 }
-                //console.log(selected_countries_world_map);
+                console.log(selected_countries_world_map);
             }
 
 
@@ -248,7 +219,7 @@ function world_map_loader(data, topology){
                         for(i=0; i<database_data.length; i++){
                             if(database_data[i].Country == d.properties.name){
                                 counter += 1;
-                                return color_scale(database_data[i].Sum);
+                                return color_scale(database_data[i]["Mean of emissions over years"]);
                             }
                         }
                         
@@ -263,7 +234,7 @@ function world_map_loader(data, topology){
     svg_layer_1.call(zoom)
 
     //Add the pattern for the no selected overpopulated countries
-    svg_layer_1
+    /*svg_layer_1
             .append('defs')
             .append('pattern')
                 .attr('id', 'diagonalHatch')
@@ -273,11 +244,11 @@ function world_map_loader(data, topology){
             .append('path')
                 .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
                 .attr('stroke', '#ffffff')
-                .attr('stroke-width', 1);
+                .attr('stroke-width', 1);*/
 
 
     //For the reset button
-    if(!overpopulated_countries_flag){
+    /*if(!overpopulated_countries_flag){
         d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
             if(overpopulated_countries.includes(f.properties.name)){
                 for(i=0; i<database_data.length; i++){
@@ -290,7 +261,7 @@ function world_map_loader(data, topology){
                 return false
             }
         }).attr('fill', 'url(#diagonalHatch)')
-    }
+    }*/
 
     
     
@@ -407,9 +378,9 @@ function world_map_loader(data, topology){
     
     //Movetheleend to fit in the resized page
     svg_layer_1.selectAll("rect")
-                .attr("transform", "translate(0,"+ ((height/2)+(width/17)) +")")
+                .attr("transform", "translate(0,"+ ((height/2)+(width/15)) +")")
     svg_layer_1.selectAll("text")
-                .attr("transform", "translate(0,"+ ((height/2)+(width/17)) +")")
+                .attr("transform", "translate(0,"+ ((height/2)+(width/15)) +")")
 
 
     //Update the selected countries when this start
@@ -431,7 +402,8 @@ function world_map_loader(data, topology){
 
 function data_elaboration_to_display_map(start_data){
     var output_data = [];
-    for(i=0; i<start_data.length; i++){
+
+    /*for(i=0; i<start_data.length; i++){
         //sum of all the emissions
         var total = start_data[i]['CO'] +
                     start_data[i]['CH4'] +
@@ -447,10 +419,107 @@ function data_elaboration_to_display_map(start_data){
                                 "Sum" : total
                             }
                         )
+    }*/
+    
+    var array_of_the_sum_over_the_years = []
+
+    for(k=0; k<start_data.length; k++){
+
+        for(i=0; i<start_data[k].length; i++){
+
+            var sum_PMs = start_data[k][i]['PM 10']+start_data[k][i]['PM 2.5']
+
+            //Sum of each country over the years
+            if(array_of_the_sum_over_the_years.length<start_data[0].length){
+                array_of_the_sum_over_the_years.push(sum_PMs)
+            }else{
+                array_of_the_sum_over_the_years[i] = array_of_the_sum_over_the_years[i]+sum_PMs
+            }
+
+        }
+
     }
+
+    //console.log(array_of_the_sum_over_the_years)
+
+    //divide to make the mean over the years and create the object to pass to the map
+    for(i=0; i<array_of_the_sum_over_the_years.length; i++){
+        array_of_the_sum_over_the_years[i] = array_of_the_sum_over_the_years[i]/start_data.length
+       
+        output_data.push(
+            {
+                "Country" : start_data[0][i]['Country'],
+                "Mean of emissions over years" : array_of_the_sum_over_the_years[i]
+            }
+        )
+    }
+
+    console.log(output_data)
     //console.log(output_data)
     return output_data
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //================================================================= BETWEEN GRAPHS INTERACTION =========================================================
