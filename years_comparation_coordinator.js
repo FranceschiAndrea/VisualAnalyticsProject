@@ -50,6 +50,11 @@ var map_countries = [["French Southern and Antarctic Lands",""],
 
 var overpopulated_countries = ["India", "China", "USA"];
 
+var colors_for_countries = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ffff33","#a65628","#f781bf","#999999", "#ff7f00"]  //sono 12, gli ultimi 4: 3 sono i pastello di Paired,l'ultimo viola
+
+var colors_for_countries_association = Array(9).fill(" ");
+
+
     //-----------------------------------------EUROPE--------------------------------------------------
     //comprende western+southern
     var region_southern_europe=[
@@ -165,11 +170,12 @@ d3.queue()
                 
                 world_map_loader(full_data, world_map_file);
                 line_cahrt_dth_loader(full_data)
+                initial_data = full_data
                 /*scatterplot_pca_loader(full_data[current_year]);
                 bar_chart_dht_loader(full_data[current_year], bar_graph_people_range)
                 parallel_loader(full_data[current_year])
                 start_bar_chart_loop(data_elaboration_to_display_bar_chart_dth(full_data[current_year], bar_graph_people_range))*/
-
+                upload_line_chart_dth()
         }
     });
 

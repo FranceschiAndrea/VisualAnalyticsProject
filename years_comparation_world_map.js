@@ -20,7 +20,7 @@ function world_map_loader(data, topology){
             min_data_value = database_data[i]["Mean of emissions over years"];
         }
     }    
-    console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
+    //console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
 
     /*var width = Math.max(960, d3.select("#world_map").style('width').slice(0, -2)),
     height = Math.max(500, d3.select("#world_map").style('height').slice(0, -2)),
@@ -61,7 +61,7 @@ function world_map_loader(data, topology){
     var color_scale = d3.scaleThreshold()
                         .domain([100, 500, 5000, 10000])
                         //.domain([min_data_value, max_data_value])
-                        .range(d3.schemeReds[4]);
+                        .range(d3.schemeBlues[4]);
     /*var color_scale = d3.scaleLinear()
                         .domain([1000, 10000, 100000, 1000000])
                         //.domain([min_data_value, max_data_value])
@@ -168,13 +168,21 @@ function world_map_loader(data, topology){
                 var list_buffer = JSON.stringify([d.properties.name, ""]);
                 if(map_countries_stringifyed.indexOf(list_buffer) == -1 ){   //If the country is in the map_countries list with value "" this will return its index, not -1
                     
-                    if(!selected_countries_world_map.includes(d.properties.name)){
-                        selected_countries_world_map.push(d.properties.name);
-                        //map_selection_interaction(d.properties.name)
+                    
+                        if(!selected_countries_world_map.includes(d.properties.name)){
+                            //Chech that the selected countries are less that 9 (number of colors)
+                            if(selected_countries_world_map.length < 9){
+                                selected_countries_world_map.push(d.properties.name);
+                                
+                                //Associo ogni nazione ad un colore
+                                country_associate_colors(d.properties.name)
 
+                                map_selection_trigger()
+                                legend_creatuon_update()
+                            }
                     }else {
                         selected_countries_world_map.splice(selected_countries_world_map.indexOf(d.properties.name), 1);
-
+                        
                         d3.select(this)
                             .style("opacity", .6)
                             .style("stroke", "white")
@@ -187,9 +195,15 @@ function world_map_loader(data, topology){
                                 .style("opacity", .8)
                         }
 
+                        //Deassocio ogni nazione ad un colore
+                        country_deassociate_colors(d.properties.name)
+
+                        map_selection_trigger()
+                        legend_creatuon_update()
+
                     }
                 }
-                console.log(selected_countries_world_map);
+                //console.log(selected_countries_world_map);
             }
 
 
@@ -396,7 +410,8 @@ function world_map_loader(data, topology){
             }
         })
 
-
+    //Create the empty legend
+    legend_creatuon_update()
 
 };
 
@@ -454,7 +469,7 @@ function data_elaboration_to_display_map(start_data){
         )
     }
 
-    console.log(output_data)
+    //console.log(output_data)
     //console.log(output_data)
     return output_data
 }
@@ -463,300 +478,158 @@ function data_elaboration_to_display_map(start_data){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//================================================================= BETWEEN GRAPHS INTERACTION =========================================================
-//Function to change the years
-function change_map_with_year(ever_full_data, data, countries_array){
-    var color_scale = d3.scaleThreshold()
-                        .domain([1000, 10000, 100000, 1000000])
-                        //.domain([min_data_value, max_data_value])
-                        .range(d3.schemeReds[4]);
-    database_data = data_elaboration_to_display_map(data);
-    var ever_full_data_processed = data_elaboration_to_display_map(ever_full_data);
-    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {return true })
-                                                .attr('fill', function (d) {
-                                                    if(!overpopulated_countries_flag && countries_array.includes(d.properties.name)){
-                                                        for(i=0; i<ever_full_data_processed.length; i++){
-                                                            if(ever_full_data_processed[i].Country == d.properties.name){
-                                                                d3.select("#world_map").select("defs").select("pattern").select("path").attr('stroke', color_scale(ever_full_data_processed[i].Sum))
-                                                            }
-                                                        }
-                                                        return 'url(#diagonalHatch)'
-                                                    }else{
-                                                        for(i=0; i<database_data.length; i++){
-                                                            if(database_data[i].Country == d.properties.name){
-                                                                return color_scale(database_data[i].Sum);
-                                                            }
-                                                        }           
-                                                        return "#69a3b2";
-                                                    }
-                                                    
-                                                })
+function map_selection_trigger(){
+    upload_line_chart_dth()
 }
 
-//Function to de/select the overpopulated countries
-function change_map_overpopulated(ever_full_data, countries_array){
 
-    var ever_full_data_processed = data_elaboration_to_display_map(ever_full_data);
-    var color_scale = d3.scaleThreshold()
-                        .domain([1000, 10000, 100000, 1000000])
-                        //.domain([min_data_value, max_data_value])
-                        .range(d3.schemeReds[4]);
 
-    for(i=0; i<countries_array.length; i++){
-        if(selected_countries_world_map.includes(countries_array[i])){
-            deselect_country_on_map(countries_array[i])
-        }
-        if(selected_countries_world_map_triple.includes(overpopulated_countries[i])){
-            selected_countries_world_map_triple.splice(selected_countries_world_map_triple.indexOf(overpopulated_countries[i]),1)
+
+
+
+function country_associate_colors(country){
+    for(i=0; i<colors_for_countries.length; i++){
+        if(colors_for_countries_association[i]==" "){
+            colors_for_countries_association[i] = country
+            break
         }
     }
-    
-    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
-                                                                    if(countries_array.includes(f.properties.name)){
-                                                                        for(i=0; i<ever_full_data_processed.length; i++){
-                                                                            if(ever_full_data_processed[i].Country == f.properties.name){
-                                                                                d3.select("#world_map").select("defs").select("pattern").select("path").attr('stroke', color_scale(ever_full_data_processed[i].Sum))
-                                                                            }
-                                                                        }
-                                                                        return true
-                                                                    }else{
-                                                                        return false
-                                                                    }
-                                                                }).attr('fill', 'url(#diagonalHatch)')
 }
 
-//Function called by other graphs to select countries on the map
-function select_country_on_map(country, from){
-    if(selected_countries_world_map.length==0){
-        d3.selectAll(".Country")
-            .filter(function(f){
-                return true
-            })
-            .style("opacity", .6)
-    }
-    if(!selected_countries_world_map.includes(country)){
-        selected_countries_world_map.push(country);
-    }
-    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
-        if(f.properties.name == country){
-            //console.log(f)
-            return true
-        }else{
-            return false
+function country_deassociate_colors(country){
+    for(i=0; i<colors_for_countries.length; i++){
+        if(colors_for_countries_association[i]==country){
+            colors_for_countries_association[i] = " "
         }
-    })
-    .style("opacity", 1)
-    .style("stroke", function(){
+    }
+}
+
+
+
+
+
+function legend_creatuon_update(){
+    var margin = {top: 20, right: 50, bottom: 30, left: 60},
+        width = d3.select("#legend").style('width').slice(0, -2) - margin.left - margin.right,
+        height = d3.select("#legend").style('height').slice(0, -2) - margin.top - margin.bottom - 20;
+
+    d3.select("#legend").select('svg').remove()
+
+    // append the svg object to the body of the page
+    var svg = d3.select("#legend")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append('rect')
+        .attr('x', 0)
+        .attr('y', 30)
+        .attr('width', 280)
+        .attr('height', 60)
+        .attr('fill', "black")
+        .attr("stroke", "black")
+        .attr("stroke-width", "0.1px")
+        //.attr("opacity", 0.5)
         
-                    if(from == "scatterplot"){
-                        return "#eb04f7"
-                    }else if (from == "parallel"){
-                        return "#16bc21"
-                    }else{
-                        return "white"
-                    }
-    })
-    .style("stroke-width", "1.5px")
+    svg.append("text")
+        .attr('x', 25)
+        .attr('y', 65)
+        .attr("fill", "white")
+        .attr("font-weight", "bold")
+        .attr("font-size", "18px")
+        .attr("text-anchor", "start")
+        .text("Selected countries colors")
 
-}
+    for(i=0; i<colors_for_countries.length; i++){
 
-//Function called by other graphs to deselect countries on the map
-function deselect_country_on_map(country){
-    if(selected_countries_world_map.includes(country)){
-        selected_countries_world_map.splice(selected_countries_world_map.indexOf(country), 1);
-    }
-    d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
-        if(f.properties.name == country){
-            //console.log(f)
-            return true
-        }else{
-            return false
+        svg.append('rect')
+            .attr('x', 10)
+            .attr('y', ((i*25)+100))
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('fill', colors_for_countries[i])
+            .attr("stroke", "black")
+            .attr("stroke-width", "0.1px")
+            //.attr("opacity", 0.5)
+        
+        if(colors_for_countries_association[i] != " "){
+
+            svg.append("text")
+                .attr('x', 40)
+                .attr('y', (i*25)+15+100)
+                .attr("fill", "black")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "start")
+                .text(colors_for_countries_association[i])
         }
-    })
-    .style("opacity", .6)
-    .style("stroke", "white")
-    .style("stroke-width", "0.3px")
 
-    if(selected_countries_world_map.length==0){
-        d3.selectAll(".Country")
-            .filter(function(f){
-                return true
-            })
-            .style("opacity", .8)
     }
-}
-
-//Function to select in the case of triple interaction
-function select_country_on_map_triple(country){
-    
-    if(!selected_countries_world_map_triple.includes(country)){
-        //Se non era gia in tripla selezione la aggiungo all'array
-        selected_countries_world_map_triple.push(country);
-
-        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
-            if(f.properties.name == country){
-                //console.log(f)
-                return true
-            }else{
-                return false
-            }
-        })
-        .style("opacity", 1)
-        .style("stroke", "white")
-        .style("stroke-width", "1.5px")
     }
-}
 
-//Function to select in the case of triple interaction
-function deselect_country_on_map_triple(country){
-    
-    if(selected_countries_world_map_triple.includes(country)){
-        //Se non era gia in tripla selezione la aggiungo all'array
-        selected_countries_world_map_triple.splice(selected_countries_world_map_triple.indexOf(country), 1);
 
-        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
-            if(f.properties.name == country){
-                //console.log(f)
-                return true
-            }else{
-                return false
-            }
-        })
-        .style("opacity", 1)
-        .style("stroke", function(d){
-                                        //console.log(selected_countries_pca_scatterplot_by_parallel)
-                                        //console.log(selected_countries_onAllAxis_by_scatterplot)
-                                        if(selected_countries_pca_scatterplot_by_parallel.includes(d.properties.name)){
-                                            return "#16bc21"
-                                        }else if(selected_countries_onAllAxis_by_scatterplot.includes(d.properties.name)){
-                                            return "#eb04f7"
-                                        }else{
-                                            return "white"
-                                        }
-                                        
-    
-                                    })
-        .style("stroke-width", "1.5px")
-    }
-}
 
-function deselect_all_countries_on_map(){
-    var buffer = selected_countries_world_map.slice()
-    for(i=0; i<buffer.length; i++){
-        deselect_country_on_map(buffer[i])
-    }
-    /*var buffer = selected_countries_world_map_triple.slice()
-    for(i=0; i<buffer.length; i++){
-        deselect_country_on_map_triple(buffer[i])
-    }*/
-}
 
-//Function that trigger the selection from the map to the other graphs 
-function map_selection_interaction(country){
-    select_country_on_scatterplot(country)
-    select_for_parallel_to_scatterplot(country)
-    select_on_parallel(country)
-    select_on_parallel_from_pca(country)
-    //select_country_on_map_triple(country)
-}
 
-//Function that trigger the deselection from the map to the other graphs 
-function map_deselection_interaction(country){
-    if(selected_countries_pca_scatterplot_by_parallel.includes(country)){
-        deselect_for_parallel_to_scatterplot(country)
-        deselect_country_on_map_triple(country)
-    }
-    if(selected_countries_onAllAxis_by_scatterplot.includes(country)){
-        deselect_on_parallel_from_pca(country)
-        deselect_country_on_map_triple(country)
-    }
-    deselect_country_on_scatterplot(country)
-    deselect_country_on_bar_chart_dth(country)
-    deselect_on_parallel(country)
-    //select_country_on_map_triple(country)
-}
 
-var  set_interval = false;
 
-/*setInterval(function(){ 
-    
-                        set_interval = !set_interval
-                
-                        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
-                            if(selected_countries_pca_scatterplot_by_parallel.includes(f.properties.name) && selected_countries_onAllAxis_by_scatterplot.includes(f.properties.name)){
-                                
-                                return true
-                            }else{
-                                return false
-                            }
-                        })
-                        .style("opacity", 1)
-                        .style("stroke", function(){
-                                                        if(set_interval){
-                                                            return "white"
-                                                        }else{
-                                                            return "#16bc21"
-                                                        }
-                                                        })
-                        .style("stroke-width", "1.5px")
 
-                    }, 500);*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
