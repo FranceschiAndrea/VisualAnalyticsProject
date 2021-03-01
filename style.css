@@ -48,7 +48,7 @@ div.tooltip_world_map {
     width: 100%;
     height: 100%;
     background: #000;
-    border: 3px solid #16bc21;
+    border: 3px solid rgb(129, 135, 143);
 }
 
 
@@ -111,7 +111,7 @@ div.tooltip_world_map {
     background: white;
     background: #000;*/
     background: rgb(255, 255, 255);
-    border:3px solid #eb04f7;
+    border:3px solid rgb(129, 135, 143);
 }
 .scatterplot_pca{
     width: 100%;

@@ -73,10 +73,16 @@ function bar_chart_dht_loader(data, pop_range){
             .call(d3.axisLeft(y));
 
     // color palette = one color per subgroup
-    var color_array = ["Air_Cancer", "a", "Chronic_Respiratory_Diseases", "b", "Pneumoconiosis", "c", "Asthma", "d", "Interstitial_Lung_Disease_and_Pulmonary_Sarcoidosis", "e", "Other_Chronic_Respiratory_Diseases", "f"]
+    /*var color_array = ["Air_Cancer", "a", "Chronic_Respiratory_Diseases", "b", "Pneumoconiosis", "c", "Asthma", "d", "Interstitial_Lung_Disease_and_Pulmonary_Sarcoidosis", "e", "Other_Chronic_Respiratory_Diseases", "f"]
     var color = d3.scaleOrdinal()
                     .domain(color_array)
-                    .range(d3.schemePaired);
+                    .range(d3.schemePaired);*/
+
+    var color_array = ["Air_Cancer", "Chronic_Respiratory_Diseases", "Pneumoconiosis", "Asthma", "Interstitial_Lung_Disease_and_Pulmonary_Sarcoidosis", "Other_Chronic_Respiratory_Diseases"]
+    var color = d3.scaleOrdinal()
+                    .domain(color_array)
+                    .range(d3.schemeSet3);
+
     //console.log(subgroups)
 
     //stack the data? --> stack per subgroup
@@ -621,7 +627,7 @@ function bar_display_with_interactions(d){
                                                                             .style("stroke-dasharray", "none")
     }else if(selected_countries_pca_scatterplot_by_parallel.includes(d.data.Country)){
         d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
-                                                                            .attr("stroke", "#009b3e"/*"#16bc21"*/)
+                                                                            .attr("stroke", "#16bc21"/*"#16bc21"*/)
                                                                             .attr('stroke-width', 2.5   )
                                                                             .style("stroke-dasharray", function(f){
                                                                                                                         //console.log("PROVAAAAA")
