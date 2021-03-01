@@ -1,4 +1,7 @@
 var selected_countries_bar_chart_dth = [];
+var mouse_over_flag = false
+
+
 
 function bar_chart_dht_loader(data, pop_range){
 
@@ -87,6 +90,7 @@ function bar_chart_dht_loader(data, pop_range){
 
     // What happens when user hover a bar
     var mouseover = function(d) {
+                                mouse_over_flag=true
                                     if(selected_countries_bar_chart_dth.length==0){
                                         // what subgroup are we hovering?
                                         var subgroupName = d3.select(this.parentNode).datum().key; // This was the tricky part
@@ -94,7 +98,7 @@ function bar_chart_dht_loader(data, pop_range){
                                         var subgroupValue = d.data[subgroupName];
                                         //console.log(subgroupValue)
                                         // Reduce opacity of all rect to 0.2
-                                        d3.selectAll(".myRect").selectAll("rect").attr("opacity", 0.3)
+                                        d3.selectAll(".myRect").selectAll("rect").attr("opacity", 0.45)
                                         // Highlight all rects of this subgroup with opacity 0.8. It is possible to select them since they have a specific class = their name.
                                         d3.selectAll("."+subgroupName).selectAll("rect")
                                             .attr("opacity", 1)
@@ -142,6 +146,7 @@ function bar_chart_dht_loader(data, pop_range){
 
     // When user do not hover anymore
     var mouseleave = function(d) {
+                                    mouse_over_flag = false
                                     if(selected_countries_bar_chart_dth.length==0){
                                         // Back to normal opacity: 0.8
                                         d3.selectAll(".myRect").selectAll("rect")
@@ -197,26 +202,27 @@ function bar_chart_dht_loader(data, pop_range){
                                                     return true
                                                 }
                                             })
-                                            .attr("opacity", 0.3)
+                                            .attr("opacity", 0.45)
 
                                         d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
                                             .attr("opacity",1)
-
+                                        
 
                                     }else{
                                         selected_countries_bar_chart_dth.splice(selected_countries_bar_chart_dth.indexOf(d.data.Country), 1);
                                         d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
-                                            .attr("opacity",0.3)
+                                            .attr("opacity",0.45)
 
                                         if(selected_countries_bar_chart_dth.length==0){
                                             var subgroupName = d3.select(this.parentNode).datum().key;
-                                            d3.selectAll(".myRect").selectAll("rect").attr("opacity", 0.3)
+                                            d3.selectAll(".myRect").selectAll("rect").attr("opacity", 0.45)
                                             d3.selectAll("."+subgroupName).selectAll("rect")
                                                 .attr("opacity", 1)
                                         }
                                         
                                         bar_chart_dth_deselection_interaction(d.data.Country)
                                     }  
+                                    
     }
 
     // Show the bars
@@ -252,7 +258,7 @@ function bar_chart_dht_loader(data, pop_range){
                                                     if(selected_countries_bar_chart_dth.length==0 || selected_countries_bar_chart_dth.includes(d.data.Country)){
                                                         return 1
                                                     }else{
-                                                        return 0.3
+                                                        return 0.45
                                                     }
                                                  })
                     .attr("id", function(d){
@@ -260,7 +266,7 @@ function bar_chart_dht_loader(data, pop_range){
                                         })
         .on("mouseover", mouseover)
         .on("mouseleave", mouseleave)
-        .on("click", mouseclick)
+        .on("click", mouseclick).filter(function(d){ bar_display_with_interactions(d) })
 
         /*d3.selectAll(("button[id='bar_chart_dth_button_1']")).on("click", function(){
             console.log("Premuto",this.value)
@@ -369,8 +375,10 @@ function bar_chart_dht_loader(data, pop_range){
                 .text("N°")
     
         }
-
+        
 }
+
+
 function data_elaboration_to_display_bar_chart_dth(start_data, pop_range){
     var output_data = [];
 
@@ -528,7 +536,7 @@ function deselect_country_on_bar_chart_dth(country){
     if(selected_countries_bar_chart_dth.includes(country)){
         selected_countries_bar_chart_dth.splice(selected_countries_bar_chart_dth.indexOf(country), 1);
         d3.selectAll(("#bar_chart_dth_"+country.split(' ').join('_'))).filter(function(f){/*console.log(f);*/ return true;})
-            .attr("opacity",0.3)
+            .attr("opacity",0.45)
 
         if(selected_countries_bar_chart_dth.length==0){
             d3.selectAll(".myRect").selectAll("rect").attr("opacity", 1)
@@ -585,28 +593,81 @@ function bar_chart_dth_deselection_interaction(country){
     console.log("------------------------------------")*/
 }
 
-/*
-setInterval(function(){ 
+/******************************************************************************************************************************
+/******************************************************************************************************************************
+/*******************************************************************************************************************************/     
+
+function start_bar_chart_loop(database_data){ 
+    var triple_selection = false
+    return setInterval(function(){ 
             
-                        set_interval = !set_interval
-                
-                        d3.select("#world_map").select("g").selectAll("path").filter(function(f) {
-                            if(selected_countries_pca_scatterplot_by_parallel.includes(f.properties.name) && selected_countries_onAllAxis_by_scatterplot.includes(f.properties.name)){
-                                
-                                return true
-                            }else{
-                                return false
-                            }
-                        })
-                        .style("opacity", 1)
-                        .style("stroke", function(){
-                                                        if(set_interval){
-                                                            return "white"
-                                                        }else{
-                                                            return "#16bc21"
-                                                        }
-                                                        })
-                        .style("stroke-width", "1.5px")
-            
-                    }, 500);
-*/
+                        if(!mouse_over_flag){
+                            d3.selectAll(".myRect")
+                                        .selectAll("rect")
+                                        .filter(function(d){ bar_display_with_interactions(d) })             
+                        }
+
+                    }, 0);
+}
+/******************************************************************************************************************************
+/******************************************************************************************************************************
+/*******************************************************************************************************************************/
+
+function bar_display_with_interactions(d){
+    if(selected_countries_pca_scatterplot_by_parallel.includes(d.data.Country) && selected_countries_onAllAxis_by_scatterplot.includes(d.data.Country)){
+        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                                                            .attr("stroke", "grey")
+                                                                            .attr("stroke-width", "1px")
+                                                                            .style("stroke-dasharray", "none")
+    }else if(selected_countries_pca_scatterplot_by_parallel.includes(d.data.Country)){
+        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                                                            .attr("stroke", "#009b3e"/*"#16bc21"*/)
+                                                                            .attr('stroke-width', 2.5   )
+                                                                            .style("stroke-dasharray", function(f){
+                                                                                                                        //console.log("PROVAAAAA")
+                                                                                                                        return fillTheBarPerimeter(this)
+                                                                                                                    
+                                                                                                                    })
+    }else if(selected_countries_onAllAxis_by_scatterplot.includes(d.data.Country)){
+        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                                                            .attr("stroke", "#eb04f7")
+                                                                            .attr('stroke-width', 2.5)
+                                                                            .style("stroke-dasharray", function(f){
+                                                                                                                        //console.log("PROVAAAAA")
+                                                                                                                        return fillTheBarPerimeter(this)
+                                                                                                                    
+                                                                                                                    })
+    }else{
+        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                                                            .attr("stroke", "grey")
+                                                                            .attr("stroke-width", "1px")
+                                                                            .style("stroke-dasharray", "none")
+    }
+
+    if((selected_countries_pca_scatterplot_by_parallel.includes(d.data.Country) && selected_countries_onAllAxis_by_scatterplot.includes(d.data.Country)) || selected_countries_bar_chart_dth.includes(d.data.Country)){
+        
+        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                                                            .attr("opacity",1)
+        //console.log(selected_countries_bar_chart_dth)
+    }else if(selected_countries_bar_chart_dth.length != 0  || (selected_countries_pca_scatterplot_by_parallel.length != 0 && selected_countries_onAllAxis_by_scatterplot.length != 0 && (selected_countries_onAllAxis_by_scatterplot.filter(value => selected_countries_pca_scatterplot_by_parallel.includes(value))).length!=0)){
+        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                                                            .attr("opacity",0.45)
+    }else{
+        d3.selectAll(("#bar_chart_dth_"+d.data.Country.split(' ').join('_')))
+                                                                            .attr("opacity",1)
+    }
+}
+
+function fillTheBarPerimeter(node_value){
+    var height = node_value.getBoundingClientRect().height
+    var width = node_value.getBoundingClientRect().width
+    //console.log(this.getBoundingClientRect())
+   //console.log(/*("0,"+width+","+height+","+width+","+height),*/ this.parentNode.attributes.class.nodeValue)
+   if(node_value.parentNode.attributes.class.nodeValue == "myRect Air_Cancer"){
+        return ("0,"+width+","+(height+width+height))
+   }else if(node_value.parentNode.attributes.class.nodeValue == "myRect Other_Chronic_Respiratory_Diseases"){
+        return ((width+height)+","+width+","+height)
+   }else{
+        return ("0,"+width+","+height+","+width+","+height)
+   }
+}

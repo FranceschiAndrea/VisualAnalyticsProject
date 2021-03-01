@@ -180,13 +180,21 @@ div.tooltip_scatterplot_pca {
 }
 .total_reset_button_container{
     margin-top: 1%;
-    margin-left: 3%;
+    margin-left: 2%;
     width : 5%;
+}
+.selection_legend{
+    margin-top: -5px;
+    margin-bottom: 5px;
+    width : 15%;
 }
 .range{
     padding-left: 1%;
     padding-right: 1%;
-    width : 70%;
+    width : 50%;
+    margin-left: 5%;
+    /*border-left: 1px solid black;
+    border-right: 1px solid black;*/
 }
 * {
     box-sizing: border-box;

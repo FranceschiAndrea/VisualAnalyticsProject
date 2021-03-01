@@ -167,6 +167,7 @@ d3.queue()
                 scatterplot_pca_loader(full_data[current_year]);
                 bar_chart_dht_loader(full_data[current_year], bar_graph_people_range)
                 parallel_loader(full_data[current_year])
+                start_bar_chart_loop(data_elaboration_to_display_bar_chart_dth(full_data[current_year], bar_graph_people_range))
 
         }
     });
