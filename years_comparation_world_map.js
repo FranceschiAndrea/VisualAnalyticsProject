@@ -480,6 +480,7 @@ function data_elaboration_to_display_map(start_data){
 
 function map_selection_trigger(){
     upload_line_chart_dth()
+    upload_line_chart_emsn()
 }
 
 

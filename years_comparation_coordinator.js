@@ -171,11 +171,12 @@ d3.queue()
                 world_map_loader(full_data, world_map_file);
                 line_cahrt_dth_loader(full_data)
                 initial_data = full_data
+                line_cahrt_emsn_loader(full_data)
+                initial_data_emsn = full_data
                 /*scatterplot_pca_loader(full_data[current_year]);
                 bar_chart_dht_loader(full_data[current_year], bar_graph_people_range)
                 parallel_loader(full_data[current_year])
                 start_bar_chart_loop(data_elaboration_to_display_bar_chart_dth(full_data[current_year], bar_graph_people_range))*/
-                upload_line_chart_dth()
         }
     });
 
