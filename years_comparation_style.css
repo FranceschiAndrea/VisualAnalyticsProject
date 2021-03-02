@@ -59,9 +59,11 @@ div.tooltip_world_map {
 
 #go_to_index{
     margin-top: 5%;
-    margin-left: 10%;
-    
-    width : 50%;
+    margin-left: 15%;
+    margin-right: 15%;
+    width : 70%;
+    height: 10%;
+    font-size: 16px;
 }
 
 /**********************************************************/
@@ -74,6 +76,15 @@ div.tooltip_world_map {
     grid-area: 1 / 4 / 2 / 5; 
     width: 100%;
     height: 100%;
+}
+
+#reset_selection{
+    margin-top: 15%;
+    margin-left: 15%;
+    margin-right: 15%;
+    width : 70%;
+    height: 10%;
+    font-size: 16px;
 }
 /**********************************************************/
 
