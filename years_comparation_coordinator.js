@@ -1,16 +1,9 @@
 var full_data = [];
-var full_data_no_overpopulated = [];
+//var full_data_no_overpopulated = [];
 var world_map_file;
-var current_year = 4;
-var bar_graph_people_range = 1;          //1(bigger)-5(lower)
+var overpopulated_countries_flag;
 
-if(current_year<10){
-    d3.selectAll(("input[name='range_years']")).property("value", "200"+current_year)
-}else{
-    d3.selectAll(("input[name='range_years']")).property("value", "20"+current_year)
-}
 
-d3.select("#bar_chart_dth_dropdown").property("value", bar_graph_people_range)
 
 var map_countries_divided_flag = [false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false]
 
@@ -48,92 +41,81 @@ var map_countries = [["French Southern and Antarctic Lands",""],
     ["Vietnam","Viet Nam"],
     ["West Bank",""]];
 
-var overpopulated_countries = ["India", "China", "USA"];
-
-var colors_for_countries = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ffff33","#a65628","#f781bf","#999999", "#ff7f00"]  //sono 12, gli ultimi 4: 3 sono i pastello di Paired,l'ultimo viola
-
-var colors_for_countries_association = Array(9).fill(" ");
-
-
-    //-----------------------------------------EUROPE--------------------------------------------------
-    //comprende western+southern
-    var region_southern_europe=[
+//-----------------------------------------EUROPE--------------------------------------------------
+//comprende western+southern
+var region_southern_europe=[
     "Albania","Austria","Belgium","Bosnia and Herzegovina","Slovenia","Croatia","Greece","Italy","Germany",
     "Spain","Portugal","Switzerland","Netherlands","Republic of Serbia","Macedonia","France","Luxembourg"
     ]
     
     //comprende northern+eastern
-    var region_northern_europe=[
+var region_northern_europe=[
     "Belarus","Bulgaria","Czech Republic","Denmark","Estonia","Finland","Russia","Latvia","Lithuania","Sweden",
     "Norway","England","Ireland","Iceland","Poland","Ukraine","Moldova","Romania","Slovakia","Hungary"
     ]
-    //----------------------------------------------------------------------------------------------------
-    
-    //-----------------------------------------ASIA---------------------------------------------------- 
-    var region_southern_asia=[
+//----------------------------------------------------------------------------------------------------
+//-----------------------------------------ASIA---------------------------------------------------- 
+var region_southern_asia=[
     "Afghanistan","Bangladesh","Pakistan","India","Nepal","Bhutan","Sri Lanka","Iran",
     ]
     
-    var region_central_asia=[
+var region_central_asia=[
     "Kazakhstan","Turkmenistan","Uzbekistan","Tajikistan","Kyrgyzstan"
     ]
     
-    var region_western_asia=[
+var region_western_asia=[
     "Armenia","Azerbaijan","Turkey","Cyprus","Northern Cyprus","Georgia","Oman","Yemen","Saudi Arabia",
     "United Arab Emirates","Qatar","Kuwait","Iraq","Jordan","Israel","Lebanon","Syria"
     ]
     
-    var region_eastern_asia=[
+var region_eastern_asia=[
     "China","North Korea","South Korea","Japan","Mongolia","Taiwan"
     ]
     
-    var region_southeastern_asia=[
+var region_southeastern_asia=[
     "Brunei","Cambodia","Myanmar","Thailand","Laos","Vietnam","Malaysia","Indonesia","Philippines","East Timor"
     ]
-    //----------------------------------------------------------------------------------------------------
-    
-    //-----------------------------------------AFRICA---------------------------------------------------- DONE
-    
-    //comprende northern+ western
-    var region_northern_africa=[
+//----------------------------------------------------------------------------------------------------
+//-----------------------------------------AFRICA---------------------------------------------------- DONE
+//comprende northern+ western
+var region_northern_africa=[
     "Algeria","Benin","Burkina Faso","Niger","Nigeria","Togo","Ghana","Liberia","Sierra Leone","Guinea",
     "Guinea Bissau","Gambia","Senegal","Mauritania","Mali","Morocco","Tunisia","Libya","Egypt","Sudan"
     ]
     //comprende middle+eastern
-    var region_central_africa=[
+var region_central_africa=[
     "Angola","Burundi","Zambia","Zimbabwe","Mozambique","Madagascar","Cameroon",
     "Central African Republic","Chad","Republic of the Congo","Democratic Republic of the Congo",
     "South Sudan","Ethiopia","Eritrea","Somalia","Uganda","Kenya","Rwanda","United Republic of Tanzania",
     "Malawi","Equatorial Guinea","Gabon","Djibouti"
     ]
-    var region_southern_africa=[
+var region_southern_africa=[
     "Botswana","Namibia","South Africa","Lesotho","Swaziland"
     ]
-    //----------------------------------------------------------------------------------------------------
-    
-    //-----------------------------------------AMERICA----------------------------------------------------
-    
-    //DONE
-    
-    //comprendere northern+central+Caribbean
-    var region_northern_america=[
+//----------------------------------------------------------------------------------------------------
+//-----------------------------------------AMERICA----------------------------------------------------
+//DONE
+//comprendere northern+central+Caribbean
+var region_northern_america=[
     "The Bahamas","Belize","Canada","Costa Rica","Cuba","Dominican Republic","USA","Mexico","Guatemala",
     "Honduras","Nicaragua","Panama","Jamaica","Haiti","Puerto Rico","Greenland","El Salvador"
     ]
-    
-    var region_southern_america=[
+var region_southern_america=[
     "Argentina","Bolivia","Brazil","Chile","Colombia","Ecuador","Peru","Venezuela","Trinidad and Tobago",
     "Guyana","Suriname","Paraguay","Uruguay"
     ]
-    
-    //----------------------------------------------------------------------------------------------------
-    
-    //------------------------------------------OCEANIA---------------------------------------------------
-    var region_oceania=[
+//----------------------------------------------------------------------------------------------------
+//------------------------------------------OCEANIA---------------------------------------------------
+var region_oceania=[
     "Australia","New Zealand","Papua New Guinea","Solomon Islands","Vanuatu","Fiji"
     ]
-    
-    //----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+
+//var overpopulated_countries = ["India", "China", "USA"];
+
+var colors_for_countries = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ffff33","#a65628","#f781bf","#999999", "#ff7f00"]  //sono 12, gli ultimi 4: 3 sono i pastello di Paired,l'ultimo viola
+
+var colors_for_countries_association = Array(9).fill(" ");
     
 
 
@@ -165,7 +147,7 @@ d3.queue()
                 full_data = [table2000, table2001, table2002, table2003, table2004, table2005, table2006, table2007, table2008, table2009, table2010, table2011, table2012, table2013, table2014, table2015];
                 for(k=0; k<full_data.length; k++){
                     parseTable(full_data[k], world);
-                    full_data_no_overpopulated.push(flter_overpopulated(full_data[k]))
+                    //full_data_no_overpopulated.push(flter_overpopulated(full_data[k]))
                 }
                 
                 world_map_loader(full_data, world_map_file);
@@ -173,36 +155,17 @@ d3.queue()
                 initial_data = full_data
                 line_cahrt_emsn_loader(full_data)
                 initial_data_emsn = full_data
-                /*scatterplot_pca_loader(full_data[current_year]);
-                bar_chart_dht_loader(full_data[current_year], bar_graph_people_range)
-                parallel_loader(full_data[current_year])
-                start_bar_chart_loop(data_elaboration_to_display_bar_chart_dth(full_data[current_year], bar_graph_people_range))*/
         }
     });
 
 
 
 
-//Function that change the years of all the graphs
-d3.selectAll(("input[name='range_years']")).on("input", function(){
-    var value = parseInt(this.value.slice(-2))
-    current_year = value
-    if(overpopulated_countries_flag){
-        change_map_with_year(full_data[current_year], full_data[current_year], overpopulated_countries)
-        change_scatterplot_with_year(full_data[current_year])
-        change_bar_chart_dth_with_year(full_data[current_year], bar_graph_people_range)
-        change_parallel_with_year(full_data[current_year])
-    }else{
-        change_map_with_year(full_data[current_year], full_data_no_overpopulated[current_year], overpopulated_countries)
-        change_scatterplot_with_year(full_data_no_overpopulated[current_year])
-        change_bar_chart_dth_with_year(full_data_no_overpopulated[current_year], bar_graph_people_range)
-        change_parallel_with_year(full_data_no_overpopulated[current_year])
-    }
-})
+
 
 var overpopulated_countries_flag = true;
 //Function to select or deselect the overpopulated countries
-d3.select("input[name='no_big_countries_checkbox']").on("change", function(){
+/*d3.select("input[name='no_big_countries_checkbox']").on("change", function(){
 
     if(overpopulated_countries_flag){
         overpopulated_countries_flag = !overpopulated_countries_flag
@@ -218,35 +181,32 @@ d3.select("input[name='no_big_countries_checkbox']").on("change", function(){
         change_map_with_year(full_data[current_year], full_data[current_year], overpopulated_countries)
         change_parallel_with_year(full_data[current_year])
     }
-})
+})*/
 
 
-d3.select(("button[id='total_reset_button']")).on("click", function(){
+d3.select(("button[id='reset_selection']")).on("click", function(){
 
-    selected_countries_world_map = []
-    selected_countries_world_map_triple = []
-    selected_countries_pca_scatterplot = []
-    selected_countries_pca_scatterplot_by_parallel = []
-    selected_countries_onAllAxis = []
-    selected_countries_onAllAxis_by_scatterplot = []
-    selected_countries_bar_chart_dth = []
+    selected_countries_world_map = [];
+    colors_for_countries_association = Array(9).fill(" ");
 
     d3.select("#world_map").select('svg').remove()
+    d3.select("#line_chart_dth_container").select('svg').remove()
+    d3.select("#line_chart_pm_container").select('svg').remove()
 
-    world_map_loader(full_data[current_year], world_map_file)
+    //world_map_loader(full_data, world_map_file)
 
-    if(overpopulated_countries_flag){
+    //if(overpopulated_countries_flag){
         //change_map_with_year(full_data[current_year], full_data_no_overpopulated[current_year], overpopulated_countries)
-        change_scatterplot_with_year(full_data[current_year])
-        change_bar_chart_dth_with_year(full_data[current_year], bar_graph_people_range)
-        change_parallel_with_year(full_data[current_year])
-    }else{
+        world_map_loader(full_data, world_map_file);
+        line_cahrt_dth_loader(full_data)
+        line_cahrt_emsn_loader(full_data)
+    /*}else{
         //change_map_with_year(full_data[current_year], full_data_no_overpopulated[current_year], overpopulated_countries)
         //change_map_overpopulated(full_data[current_year], overpopulated_countries)
         change_scatterplot_with_year(full_data_no_overpopulated[current_year])
         change_bar_chart_dth_with_year(full_data_no_overpopulated[current_year], bar_graph_people_range)
         change_parallel_with_year(full_data_no_overpopulated[current_year])
-    }
+    }*/
 })
 
 
@@ -375,7 +335,7 @@ function parseTable(table, topology){
 }
 
 //Function to create the datawithout the overpopulated countries
-function flter_overpopulated(complete_data_table){
+/*function flter_overpopulated(complete_data_table){
 
     var buffer = complete_data_table.slice(0);
 
@@ -389,4 +349,4 @@ function flter_overpopulated(complete_data_table){
 
     return buffer
 
-}
+}*/

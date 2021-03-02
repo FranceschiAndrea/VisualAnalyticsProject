@@ -7,20 +7,20 @@ function world_map_loader(data, topology){
     //console.log(data)
     //Transform the dataset rows in Country, Sum rows
     database_data = data_elaboration_to_display_map(data);
-    var min_data_value = database_data[0]["Mean of emissions over years"];
-    var max_data_value = database_data[0]["Mean of emissions over years"];
+    var min_data_value = database_data[0]["Mean of total population over years"];
+    var max_data_value = database_data[0]["Mean of total population over years"];
     //console.log(database_data)
 
     //Calculate the max and the min value in the dataset to choose the colors thresholds
     for(i=0; i<database_data.length; i++){
-        if(database_data[i]["Mean of emissions over years"] > max_data_value){
-            max_data_value = database_data[i]["Mean of emissions over years"];
+        if(database_data[i]["Mean of total population over years"] > max_data_value){
+            max_data_value = database_data[i]["Mean of total population over years"];
         }
-        if(database_data[i]["Mean of emissions over years"] < min_data_value){
-            min_data_value = database_data[i]["Mean of emissions over years"];
+        if(database_data[i]["Mean of total population over years"] < min_data_value){
+            min_data_value = database_data[i]["Mean of total population over years"];
         }
     }    
-    //console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
+    console.log("Min and Max values to represent:",min_data_value, "|" , max_data_value)
 
     /*var width = Math.max(960, d3.select("#world_map").style('width').slice(0, -2)),
     height = Math.max(500, d3.select("#world_map").style('height').slice(0, -2)),
@@ -59,9 +59,9 @@ function world_map_loader(data, topology){
 
     //Colors of the map with a the threshhold, white < 1000, red >10000000
     var color_scale = d3.scaleThreshold()
-                        .domain([100, 500, 5000, 10000])
+                        .domain([10000000, 50000000, 100000000, 1000000000])
                         //.domain([min_data_value, max_data_value])
-                        .range(d3.schemeBlues[4]);
+                        .range(d3.schemePurples[4]);
     /*var color_scale = d3.scaleLinear()
                         .domain([1000, 10000, 100000, 1000000])
                         //.domain([min_data_value, max_data_value])
@@ -86,7 +86,7 @@ function world_map_loader(data, topology){
                 var sum_for_labels = "No Data";
                 for(i=0; i<database_data.length; i++){
                     if(database_data[i].Country == d.properties.name){
-                        sum_for_labels = database_data[i]["Mean of emissions over years"];
+                        sum_for_labels = database_data[i]["Mean of total population over years"];
                     }
                 }
                 //Check if hte country is one between the ones with database data not empty
@@ -113,7 +113,7 @@ function world_map_loader(data, topology){
                                 }else if(sum_for_labels=="No Data"){
                                         return d.properties.name + "<br>" +  sum_for_labels;
                                 }else{
-                                    return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                    return d.properties.name + "<br>" +  Math.round(sum_for_labels) /*+ "&nbsp;Gg"*/;
                                 }});
             
             }
@@ -122,7 +122,7 @@ function world_map_loader(data, topology){
                 var sum_for_labels = "No Data";
                 for(i=0; i<database_data.length; i++){
                     if(database_data[i].Country == d.properties.name){
-                        sum_for_labels = database_data[i]["Mean of emissions over years"];
+                        sum_for_labels = database_data[i]["Mean of total population over years"];
                     }
                 }
                 //Move the div with the country name with the mouse on the map
@@ -135,7 +135,7 @@ function world_map_loader(data, topology){
                                         }else if(sum_for_labels=="No Data"){
                                             return d.properties.name + "<br>" +  sum_for_labels;
                                         }else{
-                                            return d.properties.name + "<br>" +  Math.round(sum_for_labels) + "&nbsp;Gg";
+                                            return d.properties.name + "<br>" +  Math.round(sum_for_labels) /*+ "&nbsp;Gg"*/;
                                         }
                                         });
             }
@@ -233,13 +233,13 @@ function world_map_loader(data, topology){
                         for(i=0; i<database_data.length; i++){
                             if(database_data[i].Country == d.properties.name){
                                 counter += 1;
-                                return color_scale(database_data[i]["Mean of emissions over years"]);
+                                return color_scale(database_data[i]["Mean of total population over years"]);
                             }
                         }
                         
                                     //console.log("Country non matched:", d.properties.name);
                                 
-                        return "#69a3b2";
+                        return "#e2e5a9";
 
                     })
     //console.log("Total number of matched countries:", counter);
@@ -282,7 +282,7 @@ function world_map_loader(data, topology){
     //Addition of the legend
     var threshold = d3.scaleThreshold()
                         .domain([1, 2, 3, 4])       //Used just to solor the legend
-                        .range(d3.schemeReds[4]);
+                        .range(d3.schemePurples[4]);
         
     var x = d3.scaleLinear()                        //Used to set the distance between the different colors
                 .domain([0, 4])
@@ -337,7 +337,7 @@ function world_map_loader(data, topology){
                 .attr('width', 20)
                 .attr('height', 20)
                 //.attr('stroke', 'black')
-                .attr('fill', '#69a3b2')
+                .attr('fill', '#e2e5a9')
 
 
     //Insert the labels of the legend
@@ -348,7 +348,7 @@ function world_map_loader(data, topology){
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
                 //.attr("transform", "translate(85,21)")                   //Move the legend's text
-                .text("< 10⁶")
+                .text("< 1M")
     svg_layer_1.append("text")
                 .attr('x', 40)
                 .attr('y', 40)
@@ -356,7 +356,7 @@ function world_map_loader(data, topology){
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
                 //.attr("transform", "translate(85,46)")                   //Move the legend's text
-                .text("< 10⁵")
+                .text("< 5M")
     svg_layer_1.append("text")
                 .attr('x', 40)
                 .attr('y', 65)
@@ -364,7 +364,7 @@ function world_map_loader(data, topology){
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
                 //.attr("transform", "translate(85,71)")                   //Move the legend's text
-                .text("< 10⁴")
+                .text("< 10M")
     svg_layer_1.append("text")
                 .attr('x', 40)
                 .attr('y', 90)
@@ -372,7 +372,7 @@ function world_map_loader(data, topology){
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
                 //.attr("transform", "translate(85,96)")                   //Move the legend's text
-                .text("< 10³")
+                .text("< 1BN")
     svg_layer_1.append("text")
                 .attr('x', 43)
                 .attr('y', 116)
@@ -388,7 +388,7 @@ function world_map_loader(data, topology){
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
                 //.attr("transform", "translate(0,12)")                   //Move the legend's text
-                .text("Total Air Pollulant Emissions (Gg)")
+                .text("Total Population 2000-2015 Average")
     
     //Movetheleend to fit in the resized page
     svg_layer_1.selectAll("rect")
@@ -442,31 +442,38 @@ function data_elaboration_to_display_map(start_data){
 
         for(i=0; i<start_data[k].length; i++){
 
-            var sum_PMs = start_data[k][i]['PM 10']+start_data[k][i]['PM 2.5']
+            //var sum_PMs = start_data[k][i]['PM 10']+start_data[k][i]['PM 2.5']
 
             //Sum of each country over the years
             if(array_of_the_sum_over_the_years.length<start_data[0].length){
-                array_of_the_sum_over_the_years.push(sum_PMs)
+                //array_of_the_sum_over_the_years.push(start_data[k])
+                array_of_the_sum_over_the_years.push(start_data[k][i]["Total Population"])
+
             }else{
-                array_of_the_sum_over_the_years[i] = array_of_the_sum_over_the_years[i]+sum_PMs
+                array_of_the_sum_over_the_years[i] = array_of_the_sum_over_the_years[i]+start_data[k][i]["Total Population"]
             }
 
         }
 
     }
 
-    //console.log(array_of_the_sum_over_the_years)
 
-    //divide to make the mean over the years and create the object to pass to the map
     for(i=0; i<array_of_the_sum_over_the_years.length; i++){
+        //array_of_the_sum_over_the_years[i] = array_of_the_sum_over_the_years[i]/start_data.length
         array_of_the_sum_over_the_years[i] = array_of_the_sum_over_the_years[i]/start_data.length
-       
-        output_data.push(
+        /*output_data.push(
             {
                 "Country" : start_data[0][i]['Country'],
                 "Mean of emissions over years" : array_of_the_sum_over_the_years[i]
             }
+        )*/
+        output_data.push(
+            {
+                "Country" : start_data[0][i]['Country'],
+                "Mean of total population over years" : array_of_the_sum_over_the_years[i]
+            }
         )
+
     }
 
     //console.log(output_data)
